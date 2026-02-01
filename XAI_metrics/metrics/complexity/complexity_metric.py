@@ -1,6 +1,7 @@
 import quantus
-from base import BaseMetric, MetricContext
+from base import BaseMetric, MetricContext, register_metric
 
+@register_metric
 class Complexity(BaseMetric):
     NAME = 'Complexity'
 

@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import Any
+from dataclasses import dataclass, field
+from typing import Any, Dict
 import numpy as np
 import torch.nn as nn
 import pandas as pd
@@ -11,6 +11,7 @@ class MetricContext:
     y_test: pd.DataFrame
     observations: Any
     attributions: np.ndarray
+    extras: Dict[str, Any] = field(default_factory=dict)
 
 class BaseMetric:
     NAME: str = 'metric'
