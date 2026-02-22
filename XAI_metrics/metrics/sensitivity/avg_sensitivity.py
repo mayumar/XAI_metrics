@@ -8,7 +8,7 @@ NR_SAMPLES = 20
 type ExplainFunc = Callable[[nn.Module, Any, Any | None], np.ndarray]
 
 class AvgSensitivity(BaseMetric):
-    NAME = 'LocalLipschitzEstimate'
+    NAME = 'AvgSensitivity'
 
     def __init__(
         self,

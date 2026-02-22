@@ -1,0 +1,95 @@
+metrics:
+  - name: Complexity
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+
+  - name: Sparseness
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+
+  - name: Consistency
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+
+  - name: FaithfulnessEstimate
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+
+  - name: MonotonicityCorrelation
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+
+  - name: Monotonicity
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+
+  - name: SensitivityN
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+
+  - name: Sufficiency
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+
+  - name: Completeness
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+
+  - name: NonSensitivity
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+
+  - name: LocalLipschitzEstimate
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+      nr_samples: 20
+
+  - name: MaxSensitivity
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+      nr_samples: 20
+
+  - name: RelativeInputStability
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+      nr_samples: 20
+
+  - name: RelativeOutputStability
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+      nr_samples: 20
+
+  - name: AvgSensitivity
+    params:
+      Type: Local
+      abs: true
+      normalise: false
+      nr_samples: 20
