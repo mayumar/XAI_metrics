@@ -1,26 +1,32 @@
+# XAI_metrics/metrics/complexity/complexity_metric.py
 import quantus
-from base import BaseMetric, MetricContext, register_metric
+from typing import Mapping, Any
+from XAI_metrics.base import BaseMetric, MetricContext, register_metric
 
 @register_metric
 class Complexity(BaseMetric):
     NAME = 'Complexity'
 
-    def __init__(self, contextParams: MetricContext):
-        super().__init__(contextParams)
+    def __init__(self, context: MetricContext, params: Mapping[str, Any] | None = None):
+        super().__init__(context, params)
 
     def run(self):
-        params = self.contextParams
+        ctx = self.context
+        p = self.params
+
+        abs_ = bool(p.get("abs", True))
+        normalise = bool(p.get("normalise", False))
         
-        params.model.train()
+        ctx.model.train()
 
         results = quantus.Complexity(
-            abs=True,
-            normalise=False
+            abs=abs_,
+            normalise=normalise
         )(
-            model=params.model,
-            x_batch=params.X_test.loc[params.observations],
-            y_batch=params.y_test.loc[params.observations],
-            a_batch=params.attributions
+            model=ctx.model,
+            x_batch=ctx.X_test.loc[ctx.observations],
+            y_batch=ctx.y_test.loc[ctx.observations],
+            a_batch=ctx.attributions
         )
 
         return results

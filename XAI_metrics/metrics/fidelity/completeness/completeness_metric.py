@@ -1,25 +1,32 @@
+# XAI_metrics/metrics/fidelity/completeness/completeness_metric.py
 import quantus
-from base import BaseMetric, MetricContext
+from typing import Mapping, Any
+from XAI_metrics.base import BaseMetric, MetricContext, register_metric
 
+@register_metric
 class Completeness(BaseMetric):
     NAME = 'Completeness'
 
-    def __init__(self, contextParams: MetricContext):
-        super().__init__(contextParams)
-    
-    def run(self):
-        params = self.contextParams
+    def __init__(self, context: MetricContext, params: Mapping[str, Any] | None = None):
+        super().__init__(context, params)
 
-        params.model.eval()
+    def run(self):
+        ctx = self.context
+        p = self.params
+
+        abs_ = bool(p.get("abs", True))
+        normalise = bool(p.get("normalise", False))
+
+        ctx.model.eval()
 
         results = quantus.Completeness(
-            abs=True,
-            normalise=False
+            abs=abs_,
+            normalise=normalise
         )(
-            model=params.model,
-            x_batch=params.X_test.loc[params.observations].values,
-            y_batch=params.y_test.loc[params.observations].values,
-            a_batch=params.attributions
+            model=ctx.model,
+            x_batch=ctx.X_test.loc[ctx.observations].values,
+            y_batch=ctx.y_test.loc[ctx.observations].values,
+            a_batch=ctx.attributions
         )
 
         return results

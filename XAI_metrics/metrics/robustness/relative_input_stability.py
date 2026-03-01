@@ -1,37 +1,48 @@
+# XAI_metrics/metrics/robustness/relative_input_stability.py
 import quantus
-from base import BaseMetric, MetricContext
-from typing import Callable, Any
+from XAI_metrics.base import BaseMetric, MetricContext, register_metric
+from typing import Callable, Any, Mapping
 import torch.nn as nn
 import numpy as np
-NR_SAMPLES = 20
 
 type ExplainFunc = Callable[[nn.Module, Any, Any | None], np.ndarray]
 
+@register_metric
 class RelativeInputStability(BaseMetric):
     NAME = 'RelativeInputStability'
 
     def __init__(
         self,
-        contextParams: MetricContext,
-        explain_func: ExplainFunc
+        context: MetricContext,
+        params: Mapping[str, Any] | None = None,
+        explain_func: ExplainFunc | None = None
     ):
-        super().__init__(contextParams)
+        super().__init__(context, params)
+
+        if explain_func is None:
+            raise ValueError("RelativeInputStability requires 'explain_func' to be provided via dependencies.")
+
         self.explain_func = explain_func
     
     def run(self):
-        params = self.contextParams
+        ctx = self.context
+        p = self.params
 
-        params.model.eval()
+        abs_ = bool(p.get("abs", True))
+        normalise = bool(p.get("normalise", False))
+        nr_samples = int(p.get("nr_samples", 20))
+
+        ctx.model.eval()
 
         results = quantus.RelativeInputStability(
-            abs=True,
-            normalise=False,
-            nr_samples=NR_SAMPLES
+            abs=abs_,
+            normalise=normalise,
+            nr_samples=nr_samples
         )(
-            model=params.model,
-            x_batch=params.X_test.loc[params.observations].values,
-            y_batch=params.y_test.loc[params.observations].values,
-            a_batch=params.attributions,
+            model=ctx.model,
+            x_batch=ctx.X_test.loc[ctx.observations].values,
+            y_batch=ctx.y_test.loc[ctx.observations].values,
+            a_batch=ctx.attributions,
             explain_func=self.explain_func
         )
 
