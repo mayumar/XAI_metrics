@@ -1,4 +1,5 @@
 # XAI_metrics/base/registry.py
+import inspect
 from typing import Dict, Type, Mapping, Any, List
 from XAI_metrics.base import BaseMetric, MetricContext
 
@@ -22,10 +23,9 @@ def build_metrics_from_config(
     context: MetricContext,
     dependencies: Mapping[str, Any] | None = None
 ) -> List[BaseMetric]:
-    
     dependencies = dict(dependencies or {})
     metrics_cfg = config.get("metrics", [])
-    instances = []
+    instances: List[BaseMetric] = []
 
     for metric_cfg in metrics_cfg:
         name = metric_cfg["name"]
@@ -33,15 +33,16 @@ def build_metrics_from_config(
 
         if name not in METRIC_REGISTRY:
             raise ValueError(
-                f"Metric '{name}' not registered."
+                f"Metric '{name}' not registered. "
                 f"Available: {list(METRIC_REGISTRY.keys())}"
             )
-        
+
         metric_cls = METRIC_REGISTRY[name]
+        sig = inspect.signature(metric_cls.__init__)
+        allowed = set(sig.parameters.keys())
+        kwargs = {k: v for k, v in dependencies.items() if k in allowed}
 
-        try:
-            metric = metric_cls(context=context, params=params, **dependencies)
-        except TypeError:
-            metric = metric_cls(context=context, params=params)
-
+        metric = metric_cls(context=context, params=params, **kwargs)
         instances.append(metric)
+
+    return instances
