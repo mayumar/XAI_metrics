@@ -25,11 +25,16 @@ def _serialize(value: Any) -> Any:
         return value.tolist()
     if isinstance(value, (np.floating, np.integer)):
         return value.item()
+    if isinstance(value, np.bool_):
+        return bool(value)
+    if isinstance(value, (pd.Timestamp, datetime.datetime, datetime.date)):
+        return value.isoformat()
     if isinstance(value, Mapping):
         return {str(k): _serialize(v) for k, v in value.items()}
     if isinstance(value, (list, tuple)):
         return [_serialize(v) for v in value]
     return value
+
 
 def _flatten_results(results: Mapping[str, Any]) -> List[tuple[str, Any]]:
     flattened = []
@@ -147,7 +152,7 @@ def metrics_report_markdown(
     )
     generated_at = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
-    lines = [f"# Metrics Report", "", "Generated at: {generated_at}", ""]
+    lines = [f"# Metrics Report", "", f"Generated at: {generated_at}", ""]
     if df.empty:
         lines.extend(["No metrics available.", ""])
         return "\n".join(lines)
@@ -243,9 +248,10 @@ def save_metrics_report(
     payload = {
         "generated_at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
         "results": _serialize(results),
-        "summary": summary_df.to_dict(orient="records"),
-        "observations": observations_df.to_dict(orient="records"),
+        "summary": _serialize(summary_df.to_dict(orient="records")),
+        "observations": _serialize(observations_df.to_dict(orient="records")),
     }
+
     with json_path.open("w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
 

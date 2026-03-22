@@ -3,7 +3,7 @@ import inspect
 from typing import Dict, Type, Mapping, Any, List
 from XAI_metrics.base import BaseMetric, MetricContext
 
-METRIC_REGISTRY: Dict[str, BaseMetric] = {}
+METRIC_REGISTRY = {}
 
 def register_metric(cls: Type[BaseMetric]) -> Type[BaseMetric]:
     name = getattr(cls, 'NAME', cls.__name__)

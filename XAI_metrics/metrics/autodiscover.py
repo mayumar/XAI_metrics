@@ -17,12 +17,11 @@ def autodiscover_metrics(
     exclude_set = set(exclude_modules or [])
 
     prefix = package.__name__ + "."
-    for m in pkgutil.iter_modules(package.__path__, prefix):
+    for m in pkgutil.walk_packages(package.__path__, prefix):  # <- recursivo
         short_name = m.name[len(prefix):]
 
         if only_set and short_name not in only_set and m.name not in only_set:
             continue
-
         if short_name in exclude_set or m.name in exclude_set:
             continue
 

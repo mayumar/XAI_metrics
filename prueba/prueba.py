@@ -62,6 +62,7 @@ def evaluar_shap(model, X_test, y_test, explicaciones, dataset_name, model_name)
 
     from XAI_metrics.runner import run_all_metrics
     from XAI_metrics.base import MetricContext
+    from XAI_metrics.reporting import save_metrics_report
 
     def make_explain_func_shap(dataset_name: str, X_background, observations, feature_names=None):
         # Background + nombres de columnas
@@ -113,8 +114,33 @@ def evaluar_shap(model, X_test, y_test, explicaciones, dataset_name, model_name)
         extras={"explain_func": explain_func}
         )
     
-    metric_results = run_all_metrics(ctx)
+    metric_results = run_all_metrics(
+        ctx,
+        selected_metrics=[
+            "Complexity",
+            "Sparseness",
+            "Consistency",
+            "FaithfulnessEstimate",
+            "MonotonicityCorrelation",
+            "Monotonicity",
+            "SensitivityN",
+            "Sufficiency",
+            "Completeness",
+            "NonSensitivity"
+        ],
+        config="XAI_metrics/config.yaml")
     print(metric_results)
+
+    report_paths = save_metrics_report(
+        metric_results=metric_results,
+        output_dir=Path("results") / "metric_reports",
+        report_name=f"{dataset_name}_{model_name}_metrics_report",
+        observations=DATASETS["hydraulic"]["observations"],  # para detalle por observación
+    )
+
+    print("\nReportes guardados:")
+    for fmt, path in report_paths.items():
+        print(f"- {fmt}: {path}")
 
 
 def evaluar_lime(model, X_train_bg, X_test, y_test, explicaciones, dataset_name, model_name):
@@ -192,7 +218,18 @@ def evaluar_lime(model, X_train_bg, X_test, y_test, explicaciones, dataset_name,
 
     metric_results = run_all_metrics(
         ctx,
-        selected_metrics=None,
+        selected_metrics=[
+            "Complexity",
+            "Sparseness",
+            "Consistency",
+            "FaithfulnessEstimate",
+            "MonotonicityCorrelation",
+            "Monotonicity",
+            "SensitivityN",
+            "Sufficiency",
+            "Completeness",
+            "NonSensitivity"
+        ],
         config="XAI_metrics/config.yaml"
     )
     print(metric_results)
