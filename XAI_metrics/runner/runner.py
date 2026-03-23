@@ -2,9 +2,10 @@
 from pathlib import Path
 import yaml
 
-from XAI_metrics.base import METRIC_REGISTRY, MetricContext, build_metrics_from_config
+from XAI_metrics.base import MetricContext, build_metrics_from_config
 from XAI_metrics.metrics import autodiscover_metrics
 import XAI_metrics.metrics as metrics_pkg
+import XAI_metrics.base.registry as registry
 
 from typing import Iterable, Any, Mapping
 
@@ -58,7 +59,7 @@ def run_all_metrics(
     )
 
     resolved_config = _load_config(config)
-    metric_names = _normalize_selection(selected_metrics, METRIC_REGISTRY.keys())
+    metric_names = _normalize_selection(selected_metrics, registry.METRIC_REGISTRY.keys())
     allowed = set(metric_names)
 
     filtered_cfg = {
