@@ -93,3 +93,13 @@ metrics:
       abs: true
       normalise: false
       nr_samples: 20
+
+  - name: PGU
+    params:
+      Type: Global
+      k: 0.25
+      AUC: true
+      str: 0.1
+      n_samples: 100
+      seed: -1
+      n_jobs: -1
