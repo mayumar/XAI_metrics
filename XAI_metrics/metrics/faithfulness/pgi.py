@@ -8,8 +8,8 @@ from XAI_metrics.base import BaseMetric, MetricContext, register_metric
 from typing import Mapping, Any
 
 @register_metric
-class PGU(BaseMetric):
-    NAME = "PGU"
+class PGI(BaseMetric):
+    NAME = "PGI"
 
     def __init__(self, context: MetricContext, params: Mapping[str, Any] | None = None):
         super().__init__(context, params)
