@@ -218,18 +218,18 @@ def evaluar_lime(model, X_train_bg, X_test, y_test, explicaciones, dataset_name,
 
     metric_results = run_all_metrics(
         ctx,
-        selected_metrics=[
-            "Complexity",
-            "Sparseness",
-            "Consistency",
-            "FaithfulnessEstimate",
-            "MonotonicityCorrelation",
-            "Monotonicity",
-            "SensitivityN",
-            "Sufficiency",
-            "Completeness",
-            "NonSensitivity"
-        ],
+        # selected_metrics=[
+        #     "Complexity",
+        #     "Sparseness",
+        #     "Consistency",
+        #     "FaithfulnessEstimate",
+        #     "MonotonicityCorrelation",
+        #     "Monotonicity",
+        #     "SensitivityN",
+        #     "Sufficiency",
+        #     "Completeness",
+        #     "NonSensitivity"
+        # ],
         config="XAI_metrics/config.yaml"
     )
     print(metric_results)
