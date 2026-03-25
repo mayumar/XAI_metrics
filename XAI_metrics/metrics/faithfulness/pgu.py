@@ -45,7 +45,4 @@ class PGU(BaseMetric):
         metric_evaluator = Evaluator(ctx.model, self.NAME)
         score, mean_score = metric_evaluator.evaluate(**param_dict)
 
-        return {
-            "score": score,
-            "mean_score": mean_score,
-        }
+        return score

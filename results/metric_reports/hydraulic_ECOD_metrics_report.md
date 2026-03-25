@@ -1,27 +1,26 @@
 # Metrics Report
 
-Generated at: 2026-03-24 11:09:56 UTC
+Generated at: 2026-03-25 10:06:13 UTC
 
 ## Local Metrics (Aggregated)
 
 | metric | n | mean | std | min | max |
 |---|---:|---:|---:|---:|---:|
-| AvgSensitivity | 8 | 0.647371 | 0.055818 | 0.531049 | 0.716400 |
+| AvgSensitivity | 8 | 0.650859 | 0.059895 | 0.522419 | 0.726341 |
 | Completeness | 8 | 0.000000 | 0.000000 | 0.000000 | 0.000000 |
 | Complexity | 8 | 1.779434 | 0.013169 | 1.747882 | 1.790367 |
 | Consistency | 8 | 1.000000 | 0.000000 | 1.000000 | 1.000000 |
+| Faithfulness | 8 | 0.153034 | 0.558685 | -0.788496 | 0.797269 |
 | FaithfulnessEstimate | 8 | -0.354542 | 0.419670 | -0.936054 | 0.186336 |
-| LocalLipschitzEstimate | 8 | 1.223230 | 0.316087 | 0.755215 | 1.881890 |
-| MaxSensitivity | 8 | 0.715482 | 0.044980 | 0.619514 | 0.773304 |
+| LocalLipschitzEstimate | 8 | 1.211443 | 0.405046 | 0.518520 | 1.712227 |
+| MaxSensitivity | 8 | 0.714158 | 0.042036 | 0.617305 | 0.755947 |
 | Monotonicity | 8 | 1.000000 | 0.000000 | 1.000000 | 1.000000 |
-| MonotonicityCorrelation | 8 | 0.027998 | 0.267238 | -0.428571 | 0.371429 |
+| MonotonicityCorrelation | 8 | -0.053363 | 0.152384 | -0.257143 | 0.257143 |
 | NonSensitivity | 8 | 1.000000 | 0.500000 | 0.000000 | 2.000000 |
-| PGI.mean_score | 1 | 0.103187 | 0.000000 | 0.103187 | 0.103187 |
-| PGI.score | 8 | 0.103187 | 0.062759 | 0.023067 | 0.204336 |
-| PGU.mean_score | 1 | 0.103187 | 0.000000 | 0.103187 | 0.103187 |
-| PGU.score | 8 | 0.103187 | 0.062759 | 0.023067 | 0.204336 |
-| RelativeInputStability | 7 | 0.042512 | 0.103926 | 0.000051 | 0.297078 |
-| RelativeOutputStability | 7 | 68.735498 | 116.903617 | 6.169201 | 351.575318 |
+| PGI | 8 | 0.103187 | 0.062759 | 0.023067 | 0.204336 |
+| PGU | 8 | 0.103187 | 0.062759 | 0.023067 | 0.204336 |
+| RelativeInputStability | 7 | 0.052228 | 0.127702 | 0.000040 | 0.365033 |
+| RelativeOutputStability | 7 | 45.971132 | 41.614059 | 5.881637 | 123.457840 |
 | SensitivityN | 0 | - | - | - | - |
 | Sparseness | 8 | 0.072407 | 0.042113 | 0.028333 | 0.161274 |
 | Sufficiency | 8 | 1.000000 | 0.000000 | 1.000000 | 1.000000 |
@@ -30,14 +29,14 @@ Generated at: 2026-03-24 11:09:56 UTC
 
 | metric | observation | value |
 |---|---|---:|
-| AvgSensitivity | 9.0 | 0.716400 |
-| AvgSensitivity | 5.0 | 0.713993 |
-| AvgSensitivity | 249.0 | 0.676818 |
-| AvgSensitivity | 252.0 | 0.650315 |
-| AvgSensitivity | 255.0 | 0.645620 |
-| AvgSensitivity | 685.0 | 0.531049 |
-| AvgSensitivity | 403.0 | 0.616735 |
-| AvgSensitivity | 420.0 | 0.628039 |
+| AvgSensitivity | 9.0 | 0.723378 |
+| AvgSensitivity | 5.0 | 0.726341 |
+| AvgSensitivity | 249.0 | 0.666801 |
+| AvgSensitivity | 252.0 | 0.637736 |
+| AvgSensitivity | 255.0 | 0.662590 |
+| AvgSensitivity | 685.0 | 0.522419 |
+| AvgSensitivity | 403.0 | 0.640874 |
+| AvgSensitivity | 420.0 | 0.626730 |
 | Completeness | 9.0 | 0.000000 |
 | Completeness | 5.0 | 0.000000 |
 | Completeness | 249.0 | 0.000000 |
@@ -62,6 +61,14 @@ Generated at: 2026-03-24 11:09:56 UTC
 | Consistency | 685.0 | 1.000000 |
 | Consistency | 403.0 | 1.000000 |
 | Consistency | 420.0 | 1.000000 |
+| Faithfulness | 9.0 | -0.719149 |
+| Faithfulness | 5.0 | -0.788496 |
+| Faithfulness | 249.0 | 0.644196 |
+| Faithfulness | 252.0 | 0.308806 |
+| Faithfulness | 255.0 | 0.208940 |
+| Faithfulness | 685.0 | 0.217085 |
+| Faithfulness | 403.0 | 0.555625 |
+| Faithfulness | 420.0 | 0.797269 |
 | FaithfulnessEstimate | 9.0 | -0.936054 |
 | FaithfulnessEstimate | 5.0 | -0.922410 |
 | FaithfulnessEstimate | 249.0 | -0.029930 |
@@ -70,22 +77,22 @@ Generated at: 2026-03-24 11:09:56 UTC
 | FaithfulnessEstimate | 685.0 | 0.060707 |
 | FaithfulnessEstimate | 403.0 | -0.675427 |
 | FaithfulnessEstimate | 420.0 | -0.428710 |
-| LocalLipschitzEstimate | 9.0 | 1.881890 |
-| LocalLipschitzEstimate | 5.0 | 1.385544 |
-| LocalLipschitzEstimate | 249.0 | 1.013885 |
-| LocalLipschitzEstimate | 252.0 | 1.244694 |
-| LocalLipschitzEstimate | 255.0 | 1.147081 |
-| LocalLipschitzEstimate | 685.0 | 0.755215 |
-| LocalLipschitzEstimate | 403.0 | 1.360469 |
-| LocalLipschitzEstimate | 420.0 | 0.997063 |
-| MaxSensitivity | 9.0 | 0.766692 |
-| MaxSensitivity | 5.0 | 0.773304 |
-| MaxSensitivity | 249.0 | 0.732856 |
-| MaxSensitivity | 252.0 | 0.717871 |
-| MaxSensitivity | 255.0 | 0.718362 |
-| MaxSensitivity | 685.0 | 0.619514 |
-| MaxSensitivity | 403.0 | 0.692301 |
-| MaxSensitivity | 420.0 | 0.702960 |
+| LocalLipschitzEstimate | 9.0 | 1.620045 |
+| LocalLipschitzEstimate | 5.0 | 1.632834 |
+| LocalLipschitzEstimate | 249.0 | 1.038152 |
+| LocalLipschitzEstimate | 252.0 | 1.075596 |
+| LocalLipschitzEstimate | 255.0 | 1.712227 |
+| LocalLipschitzEstimate | 685.0 | 0.518520 |
+| LocalLipschitzEstimate | 403.0 | 0.787726 |
+| LocalLipschitzEstimate | 420.0 | 1.306441 |
+| MaxSensitivity | 9.0 | 0.755947 |
+| MaxSensitivity | 5.0 | 0.755530 |
+| MaxSensitivity | 249.0 | 0.735196 |
+| MaxSensitivity | 252.0 | 0.729801 |
+| MaxSensitivity | 255.0 | 0.721523 |
+| MaxSensitivity | 685.0 | 0.617305 |
+| MaxSensitivity | 403.0 | 0.692073 |
+| MaxSensitivity | 420.0 | 0.705888 |
 | Monotonicity | 9.0 | 1.000000 |
 | Monotonicity | 5.0 | 1.000000 |
 | Monotonicity | 249.0 | 1.000000 |
@@ -94,14 +101,14 @@ Generated at: 2026-03-24 11:09:56 UTC
 | Monotonicity | 685.0 | 1.000000 |
 | Monotonicity | 403.0 | 1.000000 |
 | Monotonicity | 420.0 | 1.000000 |
-| MonotonicityCorrelation | 9.0 | 0.371429 |
-| MonotonicityCorrelation | 5.0 | 0.371429 |
-| MonotonicityCorrelation | 249.0 | -0.428571 |
-| MonotonicityCorrelation | 252.0 | 0.028571 |
-| MonotonicityCorrelation | 255.0 | 0.028571 |
-| MonotonicityCorrelation | 685.0 | 0.085714 |
-| MonotonicityCorrelation | 403.0 | 0.085714 |
-| MonotonicityCorrelation | 420.0 | -0.318874 |
+| MonotonicityCorrelation | 9.0 | 0.257143 |
+| MonotonicityCorrelation | 5.0 | -0.085714 |
+| MonotonicityCorrelation | 249.0 | -0.257143 |
+| MonotonicityCorrelation | 252.0 | -0.085714 |
+| MonotonicityCorrelation | 255.0 | -0.085714 |
+| MonotonicityCorrelation | 685.0 | -0.142857 |
+| MonotonicityCorrelation | 403.0 | -0.142857 |
+| MonotonicityCorrelation | 420.0 | 0.115954 |
 | NonSensitivity | 9.0 | 1.000000 |
 | NonSensitivity | 5.0 | 1.000000 |
 | NonSensitivity | 249.0 | 1.000000 |
@@ -110,38 +117,36 @@ Generated at: 2026-03-24 11:09:56 UTC
 | NonSensitivity | 685.0 | 1.000000 |
 | NonSensitivity | 403.0 | 0.000000 |
 | NonSensitivity | 420.0 | 2.000000 |
-| PGI.mean_score | 0.0 | 0.103187 |
-| PGI.score | 9.0 | 0.023067 |
-| PGI.score | 5.0 | 0.028373 |
-| PGI.score | 249.0 | 0.090794 |
-| PGI.score | 252.0 | 0.078120 |
-| PGI.score | 255.0 | 0.075083 |
-| PGI.score | 685.0 | 0.146006 |
-| PGI.score | 403.0 | 0.179719 |
-| PGI.score | 420.0 | 0.204336 |
-| PGU.mean_score | 0.0 | 0.103187 |
-| PGU.score | 9.0 | 0.023067 |
-| PGU.score | 5.0 | 0.028373 |
-| PGU.score | 249.0 | 0.090794 |
-| PGU.score | 252.0 | 0.078120 |
-| PGU.score | 255.0 | 0.075083 |
-| PGU.score | 685.0 | 0.146006 |
-| PGU.score | 403.0 | 0.179719 |
-| PGU.score | 420.0 | 0.204336 |
-| RelativeInputStability | 0.0 | 0.000067 |
-| RelativeInputStability | 1.0 | 0.000057 |
-| RelativeInputStability | 2.0 | 0.000200 |
-| RelativeInputStability | 3.0 | 0.000051 |
-| RelativeInputStability | 4.0 | 0.000064 |
-| RelativeInputStability | 5.0 | 0.297078 |
-| RelativeInputStability | 6.0 | 0.000066 |
-| RelativeOutputStability | 0.0 | 18.738603 |
-| RelativeOutputStability | 1.0 | 12.466721 |
-| RelativeOutputStability | 2.0 | 22.043905 |
-| RelativeOutputStability | 3.0 | 351.575318 |
-| RelativeOutputStability | 4.0 | 63.718034 |
-| RelativeOutputStability | 5.0 | 6.436705 |
-| RelativeOutputStability | 6.0 | 6.169201 |
+| PGI | 9.0 | 0.023067 |
+| PGI | 5.0 | 0.028373 |
+| PGI | 249.0 | 0.090794 |
+| PGI | 252.0 | 0.078120 |
+| PGI | 255.0 | 0.075083 |
+| PGI | 685.0 | 0.146006 |
+| PGI | 403.0 | 0.179719 |
+| PGI | 420.0 | 0.204336 |
+| PGU | 9.0 | 0.023067 |
+| PGU | 5.0 | 0.028373 |
+| PGU | 249.0 | 0.090794 |
+| PGU | 252.0 | 0.078120 |
+| PGU | 255.0 | 0.075083 |
+| PGU | 685.0 | 0.146006 |
+| PGU | 403.0 | 0.179719 |
+| PGU | 420.0 | 0.204336 |
+| RelativeInputStability | 0.0 | 0.000051 |
+| RelativeInputStability | 1.0 | 0.000080 |
+| RelativeInputStability | 2.0 | 0.000262 |
+| RelativeInputStability | 3.0 | 0.000072 |
+| RelativeInputStability | 4.0 | 0.000040 |
+| RelativeInputStability | 5.0 | 0.365033 |
+| RelativeInputStability | 6.0 | 0.000057 |
+| RelativeOutputStability | 0.0 | 39.393682 |
+| RelativeOutputStability | 1.0 | 13.207442 |
+| RelativeOutputStability | 2.0 | 123.457840 |
+| RelativeOutputStability | 3.0 | 43.898698 |
+| RelativeOutputStability | 4.0 | 89.099071 |
+| RelativeOutputStability | 5.0 | 5.881637 |
+| RelativeOutputStability | 6.0 | 6.859555 |
 | Sparseness | 9.0 | 0.071057 |
 | Sparseness | 5.0 | 0.071326 |
 | Sparseness | 249.0 | 0.035535 |

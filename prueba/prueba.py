@@ -213,7 +213,10 @@ def evaluar_lime(model, X_train_bg, X_test, y_test, explicaciones, dataset_name,
         y_test=y_test,
         observations=DATASETS["hydraulic"]["observations"],
         attributions=explicaciones,
-        extras={"explain_func": explain_func},
+        extras={
+            "explain_func": explain_func,
+            "X_reference": X_train_bg
+        },
     )
 
     metric_results = run_all_metrics(
