@@ -118,3 +118,8 @@ metrics:
     params:
       Type: Local
       base_strategy: mean
+
+  - name: MonotonicityMetric
+    params:
+      Type: Local
+      base_strategy: mean
