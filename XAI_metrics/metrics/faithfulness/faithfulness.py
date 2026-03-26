@@ -18,7 +18,6 @@ class Faithfulness(BaseMetric):
         super().__init__(context, params)
 
     def run(self):
-
         ctx = self.context
         p = self.params
 

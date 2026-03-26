@@ -1,6 +1,7 @@
 from typing import Any, Mapping
 
 import numpy as np
+from aix360.metrics import monotonicity_metric
 
 from XAI_metrics.base import BaseMetric, MetricContext, register_metric
 
@@ -17,8 +18,6 @@ class MonotonicityMetric(BaseMetric):
         super().__init__(context, params)
 
     def run(self):
-        from aix360.metrics import monotonicity_metric
-
         ctx = self.context
         p = self.params
 
