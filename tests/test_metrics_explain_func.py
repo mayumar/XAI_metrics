@@ -70,18 +70,44 @@ def test_explain_metrics_run_with_explain_func(
 
     quantus_runner = Mock(return_value=["ok"])
 
-    with patch(f"{module_path}.quantus.{quantus_name}", return_value=quantus_runner):
+    with patch(f"{module_path}.quantus.{quantus_name}", return_value=quantus_runner) as metric_ctor:
         metric = metric_cls(
             metric_context,
-            params={"abs": True, "normalise": False, "nr_samples": 7},
-            explain_func=explain_func
+            params={"abs": False, "normalise": True, "nr_samples": 7},
+            explain_func=explain_func,
         )
         result = metric.run()
 
     assert result == ["ok"]
     assert metric_context.model.mode == expected_mode
 
+    metric_ctor.assert_called_once_with(abs=False, normalise=True, nr_samples=7)
+
     call_kwargs = quantus_runner.call_args.kwargs
     assert call_kwargs["model"] is metric_context.model
     assert call_kwargs["a_batch"] is metric_context.attributions
     assert call_kwargs["explain_func"] is explain_func
+    assert hasattr(call_kwargs["x_batch"], "shape")
+    assert hasattr(call_kwargs["y_batch"], "shape")
+
+@pytest.mark.parametrize(
+    "module_path,class_name,quantus_name",
+    [(m, c, q) for m, c, q, _ in EXPLAIN_METRICS]
+)
+def test_explain_metrics_use_default_params(
+    metric_context,
+    explain_func,
+    module_path,
+    class_name,
+    quantus_name
+):
+    module = importlib.import_module(module_path)
+    metric_cls = getattr(module, class_name)
+
+    quantus_runner = Mock(return_value=["ok"])
+
+    with patch(f"{module_path}.quantus.{quantus_name}", return_value=quantus_runner) as metric_ctor:
+        metric = metric_cls(metric_context, explain_func=explain_func)
+        metric.run()
+
+    metric_ctor.assert_called_once_with(abs=True, normalise=False, nr_samples=20)

@@ -110,3 +110,19 @@ def test_simple_metric_runs_quantus_contract(
     else:
         assert list(call_kwargs["x_batch"].index) == metric_context.observations
         assert list(call_kwargs["y_batch"].index) == metric_context.observations
+
+@pytest.mark.parametrize(
+    "module_path,class_name,quantus_name",
+    [(m, c, q) for m, c, q, _, _ in SIMPLE_METRICS]
+)
+def test_simple_metric_uses_default_params(metric_context, module_path, class_name, quantus_name):
+    module = importlib.import_module(module_path)
+    metric_cls = getattr(module, class_name)
+
+    quantus_runner = Mock(return_value=["ok"])
+
+    with patch(f"{module_path}.quantus.{quantus_name}", return_value=quantus_runner) as metric_ctor:
+        metric = metric_cls(metric_context)
+        metric.run()
+
+    metric_ctor.assert_called_once_with(abs=True, normalise=False)
