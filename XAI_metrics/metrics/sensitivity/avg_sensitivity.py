@@ -5,7 +5,7 @@ from typing import Callable, Any, Mapping
 import torch.nn as nn
 import numpy as np
 
-type ExplainFunc = Callable[[nn.Module, Any, Any | None], np.ndarray]
+ExplainFunc = Callable[[nn.Module, Any, Any | None], np.ndarray]
 
 @register_metric
 class AvgSensitivity(BaseMetric):
