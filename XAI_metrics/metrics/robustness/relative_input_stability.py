@@ -5,7 +5,7 @@ from typing import Callable, Any, Mapping
 import torch.nn as nn
 import numpy as np
 
-ExplainFunc = Callable[[nn.Module, Any, Any | None], np.ndarray]
+type ExplainFunc = Callable[[nn.Module, Any, Any | None], np.ndarray]
 
 @register_metric
 class RelativeInputStability(BaseMetric):
