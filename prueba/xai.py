@@ -104,3 +104,117 @@ def usar_lime(clf, clf_name, dataset_name, X_train, X_test, observaciones, show_
     explicaciones = np.vstack(explicaciones_lista)
 
     return explicaciones
+
+
+def _get_reference_vector(X_train, strategy="median"):
+    if isinstance(X_train, pd.DataFrame):
+        X_np = X_train.to_numpy(dtype=float, copy=True)
+    else:
+        X_np = np.asarray(X_train, dtype=float)
+
+    if strategy == "mean":
+        ref = np.mean(X_np, axis=0)
+    elif strategy == "median":
+        ref = np.median(X_np, axis=0)
+    elif strategy == "zero":
+        ref = np.zeros(X_np.shape[1], dtype=float)
+    else:
+        raise ValueError("strategy debe ser 'mean', 'median' o 'zero'")
+
+    return ref
+
+
+def _get_model_scores(clf, X):
+    """
+    Devuelve un score continuo por muestra.
+    Prioridad:
+    1) decision_function
+    2) predict_proba -> columna positiva / anomalía
+    3) predict
+    """
+    if hasattr(clf, "decision_function"):
+        scores = clf.decision_function(X)
+    elif hasattr(clf, "predict_proba"):
+        proba = clf.predict_proba(X)
+        proba = np.asarray(proba)
+
+        if proba.ndim == 2 and proba.shape[1] >= 2:
+            scores = proba[:, 1]
+        else:
+            scores = proba.ravel()
+    elif hasattr(clf, "predict"):
+        scores = clf.predict(X)
+    else:
+        raise AttributeError("El modelo no tiene decision_function, predict_proba ni predict.")
+
+    return np.asarray(scores, dtype=float).ravel()
+
+
+def usar_occlusion_local(
+    clf,
+    clf_name,
+    dataset_name,
+    X_train,
+    X_test,
+    observaciones_id,
+    reference="median",
+    groups=None,
+    score_mode="difference",
+    show_plot=False
+):
+    """
+    Devuelve atribuciones locales por occlusion con shape (n_obs, n_features_o_grupos).
+
+    Parámetros
+    ----------
+    clf : modelo entrenado
+    X_train : DataFrame o ndarray
+        Usado para construir el vector de referencia.
+    X_test : DataFrame o ndarray
+    observaciones_id : lista de ids/índices
+    reference : {'median', 'mean', 'zero'}
+    groups : dict o None
+        Si None, occlusion por feature.
+        Si dict, por grupos:
+            {"grupo1": [0,1], "grupo2": [2,3]}
+    score_mode : {'difference', 'relative'}
+        difference: score_base - score_occ
+        relative:   (score_base - score_occ) / (abs(score_base) + 1e-8)
+    """
+    ref_vec = _get_reference_vector(X_train, strategy=reference)
+
+    if isinstance(X_test, pd.DataFrame):
+        X_obs = X_test.loc[observaciones_id].copy()
+        X_obs_np = X_obs.to_numpy(dtype=float, copy=True)
+        feature_names = list(X_test.columns)
+    else:
+        X_test_np = np.asarray(X_test, dtype=float)
+        X_obs_np = X_test_np[observaciones_id].copy()
+        feature_names = [f"f{i}" for i in range(X_obs_np.shape[1])]
+
+    n_obs, n_features = X_obs_np.shape
+
+    if groups is None:
+        groups = {feature_names[j]: [j] for j in range(n_features)}
+
+    group_names = list(groups.keys())
+
+    scores_base = _get_model_scores(clf, X_obs_np)
+    attributions = np.zeros((n_obs, len(group_names)), dtype=float)
+
+    for g_idx, g_name in enumerate(group_names):
+        idxs = groups[g_name]
+
+        X_occ = X_obs_np.copy()
+        X_occ[:, idxs] = ref_vec[idxs]
+
+        scores_occ = _get_model_scores(clf, X_occ)
+
+        if score_mode == "difference":
+            attributions[:, g_idx] = scores_base - scores_occ
+        elif score_mode == "relative":
+            attributions[:, g_idx] = (scores_base - scores_occ) / (np.abs(scores_base) + 1e-8)
+        else:
+            raise ValueError("score_mode debe ser 'difference' o 'relative'")
+
+    return attributions
