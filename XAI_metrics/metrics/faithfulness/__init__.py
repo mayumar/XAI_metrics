@@ -7,8 +7,8 @@ from .sensitivity_n import SensitivityN
 from .sufficiency import Sufficiency
 from .faithfulness import Faithfulness
 from .monotonicity_metric import MonotonicityMetric
-from .pgi import PGI
-from .pgu import PGU
+# from .pgi import PGI
+# from .pgu import PGU
 
 __all__ = [
     "Consistency",
@@ -19,6 +19,6 @@ __all__ = [
     "Sufficiency",
     "Faithfulness",
     "MonotonicityMetric",
-    "PGI",
-    "PGU"
+    # "PGI",
+    # "PGU"
 ]

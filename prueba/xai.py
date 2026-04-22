@@ -106,115 +106,124 @@ def usar_lime(clf, clf_name, dataset_name, X_train, X_test, observaciones, show_
     return explicaciones
 
 
-def _get_reference_vector(X_train, strategy="median"):
-    if isinstance(X_train, pd.DataFrame):
-        X_np = X_train.to_numpy(dtype=float, copy=True)
-    else:
-        X_np = np.asarray(X_train, dtype=float)
+from interpret.blackbox import MorrisSensitivity
+import numpy as np
+import pandas as pd
 
-    if strategy == "mean":
-        ref = np.mean(X_np, axis=0)
-    elif strategy == "median":
-        ref = np.median(X_np, axis=0)
-    elif strategy == "zero":
-        ref = np.zeros(X_np.shape[1], dtype=float)
-    else:
-        raise ValueError("strategy debe ser 'mean', 'median' o 'zero'")
-
-    return ref
-
-
-def _get_model_scores(clf, X):
-    """
-    Devuelve un score continuo por muestra.
-    Prioridad:
-    1) decision_function
-    2) predict_proba -> columna positiva / anomalía
-    3) predict
-    """
-    if hasattr(clf, "decision_function"):
-        scores = clf.decision_function(X)
-    elif hasattr(clf, "predict_proba"):
-        proba = clf.predict_proba(X)
-        proba = np.asarray(proba)
-
-        if proba.ndim == 2 and proba.shape[1] >= 2:
-            scores = proba[:, 1]
+def usar_morris_global(clf, clf_name, dataset_name, X_train, importances_df):
+    def predict_fn(X):
+        if isinstance(X, pd.DataFrame):
+            X_np = X.to_numpy(dtype=float, copy=False)
         else:
-            scores = proba.ravel()
-    elif hasattr(clf, "predict"):
-        scores = clf.predict(X)
-    else:
-        raise AttributeError("El modelo no tiene decision_function, predict_proba ni predict.")
+            X_np = np.asarray(X, dtype=float)
 
-    return np.asarray(scores, dtype=float).ravel()
+        return np.asarray(clf.decision_function(X_np), dtype=float).ravel()
+
+    msa = MorrisSensitivity(predict_fn, X_train)
+    explanation = msa.explain_global()
+    data = explanation.data()
+
+    print("Claves devueltas por explanation.data():", data.keys())
+
+    feature_names = list(data["names"])
+    scores = np.asarray(data["scores"], dtype=float).ravel()
+    convergence_index = data["convergence_index"]
+
+    if len(feature_names) != len(scores):
+        raise ValueError(
+            f"Longitudes incompatibles: {len(feature_names)} nombres vs {len(scores)} scores"
+        )
+
+    print("Convergence index:", convergence_index)
+
+    model_feature_importance = pd.Series(scores, index=feature_names)
+    model_feature_ranking = model_feature_importance.rank(
+        method="average",
+        ascending=False
+    ).astype(int)
+
+    model_feature_ranking["Modelo"] = clf_name
+
+    importances_df = pd.concat(
+        [importances_df, pd.DataFrame([model_feature_ranking])],
+        ignore_index=True
+    )
+
+    return importances_df, explanation
 
 
-def usar_occlusion_local(
+import numpy as np
+import pandas as pd
+from alibi.explainers import ALE
+
+
+def usar_ale_global(
     clf,
     clf_name,
     dataset_name,
     X_train,
-    X_test,
-    observaciones_id,
-    reference="median",
-    groups=None,
-    score_mode="difference",
-    show_plot=False
+    importances_df,
+    grid_points=20,
+    summary_mode="range"
 ):
-    """
-    Devuelve atribuciones locales por occlusion con shape (n_obs, n_features_o_grupos).
-
-    Parámetros
-    ----------
-    clf : modelo entrenado
-    X_train : DataFrame o ndarray
-        Usado para construir el vector de referencia.
-    X_test : DataFrame o ndarray
-    observaciones_id : lista de ids/índices
-    reference : {'median', 'mean', 'zero'}
-    groups : dict o None
-        Si None, occlusion por feature.
-        Si dict, por grupos:
-            {"grupo1": [0,1], "grupo2": [2,3]}
-    score_mode : {'difference', 'relative'}
-        difference: score_base - score_occ
-        relative:   (score_base - score_occ) / (abs(score_base) + 1e-8)
-    """
-    ref_vec = _get_reference_vector(X_train, strategy=reference)
-
-    if isinstance(X_test, pd.DataFrame):
-        X_obs = X_test.loc[observaciones_id].copy()
-        X_obs_np = X_obs.to_numpy(dtype=float, copy=True)
-        feature_names = list(X_test.columns)
+    if isinstance(X_train, pd.DataFrame):
+        feature_names = list(X_train.columns)
+        X_train_np = X_train.to_numpy(dtype=float, copy=True)
     else:
-        X_test_np = np.asarray(X_test, dtype=float)
-        X_obs_np = X_test_np[observaciones_id].copy()
-        feature_names = [f"f{i}" for i in range(X_obs_np.shape[1])]
+        X_train_np = np.asarray(X_train, dtype=float)
+        feature_names = [f"f{i}" for i in range(X_train_np.shape[1])]
 
-    n_obs, n_features = X_obs_np.shape
+    def predict_fn(X):
+        X = np.asarray(X, dtype=float)
 
-    if groups is None:
-        groups = {feature_names[j]: [j] for j in range(n_features)}
-
-    group_names = list(groups.keys())
-
-    scores_base = _get_model_scores(clf, X_obs_np)
-    attributions = np.zeros((n_obs, len(group_names)), dtype=float)
-
-    for g_idx, g_name in enumerate(group_names):
-        idxs = groups[g_name]
-
-        X_occ = X_obs_np.copy()
-        X_occ[:, idxs] = ref_vec[idxs]
-
-        scores_occ = _get_model_scores(clf, X_occ)
-
-        if score_mode == "difference":
-            attributions[:, g_idx] = scores_base - scores_occ
-        elif score_mode == "relative":
-            attributions[:, g_idx] = (scores_base - scores_occ) / (np.abs(scores_base) + 1e-8)
+        if hasattr(clf, "decision_function"):
+            y = clf.decision_function(X)
+        elif hasattr(clf, "predict_proba"):
+            proba = np.asarray(clf.predict_proba(X))
+            y = proba[:, 1] if proba.ndim == 2 and proba.shape[1] >= 2 else proba.ravel()
+        elif hasattr(clf, "predict"):
+            y = clf.predict(X)
         else:
-            raise ValueError("score_mode debe ser 'difference' o 'relative'")
+            raise AttributeError("El modelo no tiene decision_function, predict_proba ni predict.")
 
-    return attributions
+        return np.asarray(y, dtype=float).ravel()
+
+    explainer = ALE(
+        predictor=predict_fn,
+        feature_names=feature_names
+    )
+
+    explanation = explainer.explain(X_train_np, min_bin_points=4, grid_points=grid_points)
+    data = explanation.data
+    print("ALE keys:", data.keys())
+
+    # Normalmente data["ale_values"] trae una lista/estructura por feature
+    ale_values = data.get("ale_values", None)
+    if ale_values is None:
+        raise ValueError(f"No encuentro 'ale_values' en explanation.data: {data.keys()}")
+
+    scores = []
+    for vals in ale_values:
+        vals = np.asarray(vals, dtype=float).ravel()
+
+        if summary_mode == "range":
+            score = float(np.max(vals) - np.min(vals))
+        elif summary_mode == "var":
+            score = float(np.var(vals))
+        else:
+            raise ValueError("summary_mode debe ser 'range' o 'var'")
+
+        scores.append(score)
+
+    scores = np.asarray(scores, dtype=float)
+
+    model_feature_importance = pd.Series(scores, index=feature_names)
+    model_feature_ranking = model_feature_importance.rank(method="average", ascending=False).astype(int)
+    model_feature_ranking["Modelo"] = clf_name
+
+    importances_df = pd.concat(
+        [importances_df, pd.DataFrame([model_feature_ranking])],
+        ignore_index=True
+    )
+
+    return importances_df, explanation

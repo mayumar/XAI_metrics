@@ -2,7 +2,7 @@ import argparse
 from data_processing import preprocess_dataset
 from models import usar_iforest, usar_ecod, usar_autoencoder, usar_hbos, usar_mcd, usar_vae
 import pandas as pd
-from xai import usar_shap_local, usar_lime, usar_occlusion_local
+from xai import usar_shap_local, usar_lime, usar_morris_global
 from config import DATASETS
 from utils import QuantusWrapper
 import numpy as np
@@ -12,7 +12,7 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser(description="Ejecuta experimentos de XAI para PdM")
     parser.add_argument("-e", "--experiment", type=str, required=True,
-                        choices=["shap", "lime", "occlusion"],
+                        choices=["shap", "lime", "morris"],
                         help="Tipo de experimento a ejecutar")
     
     args = parser.parse_args()
@@ -55,21 +55,23 @@ def main():
 
                 evaluar_lime(model, X_train_norm, X_ev_norm, y_ev, explicaciones, 'hydraulic', model_name)
 
-            if experiment_type == "occlusion":
-                explicaciones = usar_occlusion_local(
+            if experiment_type == "morris":
+                importances, explicacion_global = usar_morris_global(
                     clf=model,
                     clf_name=model_name,
-                    dataset_name='hydraulic',
+                    dataset_name="hydraulic",
                     X_train=X_train_norm,
-                    X_test=X_ev_norm,
-                    observaciones_id=DATASETS['hydraulic']['observations'],
-                    reference="median",
-                    groups=None,              # luego puedes agrupar si quieres
-                    score_mode="difference",
-                    show_plot=False
+                    importances_df=importances
                 )
 
-                evaluar_occlusion(model, X_train_norm, X_ev_norm, y_ev, explicaciones, 'hydraulic', model_name)
+                evaluar_morris(
+                    model,
+                    X_ev_norm,
+                    y_ev,
+                    explicacion_global,
+                    "hydraulic",
+                    model_name
+                )
 
 
 
@@ -335,6 +337,70 @@ def evaluar_occlusion(model, X_train_bg, X_test, y_test, explicaciones, dataset_
 
     metric_results = run_all_metrics(
         ctx,
+        config="XAI_metrics/config.yaml"
+    )
+    print(metric_results)
+
+    report_paths = save_metrics_report(
+        metric_results=metric_results,
+        output_dir=Path("results") / "metric_reports",
+        report_name=f"{dataset_name}_{model_name}_occlusion_metrics_report",
+        observations=DATASETS["hydraulic"]["observations"],
+    )
+
+    print("\nReportes guardados:")
+    for fmt, path in report_paths.items():
+        print(f"- {fmt}: {path}")
+
+
+def evaluar_morris(model, X_test, y_test, explicacion_global, dataset_name, model_name):
+    wrapped_model = QuantusWrapper(model)
+
+    from XAI_metrics.runner import run_all_metrics
+    from XAI_metrics.base import MetricContext
+    from XAI_metrics.reporting import save_metrics_report
+
+    data = explicacion_global.data()
+    scores = np.asarray(data["scores"], dtype=float).ravel()
+
+    if len(scores) != X_test.shape[1]:
+        raise ValueError(
+            f"Número de importancias incompatible: {len(scores)} != {X_test.shape[1]}"
+        )
+
+    observations = DATASETS["hydraulic"]["observations"]
+
+    # Morris es global: repetimos la misma atribución para cada observación a evaluar.
+    attributions = np.tile(scores, (len(observations), 1))
+
+    def make_explain_func_morris(global_scores):
+        def explain_func(model, inputs, targets=None, **kwargs):
+            X_np = (
+                inputs.detach().cpu().numpy()
+                if isinstance(inputs, torch.Tensor)
+                else np.asarray(inputs)
+            )
+
+            if X_np.ndim == 1:
+                X_np = X_np.reshape(1, -1)
+
+            return np.tile(global_scores, (X_np.shape[0], 1)).astype(float)
+
+        return explain_func
+
+    explain_func = make_explain_func_morris(scores)
+
+    ctx = MetricContext(
+        model=wrapped_model,
+        X_test=X_test,
+        y_test=y_test,
+        observations=observations,
+        attributions=attributions,
+        extras={"explain_func": explain_func}
+    )
+
+    metric_results = run_all_metrics(
+        ctx,
         selected_metrics=[
             "Complexity",
             "Sparseness",
@@ -354,13 +420,14 @@ def evaluar_occlusion(model, X_train_bg, X_test, y_test, explicaciones, dataset_
     report_paths = save_metrics_report(
         metric_results=metric_results,
         output_dir=Path("results") / "metric_reports",
-        report_name=f"{dataset_name}_{model_name}_occlusion_metrics_report",
-        observations=DATASETS["hydraulic"]["observations"],
+        report_name=f"{dataset_name}_{model_name}_morris_metrics_report",
+        observations=observations,
     )
 
     print("\nReportes guardados:")
     for fmt, path in report_paths.items():
         print(f"- {fmt}: {path}")
+
 
 
 if __name__ == "__main__":

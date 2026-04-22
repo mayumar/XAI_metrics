@@ -5,3 +5,4 @@ scikit-learn
 pyod
 shap
 lime
+interpret
