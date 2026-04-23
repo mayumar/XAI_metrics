@@ -1,8 +1,10 @@
+numpy<2.0
 pandas
-seaborn
 matplotlib
+seaborn
 scikit-learn
 pyod
 shap
 lime
 interpret
+alibi

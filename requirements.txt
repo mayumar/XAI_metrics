@@ -5,3 +5,4 @@ quantus
 pyyaml
 pytest
 aix360
+setuptools<82

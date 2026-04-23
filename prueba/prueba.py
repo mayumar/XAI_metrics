@@ -2,7 +2,7 @@ import argparse
 from data_processing import preprocess_dataset
 from models import usar_iforest, usar_ecod, usar_autoencoder, usar_hbos, usar_mcd, usar_vae
 import pandas as pd
-from xai import usar_shap_local, usar_lime, usar_morris_global
+from xai import usar_shap_local, usar_lime, usar_morris_global, usar_permutation_sklearn
 from config import DATASETS
 from utils import QuantusWrapper
 import numpy as np
@@ -12,7 +12,7 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser(description="Ejecuta experimentos de XAI para PdM")
     parser.add_argument("-e", "--experiment", type=str, required=True,
-                        choices=["shap", "lime", "morris"],
+                        choices=["shap", "lime", "morris", "permutation"],
                         help="Tipo de experimento a ejecutar")
     
     args = parser.parse_args()
@@ -64,6 +64,8 @@ def main():
                     importances_df=importances
                 )
 
+                print(importances)
+
                 evaluar_morris(
                     model,
                     X_ev_norm,
@@ -72,6 +74,11 @@ def main():
                     "hydraulic",
                     model_name
                 )
+
+            if experiment_type == "permutation":
+                importances, explicacion_global = usar_permutation_sklearn(model, model_name, "hydraulic", X_ev_norm, y_ev, importances)
+
+                print(importances)
 
 
 
@@ -268,89 +275,89 @@ def evaluar_lime(model, X_train_bg, X_test, y_test, explicaciones, dataset_name,
         print(f"- {fmt}: {path}")
 
 
-def evaluar_occlusion(model, X_train_bg, X_test, y_test, explicaciones, dataset_name, model_name):
-    wrapped_model = QuantusWrapper(model)
+# def evaluar_occlusion(model, X_train_bg, X_test, y_test, explicaciones, dataset_name, model_name):
+#     wrapped_model = QuantusWrapper(model)
 
-    from XAI_metrics.runner import run_all_metrics
-    from XAI_metrics.base import MetricContext
-    from XAI_metrics.reporting import save_metrics_report
+#     from XAI_metrics.runner import run_all_metrics
+#     from XAI_metrics.base import MetricContext
+#     from XAI_metrics.reporting import save_metrics_report
 
-    def make_explain_func_occlusion(dataset_name: str, X_background, feature_names=None):
-        if isinstance(X_background, pd.DataFrame):
-            cols = list(X_background.columns)
-            X_bg_df = X_background.copy()
-        else:
-            X_bg_np = np.asarray(X_background)
-            if feature_names is None:
-                cols = [f"f{i}" for i in range(X_bg_np.shape[1])]
-            else:
-                cols = list(feature_names)
-            X_bg_df = pd.DataFrame(X_bg_np, columns=cols)
+#     def make_explain_func_occlusion(dataset_name: str, X_background, feature_names=None):
+#         if isinstance(X_background, pd.DataFrame):
+#             cols = list(X_background.columns)
+#             X_bg_df = X_background.copy()
+#         else:
+#             X_bg_np = np.asarray(X_background)
+#             if feature_names is None:
+#                 cols = [f"f{i}" for i in range(X_bg_np.shape[1])]
+#             else:
+#                 cols = list(feature_names)
+#             X_bg_df = pd.DataFrame(X_bg_np, columns=cols)
 
-        def explain_func(model, inputs, targets=None, **kwargs):
-            X_np = (
-                inputs.detach().cpu().numpy().copy()
-                if isinstance(inputs, torch.Tensor)
-                else np.array(inputs, dtype=float, copy=True)
-            )
+#         def explain_func(model, inputs, targets=None, **kwargs):
+#             X_np = (
+#                 inputs.detach().cpu().numpy().copy()
+#                 if isinstance(inputs, torch.Tensor)
+#                 else np.array(inputs, dtype=float, copy=True)
+#             )
 
-            if X_np.ndim == 1:
-                X_np = X_np.reshape(1, -1)
+#             if X_np.ndim == 1:
+#                 X_np = X_np.reshape(1, -1)
 
-            X_batch = pd.DataFrame(X_np, columns=cols, index=pd.RangeIndex(start=0, stop=len(X_np)))
-            local_ids = list(X_batch.index)
+#             X_batch = pd.DataFrame(X_np, columns=cols, index=pd.RangeIndex(start=0, stop=len(X_np)))
+#             local_ids = list(X_batch.index)
 
-            occ_vals = usar_occlusion_local(
-                clf=model.model,
-                clf_name=None,
-                dataset_name=dataset_name,
-                X_train=X_bg_df,
-                X_test=X_batch,
-                observaciones_id=local_ids,
-                reference="median",
-                groups=None,
-                score_mode="difference",
-                show_plot=False
-            )
+#             occ_vals = usar_occlusion_local(
+#                 clf=model.model,
+#                 clf_name=None,
+#                 dataset_name=dataset_name,
+#                 X_train=X_bg_df,
+#                 X_test=X_batch,
+#                 observaciones_id=local_ids,
+#                 reference="median",
+#                 groups=None,
+#                 score_mode="difference",
+#                 show_plot=False
+#             )
 
-            return np.asarray(occ_vals, dtype=float)
+#             return np.asarray(occ_vals, dtype=float)
 
-        return explain_func
+#         return explain_func
 
-    explain_func = make_explain_func_occlusion(
-        dataset_name=dataset_name,
-        X_background=X_train_bg,
-        feature_names=getattr(X_test, "columns", None),
-    )
+#     explain_func = make_explain_func_occlusion(
+#         dataset_name=dataset_name,
+#         X_background=X_train_bg,
+#         feature_names=getattr(X_test, "columns", None),
+#     )
 
-    ctx = MetricContext(
-        model=wrapped_model,
-        X_test=X_test,
-        y_test=y_test,
-        observations=DATASETS["hydraulic"]["observations"],
-        attributions=explicaciones,
-        extras={
-            "explain_func": explain_func,
-            "X_reference": X_train_bg
-        },
-    )
+#     ctx = MetricContext(
+#         model=wrapped_model,
+#         X_test=X_test,
+#         y_test=y_test,
+#         observations=DATASETS["hydraulic"]["observations"],
+#         attributions=explicaciones,
+#         extras={
+#             "explain_func": explain_func,
+#             "X_reference": X_train_bg
+#         },
+#     )
 
-    metric_results = run_all_metrics(
-        ctx,
-        config="XAI_metrics/config.yaml"
-    )
-    print(metric_results)
+#     metric_results = run_all_metrics(
+#         ctx,
+#         config="XAI_metrics/config.yaml"
+#     )
+#     print(metric_results)
 
-    report_paths = save_metrics_report(
-        metric_results=metric_results,
-        output_dir=Path("results") / "metric_reports",
-        report_name=f"{dataset_name}_{model_name}_occlusion_metrics_report",
-        observations=DATASETS["hydraulic"]["observations"],
-    )
+#     report_paths = save_metrics_report(
+#         metric_results=metric_results,
+#         output_dir=Path("results") / "metric_reports",
+#         report_name=f"{dataset_name}_{model_name}_occlusion_metrics_report",
+#         observations=DATASETS["hydraulic"]["observations"],
+#     )
 
-    print("\nReportes guardados:")
-    for fmt, path in report_paths.items():
-        print(f"- {fmt}: {path}")
+#     print("\nReportes guardados:")
+#     for fmt, path in report_paths.items():
+#         print(f"- {fmt}: {path}")
 
 
 def evaluar_morris(model, X_test, y_test, explicacion_global, dataset_name, model_name):
@@ -401,18 +408,18 @@ def evaluar_morris(model, X_test, y_test, explicacion_global, dataset_name, mode
 
     metric_results = run_all_metrics(
         ctx,
-        selected_metrics=[
-            "Complexity",
-            "Sparseness",
-            "Consistency",
-            "FaithfulnessEstimate",
-            "MonotonicityCorrelation",
-            "Monotonicity",
-            "SensitivityN",
-            "Sufficiency",
-            "Completeness",
-            "NonSensitivity"
-        ],
+        # selected_metrics=[
+        #     "Complexity",
+        #     "Sparseness",
+        #     "Consistency",
+        #     "FaithfulnessEstimate",
+        #     "MonotonicityCorrelation",
+        #     "Monotonicity",
+        #     "SensitivityN",
+        #     "Sufficiency",
+        #     "Completeness",
+        #     "NonSensitivity"
+        # ],
         config="XAI_metrics/config.yaml"
     )
     print(metric_results)
