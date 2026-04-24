@@ -77,7 +77,7 @@ def usar_lime(clf, clf_name, dataset_name, X_train, X_test, observaciones, show_
     for example in observaciones:
         print(f"Explicando instancia: {example}")
         explanation = lime_explainer.explain_instance(
-            X_test.loc[example],
+            X_test.loc[example].to_numpy(dtype=float, copy=True),
             clf.predict_proba,
             num_features=len(X_train.columns)
         )
@@ -333,3 +333,18 @@ def usar_permutation_sklearn(
     }).sort_values("ImportanceMean", ascending=False)
 
     return importances_df, stats_df
+
+
+def extraer_scores_morris(explicacion_global):
+    data = explicacion_global.data()
+    return np.asarray(data["scores"], dtype=float).ravel()
+
+
+def extraer_scores_permutation(explicacion_global):
+    if not isinstance(explicacion_global, pd.DataFrame):
+        raise TypeError("explicacion_global de permutation debe ser un DataFrame.")
+
+    if "ImportanceMean" not in explicacion_global.columns:
+        raise ValueError("No encuentro la columna 'ImportanceMean' en explicacion_global.")
+
+    return np.asarray(explicacion_global["ImportanceMean"], dtype=float).ravel()

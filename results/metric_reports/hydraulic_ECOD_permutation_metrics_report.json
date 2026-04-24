@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-04-24 10:48:33 UTC",
+  "results": {
+    "MuFidelity": -0.850751624279689
+  },
+  "summary": [
+    {
+      "metric": "MuFidelity",
+      "scope": "global",
+      "row_type": "aggregate",
+      "observation": null,
+      "value": null,
+      "value_raw": -0.850751624279689,
+      "n": 1,
+      "mean": -0.850751624279689,
+      "std": 0.0,
+      "min": -0.850751624279689,
+      "max": -0.850751624279689
+    }
+  ],
+  "observations": []
+}

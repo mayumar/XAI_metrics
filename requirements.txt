@@ -1,8 +1,9 @@
-numpy<2.0
+numpy
 pandas
 torch
 quantus
 pyyaml
 pytest
 aix360
-setuptools<82
+tensorflow>=2.1.0
+xplique

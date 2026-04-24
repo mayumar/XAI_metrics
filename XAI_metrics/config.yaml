@@ -123,3 +123,23 @@ metrics:
     params:
       Type: Local
       base_strategy: mean
+
+  - name: MuFidelity
+    params:
+      Type: Global
+      one_hot_targets: true
+      num_classes: 2
+      batch_size: 64
+      grid_size: 7
+      nb_samples: 100
+      subset_percent: 0.2
+
+  - name: Deletion
+    params:
+      Type: Global
+      one_hot_targets: true
+      num_classes: 2
+      batch_size: 64
+      grid_size: 7
+      nb_samples: 100
+      subset_percent: 0.2

@@ -2,12 +2,37 @@ import argparse
 from data_processing import preprocess_dataset
 from models import usar_iforest, usar_ecod, usar_autoencoder, usar_hbos, usar_mcd, usar_vae
 import pandas as pd
-from xai import usar_shap_local, usar_lime, usar_morris_global, usar_permutation_sklearn
+from xai import (
+    usar_shap_local,
+    usar_lime,
+    usar_morris_global,
+    usar_permutation_sklearn,
+    extraer_scores_morris,
+    extraer_scores_permutation,
+)
 from config import DATASETS
 from utils import QuantusWrapper
 import numpy as np
 import torch
 from pathlib import Path
+
+
+LOCAL_METRICS = [
+    "Complexity",
+    "Sparseness",
+    "Consistency",
+    "FaithfulnessEstimate",
+    "MonotonicityCorrelation",
+    "Monotonicity",
+    "SensitivityN",
+    "Sufficiency",
+    "Completeness",
+    "NonSensitivity",
+]
+
+GLOBAL_METRICS = [
+    "MuFidelity",
+]
 
 def main():
     parser = argparse.ArgumentParser(description="Ejecuta experimentos de XAI para PdM")
@@ -66,19 +91,30 @@ def main():
 
                 print(importances)
 
-                evaluar_morris(
+                evaluar_global(
                     model,
                     X_ev_norm,
                     y_ev,
-                    explicacion_global,
+                    extraer_scores_morris(explicacion_global),
                     "hydraulic",
-                    model_name
+                    model_name,
+                    method_name="morris",
                 )
 
             if experiment_type == "permutation":
                 importances, explicacion_global = usar_permutation_sklearn(model, model_name, "hydraulic", X_ev_norm, y_ev, importances)
 
                 print(importances)
+
+                evaluar_global(
+                    model,
+                    X_ev_norm,
+                    y_ev,
+                    extraer_scores_permutation(explicacion_global),
+                    "hydraulic",
+                    model_name,
+                    method_name="permutation",
+                )
 
 
 
@@ -141,18 +177,7 @@ def evaluar_shap(model, X_test, y_test, explicaciones, dataset_name, model_name)
     
     metric_results = run_all_metrics(
         ctx,
-        selected_metrics=[
-            "Complexity",
-            "Sparseness",
-            "Consistency",
-            "FaithfulnessEstimate",
-            "MonotonicityCorrelation",
-            "Monotonicity",
-            "SensitivityN",
-            "Sufficiency",
-            "Completeness",
-            "NonSensitivity"
-        ],
+        selected_metrics=LOCAL_METRICS,
         config="XAI_metrics/config.yaml")
     print(metric_results)
 
@@ -259,6 +284,7 @@ def evaluar_lime(model, X_train_bg, X_test, y_test, explicaciones, dataset_name,
         #     "Completeness",
         #     "NonSensitivity"
         # ],
+        # selected_metrics=["MuFidelity", "Deletion"],
         config="XAI_metrics/config.yaml"
     )
     print(metric_results)
@@ -360,15 +386,14 @@ def evaluar_lime(model, X_train_bg, X_test, y_test, explicaciones, dataset_name,
 #         print(f"- {fmt}: {path}")
 
 
-def evaluar_morris(model, X_test, y_test, explicacion_global, dataset_name, model_name):
+def evaluar_global(model, X_test, y_test, global_scores, dataset_name, model_name, method_name):
     wrapped_model = QuantusWrapper(model)
 
     from XAI_metrics.runner import run_all_metrics
     from XAI_metrics.base import MetricContext
     from XAI_metrics.reporting import save_metrics_report
 
-    data = explicacion_global.data()
-    scores = np.asarray(data["scores"], dtype=float).ravel()
+    scores = np.asarray(global_scores, dtype=float).ravel()
 
     if len(scores) != X_test.shape[1]:
         raise ValueError(
@@ -403,23 +428,15 @@ def evaluar_morris(model, X_test, y_test, explicacion_global, dataset_name, mode
         y_test=y_test,
         observations=observations,
         attributions=attributions,
-        extras={"explain_func": explain_func}
+        extras={
+            "explain_func": explain_func,
+            "X_reference": X_test,
+        }
     )
 
     metric_results = run_all_metrics(
         ctx,
-        # selected_metrics=[
-        #     "Complexity",
-        #     "Sparseness",
-        #     "Consistency",
-        #     "FaithfulnessEstimate",
-        #     "MonotonicityCorrelation",
-        #     "Monotonicity",
-        #     "SensitivityN",
-        #     "Sufficiency",
-        #     "Completeness",
-        #     "NonSensitivity"
-        # ],
+        selected_metrics=GLOBAL_METRICS,
         config="XAI_metrics/config.yaml"
     )
     print(metric_results)
@@ -427,7 +444,7 @@ def evaluar_morris(model, X_test, y_test, explicacion_global, dataset_name, mode
     report_paths = save_metrics_report(
         metric_results=metric_results,
         output_dir=Path("results") / "metric_reports",
-        report_name=f"{dataset_name}_{model_name}_morris_metrics_report",
+        report_name=f"{dataset_name}_{model_name}_{method_name}_metrics_report",
         observations=observations,
     )
 

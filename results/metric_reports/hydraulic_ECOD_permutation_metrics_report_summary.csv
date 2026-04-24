@@ -1,0 +1,2 @@
+metric,scope,row_type,observation,value,value_raw,n,mean,std,min,max
+MuFidelity,global,aggregate,,,-0.850751624279689,1,-0.850751624279689,0.0,-0.850751624279689,-0.850751624279689
