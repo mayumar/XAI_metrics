@@ -110,46 +110,35 @@ from interpret.blackbox import MorrisSensitivity
 import numpy as np
 import pandas as pd
 
-def usar_morris_global(clf, clf_name, dataset_name, X_train, importances_df):
-    def predict_fn(X):
-        if isinstance(X, pd.DataFrame):
-            X_np = X.to_numpy(dtype=float, copy=False)
-        else:
-            X_np = np.asarray(X, dtype=float)
 
+def usar_morris_global(clf, clf_name, dataset_name, X_train):
+    def predict_fn(X):
+        X_np = X.to_numpy(dtype=float, copy=False) if isinstance(X, pd.DataFrame) else np.asarray(X, dtype=float)
         return np.asarray(clf.decision_function(X_np), dtype=float).ravel()
 
     msa = MorrisSensitivity(predict_fn, X_train)
     explanation = msa.explain_global()
     data = explanation.data()
 
-    print("Claves devueltas por explanation.data():", data.keys())
-
     feature_names = list(data["names"])
     scores = np.asarray(data["scores"], dtype=float).ravel()
-    convergence_index = data["convergence_index"]
+    convergence_index = data.get("convergence_index", None)
 
     if len(feature_names) != len(scores):
         raise ValueError(
             f"Longitudes incompatibles: {len(feature_names)} nombres vs {len(scores)} scores"
         )
 
-    print("Convergence index:", convergence_index)
+    scores_df = pd.DataFrame({
+        "Feature": feature_names,
+        "Score": scores,
+        "Modelo": clf_name,
+        "Dataset": dataset_name,
+        "Metodo": "morris",
+        "ConvergenceIndex": convergence_index,
+    }).sort_values("Score", ascending=False, ignore_index=True)
 
-    model_feature_importance = pd.Series(scores, index=feature_names)
-    model_feature_ranking = model_feature_importance.rank(
-        method="average",
-        ascending=False
-    ).astype(int)
-
-    model_feature_ranking["Modelo"] = clf_name
-
-    importances_df = pd.concat(
-        [importances_df, pd.DataFrame([model_feature_ranking])],
-        ignore_index=True
-    )
-
-    return importances_df, explanation
+    return scores_df, explanation
 
 
 # import numpy as np
@@ -237,15 +226,11 @@ from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_sc
 
 
 class PyODSklearnWrapper:
-    """
-    Wrapper mínimo para usar modelos PyOD con sklearn.inspection.permutation_importance.
-    """
     def __init__(self, model, metric="f1"):
         self.model = model
         self.metric = metric
 
     def fit(self, X, y=None):
-        # permutation_importance no necesita reentrenar; esto está para compatibilidad sklearn
         return self
 
     def predict(self, X):
@@ -258,15 +243,15 @@ class PyODSklearnWrapper:
 
         if self.metric == "f1":
             return f1_score(y_true, y_pred)
-        elif self.metric == "accuracy":
+        if self.metric == "accuracy":
             return accuracy_score(y_true, y_pred)
-        elif self.metric == "precision":
+        if self.metric == "precision":
             return precision_score(y_true, y_pred, zero_division=0)
-        elif self.metric == "recall":
+        if self.metric == "recall":
             return recall_score(y_true, y_pred, zero_division=0)
-        else:
-            raise ValueError("metric debe ser 'f1', 'accuracy', 'precision' o 'recall'")
-        
+
+        raise ValueError("metric debe ser 'f1', 'accuracy', 'precision' o 'recall'")
+
 
 def usar_permutation_sklearn(
     clf,
@@ -274,19 +259,11 @@ def usar_permutation_sklearn(
     dataset_name,
     X_eval,
     y_eval,
-    importances_df,
     metric="f1",
     n_repeats=10,
     random_state=42,
-    n_jobs=1
+    n_jobs=1,
 ):
-    """
-    Permutation importance global con sklearn.
-
-    Devuelve:
-    - importances_df actualizado con rankings
-    - stats_df con ImportanceMean e ImportanceStd
-    """
     wrapper = PyODSklearnWrapper(clf, metric=metric)
 
     if isinstance(X_eval, pd.DataFrame):
@@ -302,49 +279,23 @@ def usar_permutation_sklearn(
         estimator=wrapper,
         X=X_eval_np,
         y=y_eval_np,
-        scoring=None,          # usa wrapper.score()
+        scoring=None,
         n_repeats=n_repeats,
         random_state=random_state,
-        n_jobs=n_jobs
+        n_jobs=n_jobs,
     )
 
     importances_mean = np.asarray(result.importances_mean, dtype=float)
     importances_std = np.asarray(result.importances_std, dtype=float)
 
-    model_feature_importance = pd.Series(importances_mean, index=feature_names)
-    model_feature_ranking = model_feature_importance.rank(
-        method="average",
-        ascending=False
-    ).astype(int)
-    model_feature_ranking["Modelo"] = clf_name
-
-    importances_df = pd.concat(
-        [importances_df, pd.DataFrame([model_feature_ranking])],
-        ignore_index=True
-    )
-
-    stats_df = pd.DataFrame({
+    scores_df = pd.DataFrame({
         "Feature": feature_names,
-        "ImportanceMean": importances_mean,
-        "ImportanceStd": importances_std,
+        "Score": importances_mean,
+        "Std": importances_std,
         "Modelo": clf_name,
+        "Dataset": dataset_name,
         "Metric": metric,
-        "Metodo": "permutation_sklearn"
-    }).sort_values("ImportanceMean", ascending=False)
+        "Metodo": "permutation_sklearn",
+    }).sort_values("Score", ascending=False, ignore_index=True)
 
-    return importances_df, stats_df
-
-
-def extraer_scores_morris(explicacion_global):
-    data = explicacion_global.data()
-    return np.asarray(data["scores"], dtype=float).ravel()
-
-
-def extraer_scores_permutation(explicacion_global):
-    if not isinstance(explicacion_global, pd.DataFrame):
-        raise TypeError("explicacion_global de permutation debe ser un DataFrame.")
-
-    if "ImportanceMean" not in explicacion_global.columns:
-        raise ValueError("No encuentro la columna 'ImportanceMean' en explicacion_global.")
-
-    return np.asarray(explicacion_global["ImportanceMean"], dtype=float).ravel()
+    return scores_df, result

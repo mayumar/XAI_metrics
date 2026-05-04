@@ -1,5 +1,6 @@
 # XAI_metrics/metrics/complexity/complexity_metric.py
 import quantus
+import numpy as np
 from typing import Mapping, Any
 from XAI_metrics.base import BaseMetric, MetricContext, register_metric
 
@@ -28,5 +29,10 @@ class Complexity(BaseMetric):
             y_batch=ctx.y_test.loc[ctx.observations],
             a_batch=ctx.attributions
         )
+
+        # Normalización
+        n_features = ctx.attributions.shape[1]
+        max_entropy = np.log(n_features)
+        results = np.array(results) / max_entropy
 
         return results

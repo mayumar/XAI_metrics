@@ -7,8 +7,6 @@ from xai import (
     usar_lime,
     usar_morris_global,
     usar_permutation_sklearn,
-    extraer_scores_morris,
-    extraer_scores_permutation,
 )
 from config import DATASETS
 from utils import QuantusWrapper
@@ -81,39 +79,44 @@ def main():
                 evaluar_lime(model, X_train_norm, X_ev_norm, y_ev, explicaciones, 'hydraulic', model_name)
 
             if experiment_type == "morris":
-                importances, explicacion_global = usar_morris_global(
+                scores_df, explicacion_global = usar_morris_global(
                     clf=model,
                     clf_name=model_name,
                     dataset_name="hydraulic",
                     X_train=X_train_norm,
-                    importances_df=importances
                 )
 
-                print(importances)
+                print(scores_df)
 
-                evaluar_global(
+                evaluar_morris(
                     model,
                     X_ev_norm,
                     y_ev,
-                    extraer_scores_morris(explicacion_global),
+                    scores_df,
                     "hydraulic",
                     model_name,
-                    method_name="morris",
                 )
+
 
             if experiment_type == "permutation":
-                importances, explicacion_global = usar_permutation_sklearn(model, model_name, "hydraulic", X_ev_norm, y_ev, importances)
+                scores_df, explicacion_global = usar_permutation_sklearn(
+                    clf=model,
+                    clf_name=model_name,
+                    dataset_name="hydraulic",
+                    X_eval=X_ev_norm,
+                    y_eval=y_ev,
+                    metric="f1",
+                )
 
-                print(importances)
+                print(scores_df)
 
-                evaluar_global(
+                evaluar_permutation(
                     model,
                     X_ev_norm,
                     y_ev,
-                    extraer_scores_permutation(explicacion_global),
+                    scores_df,
                     "hydraulic",
                     model_name,
-                    method_name="permutation",
                 )
 
 
@@ -285,6 +288,10 @@ def evaluar_lime(model, X_train_bg, X_test, y_test, explicaciones, dataset_name,
         #     "NonSensitivity"
         # ],
         # selected_metrics=["MuFidelity", "Deletion"],
+        selected_metrics=[
+            "Complexity",
+            "Sparseness"
+        ],
         config="XAI_metrics/config.yaml"
     )
     print(metric_results)
@@ -451,6 +458,190 @@ def evaluar_global(model, X_test, y_test, global_scores, dataset_name, model_nam
     print("\nReportes guardados:")
     for fmt, path in report_paths.items():
         print(f"- {fmt}: {path}")
+
+
+def evaluar_permutation(model, X_test, y_test, scores_df, dataset_name, model_name):
+    wrapped_model = QuantusWrapper(model)
+
+    from XAI_metrics.runner import run_all_metrics
+    from XAI_metrics.base import MetricContext
+    from XAI_metrics.reporting import save_metrics_report
+
+    if not isinstance(scores_df, pd.DataFrame):
+        raise TypeError("scores_df de permutation debe ser un DataFrame.")
+
+    if "Feature" not in scores_df.columns or "Score" not in scores_df.columns:
+        raise ValueError("scores_df debe contener las columnas 'Feature' y 'Score'.")
+
+    if isinstance(X_test, pd.DataFrame):
+        cols = list(X_test.columns)
+    else:
+        cols = [f"f{i}" for i in range(np.asarray(X_test).shape[1])]
+
+    scores = (
+        scores_df
+        .set_index("Feature")
+        .reindex(cols)["Score"]
+        .to_numpy(dtype=float)
+    )
+
+    if np.isnan(scores).any():
+        missing = [cols[i] for i, v in enumerate(scores) if np.isnan(v)]
+        raise ValueError(f"Faltan scores permutation para columnas: {missing}")
+
+    if len(scores) != len(cols):
+        raise ValueError(
+            f"Número de importancias incompatible: {len(scores)} != {len(cols)}"
+        )
+
+    observations = DATASETS[dataset_name]["observations"]
+
+    attributions = np.tile(scores, (len(observations), 1))
+
+    def make_explain_func_permutation(global_scores):
+        def explain_func(model, inputs, targets=None, **kwargs):
+            X_np = (
+                inputs.detach().cpu().numpy()
+                if isinstance(inputs, torch.Tensor)
+                else np.asarray(inputs)
+            )
+
+            if X_np.ndim == 1:
+                X_np = X_np.reshape(1, -1)
+
+            return np.tile(global_scores, (X_np.shape[0], 1)).astype(float)
+
+        return explain_func
+
+    explain_func = make_explain_func_permutation(scores)
+
+    ctx = MetricContext(
+        model=wrapped_model,
+        X_test=X_test,
+        y_test=y_test,
+        observations=observations,
+        attributions=attributions,
+        extras={
+            "explain_func": explain_func,
+            "X_reference": X_test,
+        },
+    )
+
+    metric_results = run_all_metrics(
+        ctx,
+        selected_metrics=[
+            "Complexity",
+            "Sparseness",
+        ],
+        config="XAI_metrics/config.yaml",
+    )
+
+    print(metric_results)
+
+    report_paths = save_metrics_report(
+        metric_results=metric_results,
+        output_dir=Path("results") / "metric_reports",
+        report_name=f"{dataset_name}_{model_name}_permutation_metrics_report",
+        observations=observations,
+    )
+
+    print("\nReportes guardados:")
+    for fmt, path in report_paths.items():
+        print(f"- {fmt}: {path}")
+
+    return metric_results
+
+
+def evaluar_morris(model, X_test, y_test, scores_df, dataset_name, model_name):
+    wrapped_model = QuantusWrapper(model)
+
+    from XAI_metrics.runner import run_all_metrics
+    from XAI_metrics.base import MetricContext
+    from XAI_metrics.reporting import save_metrics_report
+
+    if not isinstance(scores_df, pd.DataFrame):
+        raise TypeError("scores_df de Morris debe ser un DataFrame.")
+
+    if "Feature" not in scores_df.columns or "Score" not in scores_df.columns:
+        raise ValueError("scores_df debe contener las columnas 'Feature' y 'Score'.")
+
+    if isinstance(X_test, pd.DataFrame):
+        cols = list(X_test.columns)
+    else:
+        cols = [f"f{i}" for i in range(np.asarray(X_test).shape[1])]
+
+    scores = (
+        scores_df
+        .set_index("Feature")
+        .reindex(cols)["Score"]
+        .to_numpy(dtype=float)
+    )
+
+    if np.isnan(scores).any():
+        missing = [cols[i] for i, v in enumerate(scores) if np.isnan(v)]
+        raise ValueError(f"Faltan scores Morris para columnas: {missing}")
+
+    if len(scores) != len(cols):
+        raise ValueError(
+            f"Número de importancias incompatible: {len(scores)} != {len(cols)}"
+        )
+
+    observations = DATASETS[dataset_name]["observations"]
+
+    attributions = np.tile(scores, (len(observations), 1))
+
+    def make_explain_func_morris(global_scores):
+        def explain_func(model, inputs, targets=None, **kwargs):
+            X_np = (
+                inputs.detach().cpu().numpy()
+                if isinstance(inputs, torch.Tensor)
+                else np.asarray(inputs)
+            )
+
+            if X_np.ndim == 1:
+                X_np = X_np.reshape(1, -1)
+
+            return np.tile(global_scores, (X_np.shape[0], 1)).astype(float)
+
+        return explain_func
+
+    explain_func = make_explain_func_morris(scores)
+
+    ctx = MetricContext(
+        model=wrapped_model,
+        X_test=X_test,
+        y_test=y_test,
+        observations=observations,
+        attributions=attributions,
+        extras={
+            "explain_func": explain_func,
+            "X_reference": X_test,
+        },
+    )
+
+    metric_results = run_all_metrics(
+        ctx,
+        selected_metrics=[
+            "Complexity",
+            "Sparseness",
+        ],
+        config="XAI_metrics/config.yaml",
+    )
+
+    print(metric_results)
+
+    report_paths = save_metrics_report(
+        metric_results=metric_results,
+        output_dir=Path("results") / "metric_reports",
+        report_name=f"{dataset_name}_{model_name}_morris_metrics_report",
+        observations=observations,
+    )
+
+    print("\nReportes guardados:")
+    for fmt, path in report_paths.items():
+        print(f"- {fmt}: {path}")
+
+    return metric_results
 
 
 
