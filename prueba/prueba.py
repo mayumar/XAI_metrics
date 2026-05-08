@@ -69,7 +69,7 @@ def main():
             metrics_df, model = model_function(X_train_norm, y_train, X_ev_norm, y_ev, metrics_df, True, anomalias_fraccion, seed)
 
             if experiment_type == "shap":
-                explicaciones = usar_shap_local(model, model_name, 'hydraulic', X_train_norm, X_ev_norm, DATASETS['hydraulic']['observations'], False)
+                explicaciones = usar_shap_local(model, model_name, 'hydraulic', X_train_norm, X_ev_norm, DATASETS['hydraulic']['observations'], True)
 
                 evaluar_shap(model, X_ev_norm, y_ev, explicaciones, 'hydraulic', model_name)
 

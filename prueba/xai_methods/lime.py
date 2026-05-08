@@ -56,7 +56,7 @@ def usar_lime(
     clf: BaseDetector,
     X_train: pd.DataFrame,
     X_test: pd.DataFrame,
-    observaciones
+    observaciones: List
 ):
 
     explainer, cols = _make_lime_explainer(X_train)
@@ -105,7 +105,8 @@ def evaluar_lime(
         ctx,
         selected_metrics=[
             "Complexity",
-            "Sparseness"
+            "Sparseness",
+            "Consistency"
         ],
         config="XAI_metrics/config.yaml"
     )
