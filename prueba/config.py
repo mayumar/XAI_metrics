@@ -73,7 +73,7 @@ DATASETS = {
         "fill_method": "ffill",
     },
     "hydraulic": {
-        "ruta_origen": "/Users/i12alrum/Documents/Repo/datasets/condition+monitoring+of+hydraulic+systems",
+        "ruta_origen": os.path.join(INPUT_DIR, "condition+monitoring+of+hydraulic+systems"),
         "sensores": ['PS1', 'PS2', 'PS3', 'PS4', 'PS5', 'PS6', 'EPS1', 'FS1', 'FS2', 'TS1', 'TS2', 'TS3', 'TS4', 'VS1', 'CE', 'CP', 'SE'],
         "error_types": ['cooler','valve','leakage','accumulator','stable'],
         "target": {"cooler": 3},

@@ -27,7 +27,7 @@ def main():
 
     modelos = {
         'IForest': usar_iforest,
-        # 'ECOD': usar_ecod,
+        'ECOD': usar_ecod,
         'AutoEncoder': usar_autoencoder,
         'HBOS': usar_hbos,
         'MCD': usar_mcd,

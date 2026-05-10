@@ -2,3 +2,4 @@
 XAI_metrics.egg-info
 __pycache__
 .pytest_cache
+datasets

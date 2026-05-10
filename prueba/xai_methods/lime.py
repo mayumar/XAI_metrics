@@ -106,7 +106,12 @@ def evaluar_lime(
         selected_metrics=[
             "Complexity",
             "Sparseness",
-            "Consistency"
+            "Consistency",
+            "FaithfulnessEstimate",
+            "MonotonicityCorrelation",
+            "Monotonicity",
+            "SensitivityN",
+            "Sufficiency"
         ],
         config="XAI_metrics/config.yaml"
     )

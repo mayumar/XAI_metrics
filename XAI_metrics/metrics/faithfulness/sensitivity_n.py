@@ -21,7 +21,8 @@ class SensitivityN(BaseMetric):
 
         results = quantus.SensitivityN(
             abs=abs_,
-            normalise=normalise
+            normalise=normalise,
+            n_max_percentage=1.0,
         )(
             model=ctx.model,
             x_batch=ctx.X_test.loc[ctx.observations].values,
