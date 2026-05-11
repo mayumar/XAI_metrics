@@ -23,10 +23,11 @@ class SensitivityN(BaseMetric):
             abs=abs_,
             normalise=normalise,
             n_max_percentage=1.0,
+            perturb_baseline='uniform' #Con black no hay cambios
         )(
             model=ctx.model,
-            x_batch=ctx.X_test.loc[ctx.observations].values,
-            y_batch=ctx.y_test.loc[ctx.observations].values,
+            x_batch=ctx.X_test.loc[ctx.observations].to_numpy(copy=True),
+            y_batch=ctx.y_test.loc[ctx.observations].to_numpy(copy=True),
             a_batch=ctx.attributions
         )
 

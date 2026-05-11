@@ -1,47 +1,78 @@
 # Metrics Report
 
-Generated at: 2026-05-10 21:13:12 UTC
+Generated at: 2026-05-11 11:39:38 UTC
 
 ## Local Metrics (Aggregated)
 
 | metric | n | mean | std | min | max |
 |---|---:|---:|---:|---:|---:|
-| Complexity | 8 | 0.940904 | 0.024583 | 0.895605 | 0.983882 |
-| Consistency | 8 | 0.750000 | 0.283473 | 0.000000 | 0.857143 |
-| FaithfulnessEstimate | 7 | -0.538066 | 0.158237 | -0.830632 | -0.371706 |
+| Completeness | 8 | 0.000000 | 0.000000 | 0.000000 | 0.000000 |
+| Complexity | 8 | 0.943168 | 0.022567 | 0.901886 | 0.985245 |
+| Consistency | 8 | 0.571429 | 0.247436 | 0.142857 | 0.714286 |
+| FaithfulnessEstimate | 8 | -0.298333 | 0.412182 | -0.940383 | 0.449871 |
+| LocalLipschitzEstimate | 8 | 14.633055 | 6.233249 | 3.727210 | 24.842593 |
+| MaxSensitivity | 8 | 1.532490 | 0.352398 | 0.638805 | 1.842952 |
 | Monotonicity | 8 | 1.000000 | 0.000000 | 1.000000 | 1.000000 |
-| MonotonicityCorrelation | 7 | 0.216327 | 0.417366 | -0.371429 | 0.885714 |
-| SensitivityN | 1 | 0.410881 | 0.000000 | 0.410881 | 0.410881 |
-| Sparseness | 8 | 0.238278 | 0.057392 | 0.127047 | 0.329924 |
-| Sufficiency | 8 | 0.687500 | 0.428478 | 0.000000 | 1.000000 |
+| MonotonicityCorrelation | 8 | 0.217857 | 0.430220 | -0.600000 | 0.771429 |
+| NonSensitivity | 8 | 1.375000 | 1.798437 | 0.000000 | 6.000000 |
+| RelativeInputStability | 6 | 0.131326 | 0.293163 | 0.000042 | 0.786860 |
+| RelativeOutputStability | 6 | 230340.468172 | 512013.052492 | 87.945859 | 1375232.132597 |
+| SensitivityN | 1 | 0.909151 | 0.000000 | 0.909151 | 0.909151 |
+| Sparseness | 8 | 0.235314 | 0.054839 | 0.125092 | 0.323422 |
+| Sufficiency | 8 | 0.735417 | 0.351232 | 0.000000 | 1.000000 |
 
 ## Local Metrics (Per Observation)
 
 | metric | observation | value |
 |---|---|---:|
-| Complexity | 9.0 | 0.941902 |
-| Complexity | 5.0 | 0.983882 |
-| Complexity | 249.0 | 0.895605 |
-| Complexity | 252.0 | 0.939612 |
-| Complexity | 255.0 | 0.939970 |
-| Complexity | 685.0 | 0.964131 |
-| Complexity | 403.0 | 0.921089 |
-| Complexity | 420.0 | 0.941038 |
-| Consistency | 9.0 | 0.000000 |
-| Consistency | 5.0 | 0.857143 |
-| Consistency | 249.0 | 0.857143 |
-| Consistency | 252.0 | 0.857143 |
-| Consistency | 255.0 | 0.857143 |
-| Consistency | 685.0 | 0.857143 |
-| Consistency | 403.0 | 0.857143 |
-| Consistency | 420.0 | 0.857143 |
-| FaithfulnessEstimate | 0.0 | -0.387476 |
-| FaithfulnessEstimate | 1.0 | -0.371706 |
-| FaithfulnessEstimate | 2.0 | -0.614739 |
-| FaithfulnessEstimate | 3.0 | -0.601437 |
-| FaithfulnessEstimate | 4.0 | -0.586867 |
-| FaithfulnessEstimate | 5.0 | -0.830632 |
-| FaithfulnessEstimate | 6.0 | -0.373604 |
+| Completeness | 9.0 | 0.000000 |
+| Completeness | 5.0 | 0.000000 |
+| Completeness | 249.0 | 0.000000 |
+| Completeness | 252.0 | 0.000000 |
+| Completeness | 255.0 | 0.000000 |
+| Completeness | 685.0 | 0.000000 |
+| Completeness | 403.0 | 0.000000 |
+| Completeness | 420.0 | 0.000000 |
+| Complexity | 9.0 | 0.936343 |
+| Complexity | 5.0 | 0.985245 |
+| Complexity | 249.0 | 0.901886 |
+| Complexity | 252.0 | 0.943748 |
+| Complexity | 255.0 | 0.942367 |
+| Complexity | 685.0 | 0.958956 |
+| Complexity | 403.0 | 0.927057 |
+| Complexity | 420.0 | 0.949739 |
+| Consistency | 9.0 | 0.142857 |
+| Consistency | 5.0 | 0.142857 |
+| Consistency | 249.0 | 0.714286 |
+| Consistency | 252.0 | 0.714286 |
+| Consistency | 255.0 | 0.714286 |
+| Consistency | 685.0 | 0.714286 |
+| Consistency | 403.0 | 0.714286 |
+| Consistency | 420.0 | 0.714286 |
+| FaithfulnessEstimate | 9.0 | -0.940383 |
+| FaithfulnessEstimate | 5.0 | -0.656470 |
+| FaithfulnessEstimate | 249.0 | 0.036083 |
+| FaithfulnessEstimate | 252.0 | -0.491308 |
+| FaithfulnessEstimate | 255.0 | 0.449871 |
+| FaithfulnessEstimate | 685.0 | 0.000000 |
+| FaithfulnessEstimate | 403.0 | -0.431882 |
+| FaithfulnessEstimate | 420.0 | -0.352575 |
+| LocalLipschitzEstimate | 9.0 | 16.092190 |
+| LocalLipschitzEstimate | 5.0 | 14.640490 |
+| LocalLipschitzEstimate | 249.0 | 10.929703 |
+| LocalLipschitzEstimate | 252.0 | 11.440075 |
+| LocalLipschitzEstimate | 255.0 | 13.067293 |
+| LocalLipschitzEstimate | 685.0 | 3.727210 |
+| LocalLipschitzEstimate | 403.0 | 22.324889 |
+| LocalLipschitzEstimate | 420.0 | 24.842593 |
+| MaxSensitivity | 9.0 | 1.842952 |
+| MaxSensitivity | 5.0 | 1.560663 |
+| MaxSensitivity | 249.0 | 1.514993 |
+| MaxSensitivity | 252.0 | 1.659488 |
+| MaxSensitivity | 255.0 | 1.780029 |
+| MaxSensitivity | 685.0 | 0.638805 |
+| MaxSensitivity | 403.0 | 1.619074 |
+| MaxSensitivity | 420.0 | 1.643919 |
 | Monotonicity | 9.0 | 1.000000 |
 | Monotonicity | 5.0 | 1.000000 |
 | Monotonicity | 249.0 | 1.000000 |
@@ -50,27 +81,48 @@ Generated at: 2026-05-10 21:13:12 UTC
 | Monotonicity | 685.0 | 1.000000 |
 | Monotonicity | 403.0 | 1.000000 |
 | Monotonicity | 420.0 | 1.000000 |
-| MonotonicityCorrelation | 0.0 | 0.885714 |
-| MonotonicityCorrelation | 1.0 | 0.714286 |
-| MonotonicityCorrelation | 2.0 | 0.314286 |
-| MonotonicityCorrelation | 3.0 | -0.028571 |
-| MonotonicityCorrelation | 4.0 | -0.371429 |
-| MonotonicityCorrelation | 5.0 | 0.085714 |
-| MonotonicityCorrelation | 6.0 | -0.085714 |
-| SensitivityN | 0.0 | 0.410881 |
-| Sparseness | 9.0 | 0.227785 |
-| Sparseness | 5.0 | 0.127047 |
-| Sparseness | 249.0 | 0.329924 |
-| Sparseness | 252.0 | 0.250497 |
-| Sparseness | 255.0 | 0.251577 |
-| Sparseness | 685.0 | 0.186460 |
-| Sparseness | 403.0 | 0.287310 |
-| Sparseness | 420.0 | 0.245627 |
-| Sufficiency | 9.0 | 0.000000 |
-| Sufficiency | 5.0 | 0.500000 |
+| MonotonicityCorrelation | 9.0 | 0.657143 |
+| MonotonicityCorrelation | 5.0 | 0.771429 |
+| MonotonicityCorrelation | 249.0 | 0.600000 |
+| MonotonicityCorrelation | 252.0 | 0.314286 |
+| MonotonicityCorrelation | 255.0 | -0.085714 |
+| MonotonicityCorrelation | 685.0 | 0.000000 |
+| MonotonicityCorrelation | 403.0 | 0.085714 |
+| MonotonicityCorrelation | 420.0 | -0.600000 |
+| NonSensitivity | 9.0 | 0.000000 |
+| NonSensitivity | 5.0 | 0.000000 |
+| NonSensitivity | 249.0 | 1.000000 |
+| NonSensitivity | 252.0 | 1.000000 |
+| NonSensitivity | 255.0 | 1.000000 |
+| NonSensitivity | 685.0 | 6.000000 |
+| NonSensitivity | 403.0 | 1.000000 |
+| NonSensitivity | 420.0 | 1.000000 |
+| RelativeInputStability | 0.0 | 0.000478 |
+| RelativeInputStability | 1.0 | 0.000126 |
+| RelativeInputStability | 2.0 | 0.000214 |
+| RelativeInputStability | 3.0 | 0.000042 |
+| RelativeInputStability | 4.0 | 0.786860 |
+| RelativeInputStability | 5.0 | 0.000237 |
+| RelativeOutputStability | 0.0 | 219.386542 |
+| RelativeOutputStability | 1.0 | 87.945859 |
+| RelativeOutputStability | 2.0 | 240.462506 |
+| RelativeOutputStability | 3.0 | 1375232.132597 |
+| RelativeOutputStability | 4.0 | 2283.166063 |
+| RelativeOutputStability | 5.0 | 3979.715463 |
+| SensitivityN | 0.0 | 0.909151 |
+| Sparseness | 9.0 | 0.236509 |
+| Sparseness | 5.0 | 0.125092 |
+| Sparseness | 249.0 | 0.323422 |
+| Sparseness | 252.0 | 0.249470 |
+| Sparseness | 255.0 | 0.249745 |
+| Sparseness | 685.0 | 0.198253 |
+| Sparseness | 403.0 | 0.281083 |
+| Sparseness | 420.0 | 0.218940 |
+| Sufficiency | 9.0 | 1.000000 |
+| Sufficiency | 5.0 | 0.333333 |
 | Sufficiency | 249.0 | 1.000000 |
-| Sufficiency | 252.0 | 1.000000 |
-| Sufficiency | 255.0 | 1.000000 |
+| Sufficiency | 252.0 | 0.750000 |
+| Sufficiency | 255.0 | 0.800000 |
 | Sufficiency | 685.0 | 0.000000 |
 | Sufficiency | 403.0 | 1.000000 |
 | Sufficiency | 420.0 | 1.000000 |

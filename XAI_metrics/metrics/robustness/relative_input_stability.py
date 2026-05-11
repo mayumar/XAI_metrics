@@ -37,7 +37,8 @@ class RelativeInputStability(BaseMetric):
         results = quantus.RelativeInputStability(
             abs=abs_,
             normalise=normalise,
-            nr_samples=nr_samples
+            nr_samples=nr_samples,
+            # return_nan_when_prediction_changes=False # Da nan cuando cambia, pero si se pone esto a False, no da un número que se pueda considerar como neutro
         )(
             model=ctx.model,
             x_batch=ctx.X_test.loc[ctx.observations].values,

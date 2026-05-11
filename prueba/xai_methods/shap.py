@@ -77,7 +77,7 @@ def evaluar_shap_local(
     wrapped_model = QuantusWrapper(model)
     observations = DATASETS[dataset_name]['observations']
 
-    def explain_func(model_wrapper, inputs, target=None, **kwargs):
+    def explain_func(model, inputs, targets=None, **kwargs):
         if isinstance(inputs, torch.Tensor):
             X_np = inputs.detach().cpu().numpy()
         else:
@@ -88,8 +88,17 @@ def evaluar_shap_local(
 
         X_batch = pd.DataFrame(X_np, columns=X_train.columns)
 
+        if hasattr(model, "decision_function"):
+            pyod_model = model
+        elif hasattr(model, "model") and hasattr(model.model, "decision_function"):
+            pyod_model = model.model
+        else:
+            raise AttributeError(
+                f"No se encontró decision_function en {type(model)} ni en model.model"
+            )
+
         return _shap_attributions(
-            model=model_wrapper.model,
+            model=pyod_model,
             X_train=X_train,
             X_test=X_batch
         )
@@ -110,7 +119,16 @@ def evaluar_shap_local(
         ctx,
         selected_metrics=[
             "Complexity",
-            "Sparseness"
+            "Sparseness",
+            "Consistency",
+            "FaithfulnessEstimate",
+            "MonotonicityCorrelation",
+            "Monotonicity",
+            "SensitivityN",
+            "Sufficiency",
+            "Completeness",
+            "NonSensitivity",
+            "LocalLipschitzEstimate"
         ],
         config="XAI_metrics/config.yaml"
     )

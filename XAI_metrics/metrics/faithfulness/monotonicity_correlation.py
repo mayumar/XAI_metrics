@@ -1,5 +1,7 @@
 # XAI_metrics/metrics/faithfulness/monotonicity_correlation.py
 import quantus
+import numpy as np
+from scipy.stats import spearmanr
 from typing import Mapping, Any
 from XAI_metrics.base import BaseMetric, MetricContext, register_metric
 
@@ -9,6 +11,24 @@ class MonotonicityCorrelation(BaseMetric):
 
     def __init__(self, context: MetricContext, params: Mapping[str, Any] | None = None):
         super().__init__(context, params)
+
+    def _safe_spearman(self, a, b, batched=False, **kwargs):
+        a = np.asarray(a, dtype=float)
+        b = np.asarray(b, dtype=float)
+
+        if batched:
+            scores = []
+            for ai, bi in zip(a, b):
+                if np.std(ai) == 0 or np.std(bi) == 0:
+                    scores.append(0.0)
+                else:
+                    scores.append(spearmanr(ai, bi).correlation)
+            return np.asarray(scores)
+
+        if np.std(a) == 0 or np.std(b) == 0:
+            return 0.0
+
+        return spearmanr(a, b).correlation
 
     def run(self):
         ctx = self.context
@@ -21,11 +41,12 @@ class MonotonicityCorrelation(BaseMetric):
 
         results = quantus.MonotonicityCorrelation(
             abs=abs_,
-            normalise=normalise
+            normalise=normalise,
+            similarity_func=self._safe_spearman
         )(
             model=ctx.model,
-            x_batch=ctx.X_test.loc[ctx.observations].values,
-            y_batch=ctx.y_test.loc[ctx.observations].values,
+            x_batch=ctx.X_test.loc[ctx.observations].to_numpy(copy=True),
+            y_batch=ctx.y_test.loc[ctx.observations].to_numpy(copy=True),
             a_batch=ctx.attributions
         )
 

@@ -81,9 +81,18 @@ def evaluar_lime(
 
     explainer, cols = _make_lime_explainer(X_train)
 
-    def explain_func(model_wrapper, inputs, targets=None, **kwargs):
+    def explain_func(model, inputs, targets=None, **kwargs):
+        if hasattr(model, "predict_proba"):
+            pyod_model = model
+        elif hasattr(model, "model") and hasattr(model.model, "predict_proba"):
+            pyod_model = model.model
+        else:
+            raise AttributeError(
+                f"No se encontró predict_proba en {type(model)} ni en model.model"
+            )
+
         return _lime_attributions(
-            model=model_wrapper.model,
+            model=pyod_model,
             explainer=explainer,
             X=inputs,
             cols=cols
@@ -111,7 +120,13 @@ def evaluar_lime(
             "MonotonicityCorrelation",
             "Monotonicity",
             "SensitivityN",
-            "Sufficiency"
+            "Sufficiency",
+            "Completeness",
+            "NonSensitivity",
+            "LocalLipschitzEstimate",
+            "MaxSensitivity",
+            "RelativeInputStability",
+            "RelativeOutputStability"
         ],
         config="XAI_metrics/config.yaml"
     )

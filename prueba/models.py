@@ -1,6 +1,7 @@
 # src/models.py
 
 from time import time
+import numpy as np
 from pyod.models.cblof import CBLOF
 from pyod.models.iforest import IForest
 from pyod.models.ecod import ECOD
@@ -10,6 +11,22 @@ from pyod.models.mcd import MCD
 from pyod.models.vae import VAE
 
 from evaluation import evaluar_modelo  # Importar la función de métricas
+
+def _as_numpy(X):
+    if hasattr(X, "to_numpy"):
+        return X.to_numpy()
+    return np.asarray(X)
+
+
+def _make_iforest_dataframe_safe(model):
+    original_decision_function = model.decision_function
+
+    def decision_function(X):
+        return original_decision_function(_as_numpy(X))
+
+    model.decision_function = decision_function
+    return model
+
 
 def usar_cblof(X_train, y_train, X_test, y_test, metricas, normalizado, contaminacion, random_state):
     # Inicializamos el tiempo
@@ -41,7 +58,8 @@ def usar_iforest(X_train, y_train, X_test, y_test, metricas, normalizado, contam
         clf_IForest = IForest(random_state=random_state)
     else:
         clf_IForest = IForest(contamination=contaminacion,random_state=random_state)
-    clf_IForest.fit(X_train)
+    clf_IForest.fit(_as_numpy(X_train))
+    _make_iforest_dataframe_safe(clf_IForest)
 
     # Obtenemos la prediccion
     y_pred = clf_IForest.predict(X_test)

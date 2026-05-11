@@ -50,7 +50,7 @@ metrics:
   - name: Completeness
     params:
       Type: Local
-      abs: true
+      abs: false
       normalise: false
 
   - name: NonSensitivity
@@ -62,28 +62,28 @@ metrics:
   - name: LocalLipschitzEstimate
     params:
       Type: Local
-      abs: true
-      normalise: false
+      abs: false
+      normalise: true
       nr_samples: 20
 
   - name: MaxSensitivity
     params:
       Type: Local
-      abs: true
+      abs: false
       normalise: false
       nr_samples: 20
 
   - name: RelativeInputStability
     params:
       Type: Local
-      abs: true
+      abs: false
       normalise: false
       nr_samples: 20
 
   - name: RelativeOutputStability
     params:
       Type: Local
-      abs: true
+      abs: false
       normalise: false
       nr_samples: 20
 
