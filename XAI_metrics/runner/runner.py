@@ -2,7 +2,7 @@
 from pathlib import Path
 import yaml
 
-from XAI_metrics.base import MetricContext, build_metrics_from_config
+from XAI_metrics.base import MetricContext, MetricSkipped, build_metrics_from_config
 from XAI_metrics.metrics import autodiscover_metrics
 import XAI_metrics.metrics as metrics_pkg
 import XAI_metrics.base.registry as registry
@@ -72,9 +72,15 @@ def run_all_metrics(
     deps = context.extras or {}
     metrics = build_metrics_from_config(filtered_cfg, context, dependencies=deps)
 
-    out = {"results": {}}
+    out = {"results": {}, "skipped": {}}
+
     for metric in metrics:
         name = getattr(metric, "NAME", metric.__class__.__name__)
-        out["results"][name] = metric.run()
+
+        try:
+            out['results'][name] = metric.run()
+        except MetricSkipped as exc:
+            out['skipped'][name] = str(exc)
+            print(str(exc))
 
     return out

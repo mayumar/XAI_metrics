@@ -14,6 +14,11 @@ class MetricContext:
     attributions: np.ndarray
     extras: Dict[str, Any] = field(default_factory=dict)
 
+
+class MetricSkipped(Exception):
+    """Raised when a metric is not applicable to the current attributions."""
+
+
 class BaseMetric:
     NAME: str = 'metric'
 

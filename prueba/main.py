@@ -12,12 +12,13 @@ from models import (
 )
 from xai_methods.lime import usar_lime, evaluar_lime
 from xai_methods.shap import usar_shap_local, evaluar_shap_local
+from xai_methods.break_down import usar_breakdown, evaluar_breakdown
 from utils import DATASETS
 
 def main():
     parser = argparse.ArgumentParser(description="Ejecuta experimentos de XAI para PdM")
     parser.add_argument("-e", "--experiment", type=str, required=True,
-                        choices=["lime", "shap_local", "shap_global", "morris", "permutation"],
+                        choices=["lime", "shap_local", "shap_global", "breakdown", "morris", "permutation"],
                         help="Tipo de experimento a ejecutar")
     
     args = parser.parse_args()
@@ -27,7 +28,7 @@ def main():
 
     modelos = {
         'IForest': usar_iforest,
-        'ECOD': usar_ecod,
+        'ECOD': usar_ecod, # Este modelo es horrible
         'AutoEncoder': usar_autoencoder,
         'HBOS': usar_hbos,
         'MCD': usar_mcd,
@@ -55,8 +56,25 @@ def main():
 
             evaluar_shap_local(model, X_train_norm, X_train_norm, y_train, explicaciones, 'hydraulic', model_name)
 
+        if experiment_type == "breakdown":
+            explicaciones = usar_breakdown(
+                model,
+                X_train_norm,
+                X_train_norm,
+                DATASETS["hydraulic"]["observations"]
+            )
 
+            print(explicaciones)
 
+            evaluar_breakdown(
+                model,
+                X_train_norm,
+                X_train_norm,
+                y_train,
+                explicaciones,
+                "hydraulic",
+                model_name
+            )
 
 
 

@@ -2,9 +2,7 @@
 import quantus
 import numpy as np
 from typing import Mapping, Any
-from XAI_metrics.base import BaseMetric, MetricContext, register_metric
-
-
+from XAI_metrics.base import BaseMetric, MetricContext, register_metric, MetricSkipped
 
 
 @register_metric
@@ -35,6 +33,11 @@ class FaithfulnessEstimate(BaseMetric):
     def run(self):
         ctx = self.context
         p = self.params
+
+        if np.all(ctx.attributions < 0.0):
+            raise MetricSkipped(
+                f"{self.NAME} omitida: todas las atribuciones son negativas."
+            )
 
         abs_ = bool(p.get("abs", True))
         normalise = bool(p.get("normalise", False))
