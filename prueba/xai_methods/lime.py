@@ -110,25 +110,31 @@ def evaluar_lime(
         },
     )
 
+    # metric_results = run_all_metrics(
+    #     ctx,
+    #     selected_metrics=[
+    #         "Complexity",
+    #         "Sparseness",
+    #         "Consistency",
+    #         "FaithfulnessEstimate",
+    #         "MonotonicityCorrelation",
+    #         "Monotonicity",
+    #         "SensitivityN",
+    #         "Sufficiency",
+    #         "Completeness",
+    #         "NonSensitivity",
+    #         "LocalLipschitzEstimate",
+    #         "MaxSensitivity",
+    #         "RelativeInputStability",
+    #         "RelativeOutputStability"
+    #     ],
+    #     config="XAI_metrics/config.yaml"
+    # )
+
     metric_results = run_all_metrics(
-        ctx,
-        selected_metrics=[
-            "Complexity",
-            "Sparseness",
-            "Consistency",
-            "FaithfulnessEstimate",
-            "MonotonicityCorrelation",
-            "Monotonicity",
-            "SensitivityN",
-            "Sufficiency",
-            "Completeness",
-            "NonSensitivity",
-            "LocalLipschitzEstimate",
-            "MaxSensitivity",
-            "RelativeInputStability",
-            "RelativeOutputStability"
-        ],
-        config="XAI_metrics/config.yaml"
+        config="XAI_metrics/config.yaml",
+        model_loader=load_model,
+        explain_func=explain_func
     )
     print(metric_results)
 
