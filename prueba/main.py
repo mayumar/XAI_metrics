@@ -14,6 +14,7 @@ from xai_methods.lime import usar_lime, evaluar_lime
 from xai_methods.shap import usar_shap_local, evaluar_shap_local
 from xai_methods.break_down import usar_breakdown, evaluar_breakdown
 from utils import DATASETS
+from config import DATA_RAW_DIR
 
 def main():
     parser = argparse.ArgumentParser(description="Ejecuta experimentos de XAI para PdM")
@@ -25,6 +26,8 @@ def main():
     experiment_type = args.experiment
 
     X_train, y_train, _, _, X_train_norm, _, anomalias_fraccion = preprocess_dataset('hydraulic', False)
+
+    X_train.to_csv(DATA_RAW_DIR)
 
     modelos = {
         'IForest': usar_iforest,
