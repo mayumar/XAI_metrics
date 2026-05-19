@@ -132,3 +132,10 @@ def make_explain_func(X_test, observations, xai_method, dataset_name):
         return explicaciones  # Quantus espera un array-like
     
     return explain_func
+
+import cloudpickle
+
+
+def load_model(model_path):
+    with open(model_path, "rb") as f:
+        return cloudpickle.load(f)

@@ -45,7 +45,6 @@ def _build_context_from_config(
         "model_path",
         "X_test_path",
         "y_test_path",
-        "observations",
         "attributions_path"
     ]
     missing = [key for key in required if key not in ctx_cfg]
@@ -59,7 +58,10 @@ def _build_context_from_config(
     model = model_loader(ctx_cfg['model_path'])
     X_test = pd.read_csv(ctx_cfg['X_test_path'], index_col=0)
     y_test = pd.read_csv(ctx_cfg['y_test_path'], index_col=0).squeeze('columns')
-    attributions = np.load(ctx_cfg['attributions_path'])
+    attributions_df = pd.read_csv(ctx_cfg["attributions_path"], index_col=0)
+
+    observations = attributions_df.index.tolist()
+    attributions = attributions_df.to_numpy()
 
     extras: dict[str, Any] = {}
 
@@ -73,7 +75,7 @@ def _build_context_from_config(
         model=model,
         X_test=X_test,
         y_test=y_test,
-        observations=ctx_cfg["observations"],
+        observations=observations,
         attributions=attributions,
         extras=extras,
     )
@@ -113,7 +115,7 @@ def _load_config(config: Mapping[str, Any] | str | Path | None) -> dict[str, Any
         return yaml.safe_load(f) or {}
 
 
-def run_all_metrics(
+def run_evaluation(
     context: MetricContext | None = None,
     selected_metrics: Iterable[str] | None = None,
     config: Mapping[str, Any] | str | Path | None = None,
@@ -122,6 +124,7 @@ def run_all_metrics(
     autodiscover_metrics(metrics_pkg)
 
     resolved_config = _load_config(config)
+    #=====================
 
     if context is None:
         context = _build_context_from_config(

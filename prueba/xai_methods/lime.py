@@ -4,11 +4,12 @@ import pandas as pd
 
 from lime.lime_tabular import LimeTabularExplainer
 
-from XAI_metrics.runner import run_all_metrics
+from XAI_metrics.runner import run_evaluation
 from XAI_metrics.base import MetricContext
 from XAI_metrics.reporting import save_metrics_report
 
-from utils import QuantusWrapper, DATASETS
+from utils import QuantusWrapper, load_model
+from config import DATASETS
 
 from pyod.models.base import BaseDetector
 from typing import List
@@ -110,7 +111,7 @@ def evaluar_lime(
         },
     )
 
-    # metric_results = run_all_metrics(
+    # metric_results = run_evaluation(
     #     ctx,
     #     selected_metrics=[
     #         "Complexity",
@@ -131,8 +132,24 @@ def evaluar_lime(
     #     config="XAI_metrics/config.yaml"
     # )
 
-    metric_results = run_all_metrics(
+    metric_results = run_evaluation(
         config="XAI_metrics/config.yaml",
+        selected_metrics=[
+            "Complexity",
+            "Sparseness",
+            "Consistency",
+            "FaithfulnessEstimate",
+            "MonotonicityCorrelation",
+            "Monotonicity",
+            "SensitivityN",
+            "Sufficiency",
+            "Completeness",
+            "NonSensitivity",
+            "LocalLipschitzEstimate",
+            "MaxSensitivity",
+            "RelativeInputStability",
+            "RelativeOutputStability"
+        ],
         model_loader=load_model,
         explain_func=explain_func
     )

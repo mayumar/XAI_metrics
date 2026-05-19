@@ -1,3 +1,9 @@
+context:
+  model_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/models/hydraulic/hydraulic_IForest_seed_0.pkl"
+  X_test_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/data/hydraulic/X_train_norm.csv"
+  y_test_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/data/hydraulic/y_train.csv"
+  attributions_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/attributions/hydraulic/hydraulic_IForest_lime_attributions.csv"
+
 metrics:
   - name: Complexity
     params:
