@@ -9,7 +9,7 @@ import pandas as pd
 class MetricContext:
     model: nn.Module
     X_test: pd.DataFrame
-    y_test: pd.DataFrame
+    y_test: pd.Series
     observations: Any
     attributions: np.ndarray
     extras: Dict[str, Any] = field(default_factory=dict)

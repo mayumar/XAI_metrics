@@ -6,6 +6,7 @@ import numpy as np
 
 from XAI_metrics.base import MetricContext, MetricSkipped, build_metrics_from_config
 from XAI_metrics.metrics import autodiscover_metrics
+from XAI_metrics.config import ConfigController
 import XAI_metrics.metrics as metrics_pkg
 import XAI_metrics.base.registry as registry
 
@@ -118,23 +119,23 @@ def _load_config(config: Mapping[str, Any] | str | Path | None) -> dict[str, Any
 def run_evaluation(
     context: MetricContext | None = None,
     selected_metrics: Iterable[str] | None = None,
-    config: Mapping[str, Any] | str | Path | None = None,
+    config: Mapping[str, Any] | str | Path = "config.yaml",
     **runtime_kwargs: Any,
 ) -> dict[str, Any]:
     autodiscover_metrics(metrics_pkg)
 
-    resolved_config = _load_config(config)
-    #=====================
+    config_controller = ConfigController(
+        config=config,
+        model_loader=runtime_kwargs.get("model_loader")
+    )
 
     if context is None:
-        context = _build_context_from_config(
-            resolved_config,
-            **runtime_kwargs,
-        )
+        context = config_controller.build_context()
 
+    #=====================
     configured_metrics = [
-        metric["name"]
-        for metric in resolved_config.get("metrics", [])
+        metric['name']
+        for metric in config_controller.get_metrics_config()
     ]
 
     metric_names = _resolve_metric_selection(

@@ -8,7 +8,7 @@ from utils import QuantusWrapper
 from config import DATASETS
 
 from XAI_metrics.base import MetricContext
-from XAI_metrics.runner import run_all_metrics
+from XAI_metrics.runner import run_evaluation
 from XAI_metrics.reporting import save_metrics_report
 
 from pyod.models.base import BaseDetector
@@ -148,7 +148,7 @@ def evaluar_breakdown(
         },
     )
 
-    metric_results = run_all_metrics(
+    metric_results = run_evaluation(
         ctx,
         selected_metrics=[
             "Complexity",

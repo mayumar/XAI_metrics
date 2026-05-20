@@ -7,7 +7,7 @@ from pathlib import Path
 from utils import QuantusWrapper
 from config import DATASETS
 
-from XAI_metrics.runner import run_all_metrics
+from XAI_metrics.runner import run_evaluation
 from XAI_metrics.base import MetricContext
 from XAI_metrics.reporting import save_metrics_report
 
@@ -115,7 +115,7 @@ def evaluar_shap_local(
         },
     )
 
-    metric_results = run_all_metrics(
+    metric_results = run_evaluation(
         ctx,
         selected_metrics=[
             "Complexity",
@@ -192,7 +192,7 @@ def evaluar_shap_global(
         },
     )
 
-    metric_results = run_all_metrics(
+    metric_results = run_evaluation(
         ctx,
         selected_metrics=[
             "MuFidelity"
