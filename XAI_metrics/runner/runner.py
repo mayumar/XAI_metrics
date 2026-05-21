@@ -4,13 +4,14 @@ import yaml
 import pandas as pd
 import numpy as np
 
-from XAI_metrics.base import MetricContext, MetricSkipped, build_metrics_from_config
+from XAI_metrics.base import MetricContext
 from XAI_metrics.metrics import autodiscover_metrics
 from XAI_metrics.config import ConfigController
 import XAI_metrics.metrics as metrics_pkg
 import XAI_metrics.base.registry as registry
 
 from typing import Iterable, Any, Mapping
+import warnings
 
 def _normalize_selection(
     selected_metrics: Iterable[str] | None,
@@ -87,33 +88,65 @@ def _resolve_metric_selection(
     configured_metrics: Iterable[str],
     registered_metrics: Iterable[str],
 ) -> list[str]:
-    configured = list(configured_metrics)
+    configured = set(list(configured_metrics))
     registered = set(registered_metrics)
 
-    selected = configured if selected_metrics is None else list(selected_metrics)
+    configured_not_registered = [
+        name for name in configured
+        if name not in registered
+    ]
 
-    missing = [name for name in selected if name not in registered]
-    if missing:
-        raise ValueError(
-            f"Metrics not registered: {missing}. "
-            f"Available: {sorted(registered)}"
+    if configured_not_registered:
+        warnings.warn(
+            "Configured metrics not registered and will be skipped: "
+            f"{configured_not_registered}. "
+            f"Available: {sorted(registered)}",
+            UserWarning,
+            stacklevel=2,
         )
 
-    return selected
+    valid_configured = [
+        name for name in configured
+        if name in registered
+    ]
 
+    if selected_metrics is None:
+        return valid_configured
+    
+    selected = list(selected_metrics)
 
-def _load_config(config: Mapping[str, Any] | str | Path | None) -> dict[str, Any]:
-    if config is None:
-        config_path = Path(__file__).resolve().parents[1] / "config.yaml"
-        with config_path.open("r", encoding="utf-8") as f:
-            return yaml.safe_load(f) or {}
+    selected_not_configured = [
+        name for name in selected
+        if name not in configured
+    ]
 
-    if isinstance(config, Mapping):
-        return dict(config)
+    if selected_not_configured:
+        warnings.warn(
+            "Selected metrics not present in config and will be skipped: "
+            f"{selected_not_configured}. "
+            f"Configured: {configured}",
+            UserWarning,
+            stacklevel=2,
+        )
 
-    config_path = Path(config)
-    with config_path.open("r", encoding="utf-8") as f:
-        return yaml.safe_load(f) or {}
+    selected_not_registered = [
+        name for name in selected
+        if name not in registered
+    ]
+
+    if selected_not_registered:
+        warnings.warn(
+            "Selected metrics not registered and will be skipped: "
+            f"{selected_not_registered}. "
+            f"Available: {sorted(registered)}",
+            UserWarning,
+            stacklevel=2,
+        )
+
+    return [
+        name for name in selected
+        if name in configured and name in registered
+    ]
 
 
 def run_evaluation(
@@ -130,12 +163,12 @@ def run_evaluation(
     )
 
     if context is None:
-        context = config_controller.build_context()
+        context_list = config_controller.build_contexts()
 
-    #=====================
+    metrics_config = config_controller.get_metrics_config()
     configured_metrics = [
         metric['name']
-        for metric in config_controller.get_metrics_config()
+        for metric in metrics_config
     ]
 
     metric_names = _resolve_metric_selection(
@@ -145,32 +178,31 @@ def run_evaluation(
     )
     allowed = set(metric_names)
 
-    filtered_cfg = {
-        "metrics": [
-            metric
-            for metric in resolved_config.get("metrics", [])
-            if metric.get("name") in allowed
-        ]
-    }
+    filtered_cfg = [
+        metric
+        for metric in metrics_config
+        if metric.get("name") in allowed
+    ]
+    #=====================
 
-    deps = dict(context.extras or {})
-    deps.update(runtime_kwargs)
+    # deps = dict(context.extras or {})
+    # deps.update(runtime_kwargs)
 
-    metrics = build_metrics_from_config(
-        filtered_cfg,
-        context,
-        dependencies=deps,
-    )
+    # metrics = build_metrics_from_config(
+    #     filtered_cfg,
+    #     context,
+    #     dependencies=deps,
+    # )
 
-    out = {"results": {}, "skipped": {}}
+    # out = {"results": {}, "skipped": {}}
 
-    for metric in metrics:
-        name = getattr(metric, "NAME", metric.__class__.__name__)
+    # for metric in metrics:
+    #     name = getattr(metric, "NAME", metric.__class__.__name__)
 
-        try:
-            out["results"][name] = metric.run()
-        except MetricSkipped as exc:
-            out["skipped"][name] = str(exc)
-            print(str(exc))
+    #     try:
+    #         out["results"][name] = metric.run()
+    #     except MetricSkipped as exc:
+    #         out["skipped"][name] = str(exc)
+    #         print(str(exc))
 
-    return out
+    # return out

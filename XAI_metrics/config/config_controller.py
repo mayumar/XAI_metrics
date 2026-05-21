@@ -3,6 +3,8 @@ import torch
 import yaml
 import torch.nn as nn
 import pandas as pd
+from itertools import product
+import pickle
 
 from XAI_metrics.base import MetricContext
 
@@ -23,7 +25,13 @@ def default_model_loader(model_path: str | Path):
     Any
         Loaded object returned by ``torch.load``.
     """
-    return torch.load(model_path)
+    model_path = Path(model_path)
+
+    if model_path.suffix.lower() in {".pkl", ".pickle"}:
+        with model_path.open("rb") as f:
+            return pickle.load(f)
+
+    return torch.load(model_path, weights_only=False)
 
 class ConfigController:
     """
@@ -66,7 +74,7 @@ class ConfigController:
         Dict
             Loaded configuration dictionary.
         """
-        if config is "config.yaml":
+        if not isinstance(config, Mapping) and config == "config.yaml":
             config_path = Path(__file__).resolve().parent / config
             with config_path.open("r", encoding="utf-8") as f:
                 return yaml.safe_load(f) or {}
@@ -173,6 +181,95 @@ class ConfigController:
             )
 
         return observations_typed_idx
+    
+
+    def _iter_context_configs(self) -> List[Dict[str, Any]]:
+        ctx_cfg = self.config.get("context")
+
+        if not ctx_cfg:
+            raise ValueError("Config must include a 'context' section.")
+        
+        if not all(key in ctx_cfg for key in ("datasets_dir", "models_dir", "attributions_dir")):
+            return [ctx_cfg]
+        
+        datasets_root = Path(ctx_cfg["datasets_dir"]).expanduser().resolve()
+        models_root = Path(ctx_cfg["models_dir"]).expanduser().resolve()
+        attributions_root = Path(ctx_cfg["attributions_dir"]).expanduser().resolve()
+
+        context_configs = []
+
+        for dataset_path in sorted(path for path in datasets_root.iterdir() if path.is_dir()):
+            dataset_name = dataset_path.name
+
+            models_dataset_root = models_root / dataset_name
+            attribution_dataset_root = attributions_root / dataset_name
+
+            if not models_dataset_root.exists() or not attribution_dataset_root.exists():
+                continue
+
+            X_files = sorted(
+                path for path in dataset_path.glob("*.csv")
+                if path.name.lower().startswith("x_test")
+            )
+
+            if not X_files:
+                continue
+
+            y_files = sorted(
+                path for path in dataset_path.glob("*.csv")
+                if path.name.lower().startswith("y_test")
+            )
+
+            if not y_files:
+                continue
+
+            for model_dir in sorted(path for path in models_dataset_root.iterdir() if path.is_dir()):
+                model_name = model_dir.name
+                attribution_dataset_model_root = attribution_dataset_root / model_name
+
+                if not attribution_dataset_model_root.exists():
+                    continue
+
+                model_files = sorted(
+                    path for path in model_dir.rglob("*")
+                    if path.is_file()
+                    and path.suffix.lower() in {".pkl", ".pickle", ".pt", ".pth", ".joblib"}
+                )
+                
+                for xai_method_dir in sorted(
+                    path for path in attribution_dataset_model_root.iterdir()
+                    if path.is_dir()
+                ):
+                    xai_method_name = xai_method_dir.name
+                    attribution_dataset_model_xai_dir = attribution_dataset_model_root / xai_method_name
+
+                    attribution_files = sorted(
+                        path for path in attribution_dataset_model_xai_dir.rglob("*.csv")
+                        if path.is_file()
+                    )
+
+                    for model_path, X_path, y_path, attributions_path in product(
+                        model_files,
+                        X_files,
+                        y_files,
+                        attribution_files
+                    ):
+                        context_configs.append({
+                            "dataset_name": dataset_name,
+                            "model_name": model_name,
+                            "xai_method_name": xai_method_name,
+                            "model_path": str(model_path),
+                            "X_test_path": str(X_path),
+                            "y_test_path": str(y_path),
+                            "attributions_path": str(attributions_path)
+                        })
+
+        if not context_configs:
+            raise ValueError(
+                "No MetricContext configs found from datasets_dir, models_dir and attributions_dir."
+            )
+
+        return context_configs
         
         
     def get_metrics_config(self) -> List:
@@ -188,7 +285,7 @@ class ConfigController:
         return self.config.get("metrics", [])
 
     
-    def build_context(self) -> MetricContext:
+    def build_context(self, ctx_cfg: Mapping[str, Any] | None = None) -> Tuple[MetricContext, Dict[str, Any]]:
         """
         Build a metric evaluation context from the loaded configuration.
 
@@ -211,7 +308,7 @@ class ConfigController:
         TypeError
             If the loaded model is not an instance of ``torch.nn.Module``.
         """
-        ctx_cfg = self.config.get("context")
+        ctx_cfg = dict(ctx_cfg or self.config.get("context") or {})
 
         if not ctx_cfg:
             raise ValueError("Config must include a 'context' section.")
@@ -232,16 +329,17 @@ class ConfigController:
             raise TypeError("The loaded model must be a torch.nn.Module.")
         
         X_test = pd.read_csv(ctx_cfg["X_test_path"], index_col=0)
-        y_test = pd.read_csv(ctx_cfg['y_test_path'], index_col=0).iloc[:, 0]
 
-        if y_test.shape[1] > 1:
+        y_test_df = pd.read_csv(ctx_cfg['y_test_path'], index_col=0)
+        if y_test_df.shape[1] > 1:
             warnings.warn(
                 "y_test contains more than one column. "
-                f"Only the first column will be used: {y_test.columns[0]!r}. "
-                f"Ignored columns: {list(y_test.columns[1:])}.",
+                f"Only the first column will be used: {y_test_df.columns[0]!r}. "
+                f"Ignored columns: {list(y_test_df.columns[1:])}.",
                 UserWarning,
                 stacklevel=2,
             )
+        y_test = y_test_df.iloc[:, 0]
 
         X_test, y_test = self._validate_X_y_indexes(X_test, y_test)
 
@@ -252,12 +350,24 @@ class ConfigController:
 
         attributions = attributions_df.to_numpy(dtype=float)
 
-        extras = {}
-
-        return MetricContext(
+        metric_context = MetricContext(
             model=model,
             X_test=X_test,
             y_test=y_test,
             observations=observations,
             attributions=attributions
         )
+
+        metadata = {
+            "dataset_name": ctx_cfg.get("dataset_name"),
+            "model_name": ctx_cfg.get("model_name"),
+            "xai_method_name": ctx_cfg.get("xai_method_name")
+        }
+
+        return metric_context, metadata
+    
+    def build_contexts(self) -> List[Tuple[MetricContext, Dict[str, Any]]]:
+        return [
+            self.build_context(ctx_cfg)
+            for ctx_cfg in self._iter_context_configs()
+        ]

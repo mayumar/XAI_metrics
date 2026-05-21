@@ -1,8 +1,11 @@
 context:
-  model_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/models/hydraulic/hydraulic_IForest_seed_0.pkl"
-  X_test_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/data/hydraulic/X_train_norm.csv"
-  y_test_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/data/hydraulic/y_train.csv"
-  attributions_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/attributions/hydraulic/hydraulic_IForest_lime_attributions.csv"
+  # model_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/models/hydraulic/IForest/hydraulic_IForest_seed_0.pkl"
+  # X_test_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/data/hydraulic/X_test_train_norm.csv"
+  # y_test_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/data/hydraulic/y_test_train.csv"
+  # attributions_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/attributions/hydraulic/IForest/LIME/hydraulic_IForest_lime_attributions.csv"
+  models_dir: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/models"
+  datasets_dir: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/data"
+  attributions_dir: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/attributions"
 
 metrics:
   - name: Complexity
@@ -100,25 +103,25 @@ metrics:
       normalise: false
       nr_samples: 20
 
-  - name: PGU
-    params:
-      Type: Local
-      k: 0.25
-      AUC: true
-      str: 0.1
-      n_samples: 100
-      seed: -1
-      n_jobs: -1
+  # - name: PGU
+  #   params:
+  #     Type: Local
+  #     k: 0.25
+  #     AUC: true
+  #     str: 0.1
+  #     n_samples: 100
+  #     seed: -1
+  #     n_jobs: -1
 
-  - name: PGI
-    params:
-      Type: Local
-      k: 0.25
-      AUC: true
-      str: 0.1
-      n_samples: 100
-      seed: -1
-      n_jobs: -1
+  # - name: PGI
+  #   params:
+  #     Type: Local
+  #     k: 0.25
+  #     AUC: true
+  #     str: 0.1
+  #     n_samples: 100
+  #     seed: -1
+  #     n_jobs: -1
 
   - name: Faithfulness
     params:

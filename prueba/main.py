@@ -56,11 +56,16 @@ def guardar_modelo(model, dataset_name, model_name, seed):
 def main():
     parser = argparse.ArgumentParser(description="Ejecuta experimentos de XAI para PdM")
     parser.add_argument("-e", "--experiment", type=str, required=True,
-                        choices=["lime", "shap_local", "shap_global", "breakdown", "morris", "permutation"],
+                        choices=["lime", "shap_local", "shap_global", "breakdown", "morris", "permutation", "eval"],
                         help="Tipo de experimento a ejecutar")
     
     args = parser.parse_args()
     experiment_type = args.experiment
+
+    if experiment_type == "eval":
+        from XAI_metrics.runner import run_evaluation
+        run_evaluation(config="XAI_metrics/config.yaml")
+        return 1
 
     X_train, y_train, _, _, X_train_norm, _, anomalias_fraccion = preprocess_dataset('hydraulic', False)
 
@@ -68,19 +73,19 @@ def main():
     output_dir = os.path.join(BASE_DIR, "prueba", "data", "hydraulic")
     os.makedirs(output_dir, exist_ok=True)
 
-    X_train.to_csv(os.path.join(output_dir, "X_train.csv"), columns=list(X_train.columns), index=True)
+    # X_train.to_csv(os.path.join(output_dir, "X_train.csv"), columns=list(X_train.columns), index=True)
 
-    X_train_norm.to_csv(os.path.join(output_dir, "X_train_norm.csv"), columns=list(X_train_norm.columns), index=True)
+    # X_train_norm.to_csv(os.path.join(output_dir, "X_train_norm.csv"), columns=list(X_train_norm.columns), index=True)
 
-    y_train.to_csv(os.path.join(output_dir, "y_train.csv"), header=["target"], index=True)
+    # y_train.to_csv(os.path.join(output_dir, "y_train.csv"), header=["target"], index=True)
 
     modelos = {
         'IForest': usar_iforest,
-        # 'ECOD': usar_ecod, # Este modelo es horrible
-        # 'AutoEncoder': usar_autoencoder,
-        # 'HBOS': usar_hbos,
-        # 'MCD': usar_mcd,
-        # 'VAE': usar_vae,
+        'ECOD': usar_ecod, # Este modelo es horrible
+        'AutoEncoder': usar_autoencoder,
+        'HBOS': usar_hbos,
+        'MCD': usar_mcd,
+        'VAE': usar_vae,
     }
 
     metrics_df = pd.DataFrame(columns=['Modelo', 'Semilla', 'Normalizado', 'Contaminacion', 'TN', 'FP', 'FN', 'TP', 'Accuracy', 'F1-score', 'Sensibilidad', 'Especificidad', 'Precisión', 'ROC-AUC', 'Tiempo (s)'])
@@ -90,13 +95,13 @@ def main():
 
         metrics_df, model = model_function(X_train_norm, y_train, X_train_norm, y_train, metrics_df, True, anomalias_fraccion, 0)
 
-        guardar_modelo(model, 'hydraulic', model_name, 0)
+        # guardar_modelo(model, 'hydraulic', model_name, 0)
 
         if experiment_type == "lime":
             explicaciones = usar_lime(model, X_train_norm, X_train_norm, DATASETS['hydraulic']['observations'])
 
             print(explicaciones)
-            guardar_atribuciones(explicaciones, DATASETS['hydraulic']['observations'], list(X_train_norm.columns), 'hydraulic', model_name, 'lime')
+            # guardar_atribuciones(explicaciones, DATASETS['hydraulic']['observations'], list(X_train_norm.columns), 'hydraulic', model_name, 'lime')
 
             evaluar_lime(model, X_train_norm, X_train_norm, y_train, explicaciones, 'hydraulic', model_name)
 
@@ -104,7 +109,7 @@ def main():
             explicaciones = usar_shap_local(model, X_train_norm, X_train_norm, DATASETS['hydraulic']['observations'])
 
             print(explicaciones)
-            guardar_atribuciones(explicaciones, DATASETS['hydraulic']['observations'], list(X_train_norm.columns), 'hydraulic', model_name, 'shap_local')
+            # guardar_atribuciones(explicaciones, DATASETS['hydraulic']['observations'], list(X_train_norm.columns), 'hydraulic', model_name, 'shap_local')
 
             evaluar_shap_local(model, X_train_norm, X_train_norm, y_train, explicaciones, 'hydraulic', model_name)
 
@@ -117,17 +122,9 @@ def main():
             )
 
             print(explicaciones)
-            guardar_atribuciones(explicaciones, DATASETS['hydraulic']['observations'], list(X_train_norm.columns), 'hydraulic', model_name, 'breakdown')
+            # guardar_atribuciones(explicaciones, DATASETS['hydraulic']['observations'], list(X_train_norm.columns), 'hydraulic', model_name, 'breakdown')
 
-            evaluar_breakdown(
-                model,
-                X_train_norm,
-                X_train_norm,
-                y_train,
-                explicaciones,
-                "hydraulic",
-                model_name
-            )
+            evaluar_breakdown(model, X_train_norm, X_train_norm, y_train, explicaciones, "hydraulic", model_name)
 
 
 
