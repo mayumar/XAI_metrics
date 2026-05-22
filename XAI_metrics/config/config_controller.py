@@ -13,17 +13,20 @@ import warnings
 
 def default_model_loader(model_path: str | Path):
     """
-    Load a PyTorch model from disk.
+    Load a model from disk.
+
+    Pickle files, with ``.pkl`` or ``.pickle`` extensions, are loaded with
+    :mod:`pickle`. Any other file extension is loaded with :func:`torch.load`.
 
     Parameters
     ----------
     model_path : str or pathlib.Path
-        Path to the saved PyTorch model.
+        Path to the saved model file.
 
     Returns
     -------
     Any
-        Loaded object returned by ``torch.load``.
+        Loaded model object.
     """
     model_path = Path(model_path)
 
@@ -33,13 +36,15 @@ def default_model_loader(model_path: str | Path):
 
     return torch.load(model_path, weights_only=False)
 
+
+
 class ConfigController:
     """
     Controller for loading configuration files and building metric contexts.
 
-    The controller loads a configuration from a mapping or YAML file, validates
-    the required input data, loads the model, and creates a
-    :class:`MetricContext` object used by the metric evaluation pipeline.
+    The controller can load a configuration from a dictionary-like object or
+    from a YAML file. It supports both direct context definitions and automatic
+    discovery of contexts from dataset, model and attribution directories.
 
     Parameters
     ----------
@@ -48,7 +53,7 @@ class ConfigController:
         If a path is provided, the YAML file is loaded. The default value loads
         the ``config.yaml`` file located next to this module.
     model_loader : Callable, optional
-        Function used to load the model from ``model_path``. If not provided,
+        Function used to load models from disk. If not provided,
         :func:`default_model_loader` is used.
     """
     def __init__(
@@ -183,6 +188,24 @@ class ConfigController:
         return observations_typed_idx
     
 
+    def _validate_context_metadata(self, ctx_cfg: Mapping[str, Any]) -> Dict[str, Any]:
+        required = ["dataset_name", "model_name", "xai_method_name"]
+        missing = [key for key in required if not ctx_cfg.get(key)]
+
+        if missing:
+            raise ValueError(
+                "Context metadata is required when passing direct paths. "
+                f"Missing fields: {missing}. "
+                f"Required fields: {required}."
+            )
+
+        return {
+            "dataset_name": ctx_cfg["dataset_name"],
+            "model_name": ctx_cfg["model_name"],
+            "xai_method_name": ctx_cfg["xai_method_name"],
+        }
+    
+
     def _iter_context_configs(self) -> List[Dict[str, Any]]:
         ctx_cfg = self.config.get("context")
 
@@ -190,6 +213,7 @@ class ConfigController:
             raise ValueError("Config must include a 'context' section.")
         
         if not all(key in ctx_cfg for key in ("datasets_dir", "models_dir", "attributions_dir")):
+            self._validate_context_metadata(ctx_cfg)
             return [ctx_cfg]
         
         datasets_root = Path(ctx_cfg["datasets_dir"]).expanduser().resolve()
@@ -292,7 +316,7 @@ class ConfigController:
         The configuration must include a ``context`` section with the paths to
         the model, test data, labels, and attributions. The method loads all
         required objects, validates their indexes, and returns a
-        :class:`MetricContext` instance.
+        :class:`~XAI_metrics.base.MetricContext` instance.
 
         Returns
         -------
@@ -358,13 +382,10 @@ class ConfigController:
             attributions=attributions
         )
 
-        metadata = {
-            "dataset_name": ctx_cfg.get("dataset_name"),
-            "model_name": ctx_cfg.get("model_name"),
-            "xai_method_name": ctx_cfg.get("xai_method_name")
-        }
+        metadata = self._validate_context_metadata(ctx_cfg)
 
         return metric_context, metadata
+    
     
     def build_contexts(self) -> List[Tuple[MetricContext, Dict[str, Any]]]:
         return [

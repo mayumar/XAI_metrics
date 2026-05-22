@@ -10,7 +10,7 @@ from XAI_metrics.config import ConfigController
 import XAI_metrics.metrics as metrics_pkg
 import XAI_metrics.base.registry as registry
 
-from typing import Iterable, Any, Mapping
+from typing import Iterable, Any, Mapping, Dict
 import warnings
 
 def _normalize_selection(
@@ -149,12 +149,31 @@ def _resolve_metric_selection(
     ]
 
 
+def _validate_context_metadata(metadata: Mapping[str, Any] | None) -> Dict[str, Any]:
+    required = ["dataset_name", "model_name", "xai_method_name"]
+
+    if metadata is None:
+        raise ValueError(
+            f"When passing a MetricContext directly, metadata must also be provided with fields: {required}."
+        )
+
+    missing = [key for key in required if not metadata.get(key)]
+    if missing:
+        raise ValueError(
+            "Context metadata is missing required fields: "
+            f"{missing}. Required fields: {required}."
+        )
+
+    return dict(metadata)
+
+
 def run_evaluation(
     context: MetricContext | None = None,
+    metadata: Mapping[str, Any] | None = None,
     selected_metrics: Iterable[str] | None = None,
     config: Mapping[str, Any] | str | Path = "config.yaml",
     **runtime_kwargs: Any,
-) -> dict[str, Any]:
+) -> Dict[str, Any]:
     autodiscover_metrics(metrics_pkg)
 
     config_controller = ConfigController(
@@ -164,6 +183,10 @@ def run_evaluation(
 
     if context is None:
         context_list = config_controller.build_contexts()
+    else:
+        context_list = [
+            (context, _validate_context_metadata(metadata))
+        ]
 
     metrics_config = config_controller.get_metrics_config()
     configured_metrics = [
@@ -183,6 +206,8 @@ def run_evaluation(
         for metric in metrics_config
         if metric.get("name") in allowed
     ]
+
+    print(context_list)
     #=====================
 
     # deps = dict(context.extras or {})
