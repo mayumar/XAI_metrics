@@ -67,7 +67,7 @@ class ConfigController:
 
     def _load_config(self, config: Mapping[str, Any] | str | Path) -> Dict:
         """
-        Load the configuration from a mapping or YAML file.
+        Load a configuration from a mapping or YAML file.
 
         Parameters
         ----------
@@ -77,7 +77,8 @@ class ConfigController:
         Returns
         -------
         Dict
-            Loaded configuration dictionary.
+            Loaded configuration dictionary. If the YAML file is empty, an
+            empty dictionary is returned.
         """
         if not isinstance(config, Mapping) and config == "config.yaml":
             config_path = Path(__file__).resolve().parent / config
@@ -98,7 +99,10 @@ class ConfigController:
         y_test: pd.Series
     ) -> Tuple[pd.DataFrame, pd.Series]:
         """
-        Validate that ``X_test`` and ``y_test`` contain the same indexes.
+        Validate and align the indexes of ``X_test`` and ``y_test``.
+
+        Both objects must contain exactly the same indexes. The returned
+        ``y_test`` is reordered to match the index order of ``X_test``.
 
         Parameters
         ----------
@@ -109,7 +113,7 @@ class ConfigController:
 
         Returns
         -------
-        tuple[pandas.DataFrame, pandas.Series]
+        Tuple[pandas.DataFrame, pandas.Series]
             ``X_test`` and ``y_test`` aligned using the index order of
             ``X_test``.
 
@@ -139,22 +143,24 @@ class ConfigController:
         X_test_index: pd.Index
     ) -> List:
         """
-        Validate that attribution observations exist in the test data index.
+        Validate that attribution observations exist in ``X_test``.
 
-        If possible, the observation indexes are converted to the same dtype as
-        ``X_test_index`` before validation.
+        If the observation identifiers do not initially match the index values
+        of ``X_test``, the method tries to convert them to the same dtype as
+        ``X_test_index`` before validating them.
 
         Parameters
         ----------
-        observations : list
-            Observation identifiers obtained from the attributions file.
+        observations : List
+            Observation identifiers obtained from the attribution file index.
         X_test_index : pandas.Index
             Index of the test input data.
 
         Returns
         -------
-        list
-            Validated observation identifiers.
+        List
+            Validated observation identifiers, possibly converted to the dtype
+            of ``X_test_index``.
 
         Raises
         ------
@@ -189,6 +195,29 @@ class ConfigController:
     
 
     def _validate_context_metadata(self, ctx_cfg: Mapping[str, Any]) -> Dict[str, Any]:
+        """
+        Validate and return the metadata required for a metric context.
+
+        The required metadata fields are ``dataset_name``, ``model_name`` and
+        ``xai_method_name``. These values are used to identify the context when
+        running metrics over one or more datasets, models and explanation
+        methods.
+
+        Parameters
+        ----------
+        ctx_cfg : Mapping[str, Any]
+            Context configuration dictionary.
+
+        Returns
+        -------
+        Dict[str, Any]
+            Dictionary containing the validated metadata fields.
+
+        Raises
+        ------
+        ValueError
+            If any required metadata field is missing or empty.
+        """
         required = ["dataset_name", "model_name", "xai_method_name"]
         missing = [key for key in required if not ctx_cfg.get(key)]
 
@@ -207,6 +236,27 @@ class ConfigController:
     
 
     def _iter_context_configs(self) -> List[Dict[str, Any]]:
+        """
+        Build the list of context configurations to evaluate.
+
+        If the ``context`` section contains direct paths, a single context
+        configuration is returned. If it contains ``datasets_dir``,
+        ``models_dir`` and ``attributions_dir``, the method searches those
+        directories and creates one configuration for each valid combination of
+        dataset, model, test data and attribution file.
+
+        Returns
+        -------
+        List[dict[str, Any]]
+            List of context configuration dictionaries. Each dictionary
+            contains metadata and paths required by :meth:`build_context`.
+
+        Raises
+        ------
+        ValueError
+            If the ``context`` section is missing or if no valid context
+            configurations can be found.
+        """
         ctx_cfg = self.config.get("context")
 
         if not ctx_cfg:
@@ -302,7 +352,7 @@ class ConfigController:
 
         Returns
         -------
-        list
+        List
             List of metric configurations. If the section is not defined, an
             empty list is returned.
         """

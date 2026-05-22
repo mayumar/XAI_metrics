@@ -24,6 +24,9 @@ extensions = [
     "sphinx.ext.autosummary",
 ]
 
+autodoc_typehints = "description"
+autodoc_typehints_format = "short"
+
 templates_path = ['_templates']
 exclude_patterns = []
 
