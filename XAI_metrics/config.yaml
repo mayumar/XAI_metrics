@@ -15,145 +15,141 @@ context:
 metrics:
   - name: Complexity
     params:
-      Type: Local
-      abs: true
       normalise: false
 
   - name: Sparseness
     params:
-      Type: Local
-      abs: true
       normalise: false
 
   - name: Consistency
     params:
-      Type: Local
       abs: true
       normalise: false
 
   - name: FaithfulnessEstimate
     params:
-      Type: Local
+      features_in_step: 1
       abs: true
       normalise: false
+      perturb_baseline: "uniform"
 
-  - name: MonotonicityCorrelation
-    params:
-      Type: Local
-      abs: true
-      normalise: false
-
-  - name: Monotonicity
-    params:
-      Type: Local
-      abs: true
-      normalise: false
-
-  - name: SensitivityN
-    params:
-      Type: Local
-      abs: true
-      normalise: false
-
-  - name: Sufficiency
-    params:
-      Type: Local
-      abs: true
-      normalise: false
-
-  - name: Completeness
-    params:
-      Type: Local
-      abs: false
-      normalise: false
-
-  - name: NonSensitivity
-    params:
-      Type: Local
-      abs: true
-      normalise: false
-
-  - name: LocalLipschitzEstimate
-    params:
-      Type: Local
-      abs: false
-      normalise: true
-      nr_samples: 20
-
-  - name: MaxSensitivity
-    params:
-      Type: Local
-      abs: false
-      normalise: false
-      nr_samples: 20
-
-  - name: RelativeInputStability
-    params:
-      Type: Local
-      abs: false
-      normalise: false
-      nr_samples: 20
-
-  - name: RelativeOutputStability
-    params:
-      Type: Local
-      abs: false
-      normalise: false
-      nr_samples: 20
-
-  - name: AvgSensitivity
-    params:
-      Type: Local
-      abs: false
-      normalise: false
-      nr_samples: 20
-
-  # - name: PGU
+  # - name: MonotonicityCorrelation
   #   params:
   #     Type: Local
-  #     k: 0.25
-  #     AUC: true
-  #     str: 0.1
-  #     n_samples: 100
-  #     seed: -1
-  #     n_jobs: -1
+  #     abs: true
+  #     normalise: false
 
-  # - name: PGI
+  # - name: Monotonicity
   #   params:
   #     Type: Local
-  #     k: 0.25
-  #     AUC: true
-  #     str: 0.1
-  #     n_samples: 100
-  #     seed: -1
-  #     n_jobs: -1
+  #     abs: true
+  #     normalise: false
 
-  - name: Faithfulness
-    params:
-      Type: Local
-      base_strategy: mean
+  # - name: SensitivityN
+  #   params:
+  #     Type: Local
+  #     abs: true
+  #     normalise: false
 
-  - name: MonotonicityMetric
-    params:
-      Type: Local
-      base_strategy: mean
+  # - name: Sufficiency
+  #   params:
+  #     Type: Local
+  #     abs: true
+  #     normalise: false
 
-  - name: MuFidelity
-    params:
-      Type: Global
-      one_hot_targets: true
-      num_classes: 2
-      batch_size: 64
-      grid_size: 7
-      nb_samples: 100
-      subset_percent: 0.2
+  # - name: Completeness
+  #   params:
+  #     Type: Local
+  #     abs: false
+  #     normalise: false
 
-  - name: Deletion
-    params:
-      Type: Global
-      one_hot_targets: true
-      num_classes: 2
-      batch_size: 64
-      grid_size: 7
-      nb_samples: 100
-      subset_percent: 0.2
+  # - name: NonSensitivity
+  #   params:
+  #     Type: Local
+  #     abs: true
+  #     normalise: false
+
+  # - name: LocalLipschitzEstimate
+  #   params:
+  #     Type: Local
+  #     abs: false
+  #     normalise: true
+  #     nr_samples: 20
+
+  # - name: MaxSensitivity
+  #   params:
+  #     Type: Local
+  #     abs: false
+  #     normalise: false
+  #     nr_samples: 20
+
+  # - name: RelativeInputStability
+  #   params:
+  #     Type: Local
+  #     abs: false
+  #     normalise: false
+  #     nr_samples: 20
+
+  # - name: RelativeOutputStability
+  #   params:
+  #     Type: Local
+  #     abs: false
+  #     normalise: false
+  #     nr_samples: 20
+
+  # - name: AvgSensitivity
+  #   params:
+  #     Type: Local
+  #     abs: false
+  #     normalise: false
+  #     nr_samples: 20
+
+  # # - name: PGU
+  # #   params:
+  # #     Type: Local
+  # #     k: 0.25
+  # #     AUC: true
+  # #     str: 0.1
+  # #     n_samples: 100
+  # #     seed: -1
+  # #     n_jobs: -1
+
+  # # - name: PGI
+  # #   params:
+  # #     Type: Local
+  # #     k: 0.25
+  # #     AUC: true
+  # #     str: 0.1
+  # #     n_samples: 100
+  # #     seed: -1
+  # #     n_jobs: -1
+
+  # - name: Faithfulness
+  #   params:
+  #     Type: Local
+  #     base_strategy: mean
+
+  # - name: MonotonicityMetric
+  #   params:
+  #     Type: Local
+  #     base_strategy: mean
+
+  # - name: MuFidelity
+  #   params:
+  #     Type: Global
+  #     one_hot_targets: true
+  #     num_classes: 2
+  #     batch_size: 64
+  #     grid_size: 7
+  #     nb_samples: 100
+  #     subset_percent: 0.2
+
+  # - name: Deletion
+  #   params:
+  #     Type: Global
+  #     one_hot_targets: true
+  #     num_classes: 2
+  #     batch_size: 64
+  #     grid_size: 7
+  #     nb_samples: 100
+  #     subset_percent: 0.2

@@ -3,22 +3,10 @@
   "model_name": "HBOS",
   "report": [
     {
-      "metric": "AvgSensitivity",
-      "BreakDown": 4.893946135745672,
-      "LIME": 0.8302079140158232,
-      "SHAP": 3.1751101424679877
-    },
-    {
-      "metric": "Completeness",
-      "BreakDown": 0.0,
-      "LIME": 0.0,
-      "SHAP": 0.0
-    },
-    {
       "metric": "Complexity",
-      "BreakDown": 0.923699119513451,
-      "LIME": 0.830761713160863,
-      "SHAP": 0.9294915684243877
+      "BreakDown": 1.6550466441058425,
+      "LIME": 1.4885251662280976,
+      "SHAP": 1.6654253192920332
     },
     {
       "metric": "Consistency",
@@ -27,148 +15,16 @@
       "SHAP": 0.9999999998571428
     },
     {
-      "metric": "Deletion",
-      "BreakDown": 0.36806437373161316,
-      "LIME": 0.36806437373161316,
-      "SHAP": 0.36806437373161316
-    },
-    {
-      "metric": "Faithfulness",
-      "BreakDown": -0.6613189892974035,
-      "LIME": -0.5321643753547932,
-      "SHAP": 0.24118144824243765
-    },
-    {
       "metric": "FaithfulnessEstimate",
-      "BreakDown": -0.2108912476758562,
-      "LIME": -0.2600403639476373,
-      "SHAP": -0.07810556398522142
-    },
-    {
-      "metric": "LocalLipschitzEstimate",
-      "BreakDown": 9.719103190291918,
-      "LIME": 8.981032743030918,
-      "SHAP": 6.634694723681784
-    },
-    {
-      "metric": "MaxSensitivity",
-      "BreakDown": 6.77067976600128,
-      "LIME": 1.4617052707572915,
-      "SHAP": 5.4758268228611495
-    },
-    {
-      "metric": "Monotonicity",
-      "BreakDown": 1.0,
-      "LIME": 1.0,
-      "SHAP": 1.0
-    },
-    {
-      "metric": "MonotonicityCorrelation",
-      "BreakDown": 0.17142857142857146,
-      "LIME": 0.4928571428571429,
-      "SHAP": 0.13571428571428573
-    },
-    {
-      "metric": "MonotonicityMetric",
-      "BreakDown": 0.0,
-      "LIME": 0.0,
-      "SHAP": 0.0
-    },
-    {
-      "metric": "MuFidelity",
-      "BreakDown": -0.2737996845121451,
-      "LIME": -0.23043862995653103,
-      "SHAP": -0.24730413847542967
-    },
-    {
-      "metric": "NonSensitivity",
-      "BreakDown": 2.625,
-      "LIME": 2.625,
-      "SHAP": 2.625
-    },
-    {
-      "metric": "RelativeInputStability",
-      "BreakDown": [
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN
-      ],
-      "LIME": [
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN
-      ],
-      "SHAP": [
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN
-      ]
-    },
-    {
-      "metric": "RelativeOutputStability",
-      "BreakDown": [
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN
-      ],
-      "LIME": [
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN
-      ],
-      "SHAP": [
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN,
-        NaN
-      ]
-    },
-    {
-      "metric": "SensitivityN",
-      "BreakDown": 0.3561638320814245,
-      "LIME": -0.02890513275447425,
-      "SHAP": 0.22576375791926415
+      "BreakDown": -0.04873379015883211,
+      "LIME": -0.41392208047004586,
+      "SHAP": -0.18327052807469887
     },
     {
       "metric": "Sparseness",
       "BreakDown": 0.2778779191849178,
       "LIME": 0.4117540902811757,
       "SHAP": 0.26767704731279185
-    },
-    {
-      "metric": "Sufficiency",
-      "BreakDown": 0.75,
-      "LIME": 0.75,
-      "SHAP": 0.875
     }
   ]
 }

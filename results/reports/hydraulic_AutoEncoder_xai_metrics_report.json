@@ -3,22 +3,10 @@
   "model_name": "AutoEncoder",
   "report": [
     {
-      "metric": "AvgSensitivity",
-      "BreakDown": 1.057366712519824,
-      "LIME": 0.9554156936354183,
-      "SHAP": 1.2191588857030506
-    },
-    {
-      "metric": "Completeness",
-      "BreakDown": 0.0,
-      "LIME": 0.0,
-      "SHAP": 0.0
-    },
-    {
       "metric": "Complexity",
-      "BreakDown": 0.71374844732185,
-      "LIME": 0.9258392654528609,
-      "SHAP": 0.7910763265012014
+      "BreakDown": 1.2788655391357464,
+      "LIME": 1.6588812708583103,
+      "SHAP": 1.417418498890672
     },
     {
       "metric": "Consistency",
@@ -27,94 +15,16 @@
       "SHAP": 0.5714285713469388
     },
     {
-      "metric": "Deletion",
-      "BreakDown": 0.9780704379081726,
-      "LIME": 0.9780704379081726,
-      "SHAP": 0.9780704379081726
-    },
-    {
-      "metric": "Faithfulness",
-      "BreakDown": 0.03436846508147298,
-      "LIME": 0.10483216031232716,
-      "SHAP": 0.026644563548286544
-    },
-    {
       "metric": "FaithfulnessEstimate",
-      "BreakDown": -0.166916899895273,
-      "LIME": -0.16881826793638424,
-      "SHAP": 0.08351130247864574
-    },
-    {
-      "metric": "LocalLipschitzEstimate",
-      "BreakDown": 2.2922947467843597,
-      "LIME": 12.225955389367961,
-      "SHAP": 1.2298427893477348
-    },
-    {
-      "metric": "MaxSensitivity",
-      "BreakDown": 2.1027559574732226,
-      "LIME": 1.5277064482982956,
-      "SHAP": 2.5293084314847047
-    },
-    {
-      "metric": "Monotonicity",
-      "BreakDown": 1.0,
-      "LIME": 1.0,
-      "SHAP": 1.0
-    },
-    {
-      "metric": "MonotonicityCorrelation",
-      "BreakDown": 0.01785714285714285,
-      "LIME": 0.26071428571428573,
-      "SHAP": 0.5392857142857144
-    },
-    {
-      "metric": "MonotonicityMetric",
-      "BreakDown": 0.125,
-      "LIME": 0.125,
-      "SHAP": 0.125
-    },
-    {
-      "metric": "MuFidelity",
-      "BreakDown": -0.7947000348065296,
-      "LIME": -0.8134300584077369,
-      "SHAP": -0.801001942958318
-    },
-    {
-      "metric": "NonSensitivity",
-      "BreakDown": 1.625,
-      "LIME": 1.625,
-      "SHAP": 1.625
-    },
-    {
-      "metric": "RelativeInputStability",
-      "BreakDown": 0.28143799271987474,
-      "LIME": 0.10699190391729273,
-      "SHAP": 0.08249403953106794
-    },
-    {
-      "metric": "RelativeOutputStability",
-      "BreakDown": 973345.4925857974,
-      "LIME": 303782.4734082021,
-      "SHAP": 381551.7022178821
-    },
-    {
-      "metric": "SensitivityN",
-      "BreakDown": 0.4801212525127025,
-      "LIME": -0.0723491250703603,
-      "SHAP": 0.3288505146192631
+      "BreakDown": -0.11049377906785134,
+      "LIME": -0.08405255012029984,
+      "SHAP": 0.049792248646115575
     },
     {
       "metric": "Sparseness",
       "BreakDown": 0.5124397401696976,
       "LIME": 0.2638137567664365,
       "SHAP": 0.4023092167873555
-    },
-    {
-      "metric": "Sufficiency",
-      "BreakDown": 0.53125,
-      "LIME": 0.71875,
-      "SHAP": 0.47916666666666663
     }
   ]
 }
