@@ -13,10 +13,18 @@ dependencies = [
   "pandas",
   "torch",
   "quantus",
+  "cloudpickle",
+  "matplotlib",
+  "seaborn",
+  "scikit-learn",
+  "pyod",
+  "shap",
+  "lime",
+  "interpret",
   "pyyaml>=6.0.3",
   "pytest>=9.0.3",
   "aix360>=0.3.0",
-  "tensorflow>=2.1.0",
+  "tensorflow-cpu>=2.1.0",
   "xplique>=1.3.3",
   "dalex>=1.8.0",
   "sphinx>=8.1.3",
@@ -39,3 +47,22 @@ include-package-data = true
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["XAI_metrics*"]
+
+[[tool.uv.dependency-metadata]]
+name = "xplique"
+requires-dist = [
+  "tensorflow-cpu>=2.1.0",
+  "numpy",
+  "scikit-learn",
+  "scikit-image",
+  "matplotlib",
+  "scipy",
+  "opencv-python",
+  "deprecated",
+  "mkdocs ; extra == 'docs'",
+  "mkdocs-material ; extra == 'docs'",
+  "numkdoc ; extra == 'docs'",
+  "torch ; extra == 'pytorch'",
+  "pytest ; extra == 'tests'",
+  "pylint ; extra == 'tests'",
+]

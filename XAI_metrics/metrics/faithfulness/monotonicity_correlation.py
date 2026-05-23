@@ -1,5 +1,5 @@
 # XAI_metrics/metrics/faithfulness/monotonicity_correlation.py
-import quantus
+from XAI_metrics.runtime import import_optional_dependency
 import numpy as np
 from scipy.stats import spearmanr
 from typing import Mapping, Any
@@ -33,6 +33,7 @@ class MonotonicityCorrelation(BaseMetric):
     def run(self):
         ctx = self.context
         p = self.params
+        quantus = import_optional_dependency("quantus")
 
         if np.all(ctx.attributions < 0.0):
             raise MetricSkipped(

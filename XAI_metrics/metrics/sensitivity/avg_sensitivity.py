@@ -1,5 +1,5 @@
 # XAI_metrics/metrics/sensitivity/avg_sensitivity.py
-import quantus
+from XAI_metrics.runtime import import_optional_dependency
 import numpy as np
 from XAI_metrics.base import BaseMetric, MetricContext, register_metric, MetricSkipped
 from typing import Callable, Any, Mapping
@@ -28,6 +28,7 @@ class AvgSensitivity(BaseMetric):
     def run(self):
         ctx = self.context
         p = self.params
+        quantus = import_optional_dependency("quantus")
 
         if np.all(ctx.attributions < 0.0):
             raise MetricSkipped(

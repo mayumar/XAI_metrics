@@ -1,5 +1,5 @@
 # XAI_metrics/metrics/faithfulness/faithfulness_estimate.py
-import quantus
+from XAI_metrics.runtime import import_optional_dependency
 import numpy as np
 from typing import Mapping, Any
 from XAI_metrics.base import BaseMetric, MetricContext, register_metric, MetricSkipped
@@ -33,6 +33,7 @@ class FaithfulnessEstimate(BaseMetric):
     def run(self):
         ctx = self.context
         p = self.params
+        quantus = import_optional_dependency("quantus")
 
         if np.all(ctx.attributions < 0.0):
             raise MetricSkipped(

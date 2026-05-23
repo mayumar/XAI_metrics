@@ -1,0 +1,120 @@
+{
+  "dataset_name": "hydraulic",
+  "model_name": "VAE",
+  "report": [
+    {
+      "metric": "AvgSensitivity",
+      "BreakDown": 1.276826789761738,
+      "LIME": 0.9421858937219025,
+      "SHAP": 1.3986844921951094
+    },
+    {
+      "metric": "Completeness",
+      "BreakDown": 0.0,
+      "LIME": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "metric": "Complexity",
+      "BreakDown": 0.6755812142808715,
+      "LIME": 0.9431675136139297,
+      "SHAP": 0.8408310307201965
+    },
+    {
+      "metric": "Consistency",
+      "BreakDown": 0.5714285713469388,
+      "LIME": 0.5714285713469388,
+      "SHAP": 0.5714285713469388
+    },
+    {
+      "metric": "Deletion",
+      "BreakDown": 0.9838035702705383,
+      "LIME": 0.9809513092041016,
+      "SHAP": 0.9827465415000916
+    },
+    {
+      "metric": "Faithfulness",
+      "BreakDown": -0.0798111003463139,
+      "LIME": 0.19589695549705763,
+      "SHAP": -0.07865001850840467
+    },
+    {
+      "metric": "FaithfulnessEstimate",
+      "BreakDown": 0.04270101509607933,
+      "LIME": -0.1373617265520169,
+      "SHAP": -0.2225566691586336
+    },
+    {
+      "metric": "LocalLipschitzEstimate",
+      "BreakDown": 2.469278348167436,
+      "LIME": 11.588029198862257,
+      "SHAP": 1.5041957893506885
+    },
+    {
+      "metric": "MaxSensitivity",
+      "BreakDown": 2.37319705687663,
+      "LIME": 1.5505790960948471,
+      "SHAP": 3.0868537120301003
+    },
+    {
+      "metric": "Monotonicity",
+      "BreakDown": 1.0,
+      "LIME": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "metric": "MonotonicityCorrelation",
+      "BreakDown": 0.125,
+      "LIME": 0.20357142857142857,
+      "SHAP": 0.3678571428571429
+    },
+    {
+      "metric": "MonotonicityMetric",
+      "BreakDown": 0.125,
+      "LIME": 0.5,
+      "SHAP": 0.125
+    },
+    {
+      "metric": "MuFidelity",
+      "BreakDown": -0.7326825833544605,
+      "LIME": -0.7355468062711475,
+      "SHAP": -0.7358755885978416
+    },
+    {
+      "metric": "NonSensitivity",
+      "BreakDown": 1.375,
+      "LIME": 1.375,
+      "SHAP": 1.375
+    },
+    {
+      "metric": "RelativeInputStability",
+      "BreakDown": 3.706688125223805,
+      "LIME": 0.1498071739651659,
+      "SHAP": 0.3156658880117872
+    },
+    {
+      "metric": "RelativeOutputStability",
+      "BreakDown": 522434.4512730532,
+      "LIME": 293798.84882883815,
+      "SHAP": 250570.67278950245
+    },
+    {
+      "metric": "SensitivityN",
+      "BreakDown": 0.19948627278734363,
+      "LIME": 0.4249394616258801,
+      "SHAP": 0.1858491307474188
+    },
+    {
+      "metric": "Sparseness",
+      "BreakDown": 0.548546857683196,
+      "LIME": 0.2353141998581292,
+      "SHAP": 0.38342379760409095
+    },
+    {
+      "metric": "Sufficiency",
+      "BreakDown": 0.4583333333333333,
+      "LIME": 0.7354166666666666,
+      "SHAP": 0.4583333333333333
+    }
+  ]
+}

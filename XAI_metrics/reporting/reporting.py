@@ -6,7 +6,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-from typing import Mapping, Any, Sequence, List
+from typing import Mapping, Any, Sequence, List, Dict
 
 def load_scope_from_yaml(config_path="XAI_metrics/config.yaml"):
     with open(config_path, "r", encoding="utf-8") as f:
@@ -142,6 +142,27 @@ def _fmt_num(value: Any) -> str:
         return f"{float(value):.6f}"
     return str(value)
 
+def _summarise_metric_value(value: Any) -> float | Any:
+    numeric_values = _to_numeric_array(value)
+
+    if numeric_values.size:
+        return float(np.mean(numeric_values))
+
+    return _serialize(value)
+
+
+def _flatten_results_for_report(results: Mapping[str, Any]) -> Dict[str, Any]:
+    flattened = {}
+
+    for metric_name, metric_value in results.items():
+        if isinstance(metric_value, Mapping):
+            for key, value in metric_value.items():
+                flattened[f"{metric_name}.{key}"] = _summarise_metric_value(value)
+        else:
+            flattened[metric_name] = _summarise_metric_value(metric_value)
+
+    return flattened
+
 def metrics_report_markdown(
     metric_results: Mapping[str, Any],
     observations: Sequence[Any] | None = None
@@ -263,3 +284,69 @@ def save_metrics_report(
         "json": str(json_path),
         "markdown": str(md_path),
     }
+
+
+def build_reports(context_outputs: Sequence[Mapping[str, Any]]) -> Dict[str, Dict[str, pd.DataFrame]]:
+    grouped = {}
+
+    for context_out in context_outputs:
+        metadata = context_out['metadata']
+
+        dataset_name = metadata['dataset_name']
+        model_name = metadata['model_name']
+        xai_method_name = metadata['xai_method_name']
+
+        key = (dataset_name, model_name)
+
+        grouped.setdefault(key, {})
+        grouped[key][xai_method_name] = _flatten_results_for_report(context_out['results'])
+
+    reports = {}
+
+    for (dataset_name, model_name), methods_results in grouped.items():
+        report_df = pd.DataFrame(methods_results)
+        report_df.index.name = "metric"
+
+        reports.setdefault(dataset_name, {})
+        reports[dataset_name][model_name] = report_df.sort_index()
+
+    return reports
+
+
+def save_reports(
+    reports: Mapping[str, Mapping[str, pd.DataFrame]],
+    output_dir: str | Path,
+) -> Dict[str, Dict[str, Dict[str, str]]]:
+    out_dir = Path(output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    saved_paths = {}
+
+    for dataset_name, dataset_reports in reports.items():
+        saved_paths.setdefault(dataset_name, {})
+
+        for model_name, report_df in dataset_reports.items():
+            report_name = f"{dataset_name}_{model_name}_xai_metrics_report"
+
+            csv_path = out_dir / f"{report_name}.csv"
+            json_path = out_dir / f"{report_name}.json"
+
+            report_df.to_csv(csv_path, index=True)
+
+            payload = {
+                "dataset_name": dataset_name,
+                "model_name": model_name,
+                "report": _serialize(
+                    report_df.reset_index().to_dict(orient="records")
+                ),
+            }
+
+            with json_path.open("w", encoding="utf-8") as f:
+                json.dump(payload, f, ensure_ascii=False, indent=2)
+
+            saved_paths[dataset_name][model_name] = {
+                "csv": str(csv_path),
+                "json": str(json_path),
+            }
+
+    return saved_paths

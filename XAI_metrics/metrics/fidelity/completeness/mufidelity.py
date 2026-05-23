@@ -1,7 +1,7 @@
 # XAI_metrics/metrics/fidelity/completeness/mufidelity.py
 import numpy as np
 from typing import Any, Mapping
-from xplique.metrics import fidelity
+from XAI_metrics.runtime import import_optional_dependency
 
 from XAI_metrics.base import BaseMetric, register_metric
 from XAI_metrics.base.base import MetricContext
@@ -16,6 +16,7 @@ class MuFidelity(BaseMetric):
     def run(self):
         ctx = self.context
         p = self.params
+        fidelity = import_optional_dependency("xplique.metrics").fidelity
 
         X = ctx.X_test.loc[ctx.observations].to_numpy(dtype=np.float32, copy=True)
         y = np.asarray(ctx.y_test.loc[ctx.observations]).astype(int).ravel()

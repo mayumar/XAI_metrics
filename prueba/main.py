@@ -1,29 +1,10 @@
-import os
-os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-
 import argparse
 import os
 import pandas as pd
-import cloudpickle
-
-from data_processing import preprocess_dataset
-from models import (
-    usar_iforest,
-    usar_ecod,
-    usar_autoencoder,
-    usar_hbos,
-    usar_mcd,
-    usar_vae
-)
-from xai_methods.lime import usar_lime, evaluar_lime
-from xai_methods.shap import usar_shap_local, evaluar_shap_local
-from xai_methods.break_down import usar_breakdown, evaluar_breakdown
-from utils import QuantusWrapper
-from config import BASE_DIR, DATASETS
 
 def guardar_atribuciones(explicaciones, observaciones, cols, dataset_name, model_name, method_name):
+    from config import BASE_DIR
+
     output_dir = os.path.join(BASE_DIR, "prueba", "results", "attributions", dataset_name)
     os.makedirs(output_dir, exist_ok=True)
 
@@ -45,6 +26,11 @@ def guardar_atribuciones(explicaciones, observaciones, cols, dataset_name, model
     print(f"Atribuciones guardadas en: {output_path}")
 
 def guardar_modelo(model, dataset_name, model_name, seed):
+    import cloudpickle
+
+    from config import BASE_DIR
+    from utils import QuantusWrapper
+
     output_dir = os.path.join(BASE_DIR, "prueba", "results", "models", dataset_name)
     os.makedirs(output_dir, exist_ok=True)
 
@@ -69,8 +55,47 @@ def main():
 
     if experiment_type == "eval":
         from XAI_metrics.runner import run_evaluation
-        run_evaluation(config="XAI_metrics/config.yaml")
+        from utils import load_model
+        from config import DATASETS
+        from data_processing import preprocess_dataset
+
+        from xai_methods.lime import make_lime_explain_func
+        from xai_methods.shap import make_shap_local_explain_func
+        from xai_methods.break_down import make_breakdown_explain_func
+
+        X_train, y_train, _, _, X_train_norm, _, _ = preprocess_dataset(
+            "hydraulic",
+            False
+        )
+
+        explain_funcs = {
+            "lime": make_lime_explain_func(X_train_norm),
+            "shap": make_shap_local_explain_func(X_train_norm),
+            "breakdown": make_breakdown_explain_func(X_train_norm),
+        }
+
+        results = run_evaluation(
+            config="XAI_metrics/config.yaml",
+            model_loader=load_model,
+            explain_funcs=explain_funcs,
+        )
+
+        print(results)
         return 1
+
+    from config import BASE_DIR, DATASETS
+    from data_processing import preprocess_dataset
+    from models import (
+        usar_iforest,
+        usar_ecod,
+        usar_autoencoder,
+        usar_hbos,
+        usar_mcd,
+        usar_vae
+    )
+    from xai_methods.break_down import usar_breakdown, evaluar_breakdown
+    from xai_methods.lime import usar_lime, evaluar_lime
+    from xai_methods.shap import usar_shap_local, evaluar_shap_local
 
     X_train, y_train, _, _, X_train_norm, _, anomalias_fraccion = preprocess_dataset('hydraulic', False)
 

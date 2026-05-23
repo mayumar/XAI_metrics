@@ -70,6 +70,37 @@ def _breakdown_attributions(
     return np.asarray(attributions)
 
 
+def make_breakdown_explain_func(X_train: pd.DataFrame):
+    cols = list(X_train.columns)
+    
+    def explain_func(model, inputs, targets=None, **kwargs):
+        if isinstance(inputs, torch.Tensor):
+            X_np = inputs.detach().cpu().numpy()
+        else:
+            X_np = np.asarray(inputs)
+
+        if X_np.ndim == 1:
+            X_np = X_np.reshape(1, -1)
+
+        explainer = dx.Explainer(
+            model=model,
+            data=X_train,
+            predict_function=_predict_anomaly_score,
+            label="PyOD detector",
+            verbose=False
+        )
+
+        X_batch = pd.DataFrame(X_np, columns=cols)
+
+        return _breakdown_attributions(
+            explainer=explainer,
+            X=X_batch,
+            cols=cols
+        )
+    
+    return explain_func
+
+
 def usar_breakdown(
     clf: BaseDetector,
     X_train: pd.DataFrame,

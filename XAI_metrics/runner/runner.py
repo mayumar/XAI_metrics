@@ -1,93 +1,22 @@
 # XAI_metrics/runner/runner.py
 from pathlib import Path
-import yaml
-import pandas as pd
-import numpy as np
 
-from XAI_metrics.base import MetricContext
+from XAI_metrics.base import MetricContext, build_metrics_from_config, MetricSkipped
 from XAI_metrics.metrics import autodiscover_metrics
 from XAI_metrics.config import ConfigController
+from XAI_metrics.reporting import build_reports, save_reports
 import XAI_metrics.metrics as metrics_pkg
 import XAI_metrics.base.registry as registry
 
-from typing import Iterable, Any, Mapping, Dict
+from typing import Iterable, Any, Mapping, Dict, List
 import warnings
-
-def _normalize_selection(
-    selected_metrics: Iterable[str] | None,
-    available_metrics: Iterable[str],
-) -> list[str]:
-    available_list = list(available_metrics)
-
-    if selected_metrics is None:
-        return available_list
-
-    selected = list(selected_metrics)
-    available_set = set(available_list)
-
-    missing = [name for name in selected if name not in available_set]
-    if missing:
-        raise ValueError(
-            f"Metrics not registered: {missing}. "
-            f"Available: {sorted(available_list)}"
-        )
-
-    return selected
-
-
-def _build_context_from_config(
-    config: Mapping[str, Any],
-    **runtime_kwargs: Any
-) -> MetricContext:
-    ctx_cfg = config.get("context")
-    if not ctx_cfg:
-        raise ValueError("No MetricContext provided and config has no 'context' section.")
-    
-    required = [
-        "model_path",
-        "X_test_path",
-        "y_test_path",
-        "attributions_path"
-    ]
-    missing = [key for key in required if key not in ctx_cfg]
-    if missing:
-        raise ValueError(f"Missing context config fields: {missing}")
-    
-    model_loader = runtime_kwargs.get("model_loader")
-    if model_loader is None:
-        raise ValueError("Building MetricContext from config requires 'model_loader' to be passed at runtime.")
-    
-    model = model_loader(ctx_cfg['model_path'])
-    X_test = pd.read_csv(ctx_cfg['X_test_path'], index_col=0)
-    y_test = pd.read_csv(ctx_cfg['y_test_path'], index_col=0).squeeze('columns')
-    attributions_df = pd.read_csv(ctx_cfg["attributions_path"], index_col=0)
-
-    observations = attributions_df.index.tolist()
-    attributions = attributions_df.to_numpy()
-
-    extras: dict[str, Any] = {}
-
-    if "X_reference_path" in ctx_cfg:
-        extras["X_reference"] = pd.read_csv(
-            ctx_cfg["X_reference_path"],
-            index_col=0,
-        )
-
-    return MetricContext(
-        model=model,
-        X_test=X_test,
-        y_test=y_test,
-        observations=observations,
-        attributions=attributions,
-        extras=extras,
-    )
 
 
 def _resolve_metric_selection(
     selected_metrics: Iterable[str] | None,
     configured_metrics: Iterable[str],
     registered_metrics: Iterable[str],
-) -> list[str]:
+) -> List[str]:
     configured = set(list(configured_metrics))
     registered = set(registered_metrics)
 
@@ -172,6 +101,7 @@ def run_evaluation(
     metadata: Mapping[str, Any] | None = None,
     selected_metrics: Iterable[str] | None = None,
     config: Mapping[str, Any] | str | Path = "config.yaml",
+    report_output_dir: str | Path | None = Path("results") / "reports",
     **runtime_kwargs: Any,
 ) -> Dict[str, Any]:
     autodiscover_metrics(metrics_pkg)
@@ -207,27 +137,61 @@ def run_evaluation(
         if metric.get("name") in allowed
     ]
 
-    print(context_list)
-    #=====================
+    context_outputs = []
 
-    # deps = dict(context.extras or {})
-    # deps.update(runtime_kwargs)
+    for ctx, ctx_metadata in context_list:
 
-    # metrics = build_metrics_from_config(
-    #     filtered_cfg,
-    #     context,
-    #     dependencies=deps,
-    # )
+        print(f"Evaluando el dataset {ctx_metadata['dataset_name']}, con el modelo {ctx_metadata['model_name']} y el método {ctx_metadata['xai_method_name']}")
 
-    # out = {"results": {}, "skipped": {}}
+        deps = dict(ctx.extras or {})
 
-    # for metric in metrics:
-    #     name = getattr(metric, "NAME", metric.__class__.__name__)
+        runtime_deps = dict(runtime_kwargs)
+        explain_funcs = runtime_deps.pop("explain_funcs", None)
 
-    #     try:
-    #         out["results"][name] = metric.run()
-    #     except MetricSkipped as exc:
-    #         out["skipped"][name] = str(exc)
-    #         print(str(exc))
+        deps.update(runtime_deps)
 
-    # return out
+        if explain_funcs is not None:
+            xai_method_name = str(ctx_metadata['xai_method_name']).lower()
+            explain_func = explain_funcs.get(xai_method_name)
+
+            if explain_func is None:
+                raise ValueError(
+                    f"No explain_func provided for XAI method '{xai_method_name}'. "
+                    f"Available: {list(explain_funcs.keys())}"
+                )
+
+            deps['explain_func'] = explain_func
+
+        metrics = build_metrics_from_config(
+            filtered_cfg,
+            ctx,
+            dependencies=deps,
+        )
+        
+        out = {"metadata": ctx_metadata, "results": {}, "skipped": {}}
+
+        for metric in metrics:
+            name = getattr(metric, "NAME", metric.__class__.__name__)
+
+            try:
+                out["results"][name] = metric.run()
+            except MetricSkipped as exc:
+                out["skipped"][name] = str(exc)
+                print(str(exc))
+
+        context_outputs.append(out)
+    
+    reports = build_reports(context_outputs)
+    report_paths = {}
+
+    if report_output_dir is not None:
+        report_paths = save_reports(
+            reports=reports,
+            output_dir=report_output_dir,
+        )
+
+    return {
+        "contexts": context_outputs,
+        "reports": reports,
+        "report_paths": report_paths,
+    }

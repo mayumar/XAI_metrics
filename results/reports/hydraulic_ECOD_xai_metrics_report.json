@@ -1,0 +1,120 @@
+{
+  "dataset_name": "hydraulic",
+  "model_name": "ECOD",
+  "report": [
+    {
+      "metric": "AvgSensitivity",
+      "BreakDown": NaN,
+      "LIME": 0.9862295293774817,
+      "SHAP": 0.33129258091171676
+    },
+    {
+      "metric": "Completeness",
+      "BreakDown": NaN,
+      "LIME": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "metric": "Complexity",
+      "BreakDown": NaN,
+      "LIME": 0.9829033612581805,
+      "SHAP": 0.9912932879843723
+    },
+    {
+      "metric": "Consistency",
+      "BreakDown": NaN,
+      "LIME": 0.9999999998571428,
+      "SHAP": 0.9999999998571428
+    },
+    {
+      "metric": "Deletion",
+      "BreakDown": 0.6934391856193542,
+      "LIME": 0.6934391856193542,
+      "SHAP": 0.6934391856193542
+    },
+    {
+      "metric": "Faithfulness",
+      "BreakDown": 0.6269927802689399,
+      "LIME": -0.8129475916877011,
+      "SHAP": -0.11538801643371949
+    },
+    {
+      "metric": "FaithfulnessEstimate",
+      "BreakDown": NaN,
+      "LIME": -0.042126351333712,
+      "SHAP": -0.2643419937686058
+    },
+    {
+      "metric": "LocalLipschitzEstimate",
+      "BreakDown": NaN,
+      "LIME": 15.609961259168827,
+      "SHAP": 3.7831314163946215
+    },
+    {
+      "metric": "MaxSensitivity",
+      "BreakDown": NaN,
+      "LIME": 1.551216714983405,
+      "SHAP": 0.47477144248067404
+    },
+    {
+      "metric": "Monotonicity",
+      "BreakDown": NaN,
+      "LIME": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "metric": "MonotonicityCorrelation",
+      "BreakDown": NaN,
+      "LIME": 0.1285714285714286,
+      "SHAP": 0.34285714285714286
+    },
+    {
+      "metric": "MonotonicityMetric",
+      "BreakDown": 0.0,
+      "LIME": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "metric": "MuFidelity",
+      "BreakDown": -0.8468658801881918,
+      "LIME": -0.8346654007803287,
+      "SHAP": -0.8304698351292743
+    },
+    {
+      "metric": "NonSensitivity",
+      "BreakDown": NaN,
+      "LIME": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "metric": "RelativeInputStability",
+      "BreakDown": NaN,
+      "LIME": 0.10983521447115309,
+      "SHAP": 0.026853415127219143
+    },
+    {
+      "metric": "RelativeOutputStability",
+      "BreakDown": NaN,
+      "LIME": 49.51744889373374,
+      "SHAP": 18.36974511708021
+    },
+    {
+      "metric": "SensitivityN",
+      "BreakDown": NaN,
+      "LIME": -0.444576390820608,
+      "SHAP": 0.44229290005143335
+    },
+    {
+      "metric": "Sparseness",
+      "BreakDown": NaN,
+      "LIME": 0.0770156245355533,
+      "SHAP": 0.08318553723182635
+    },
+    {
+      "metric": "Sufficiency",
+      "BreakDown": NaN,
+      "LIME": 0.75,
+      "SHAP": 1.0
+    }
+  ]
+}

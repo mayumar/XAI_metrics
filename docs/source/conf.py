@@ -5,7 +5,11 @@
 
 import os
 import sys
+from unittest.mock import MagicMock
 sys.path.insert(0, os.path.abspath("../.."))
+sys.modules.setdefault("quantus", MagicMock())
+sys.modules.setdefault("xplique", MagicMock())
+sys.modules.setdefault("xplique.metrics", MagicMock())
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -21,11 +25,12 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
-    "sphinx.ext.autosummary",
 ]
 
 autodoc_typehints = "description"
 autodoc_typehints_format = "short"
+autodoc_mock_imports = ["quantus", "xplique"]
+napoleon_use_ivar = True
 
 templates_path = ['_templates']
 exclude_patterns = []

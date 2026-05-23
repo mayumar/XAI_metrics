@@ -6,6 +6,36 @@ from XAI_metrics.base import BaseMetric, MetricContext
 METRIC_REGISTRY = {}
 
 def register_metric(cls: Type[BaseMetric]) -> Type[BaseMetric]:
+    """
+    Register a metric class in the global metric registry.
+
+    The metric is registered using its ``NAME`` attribute. If the class does not
+    define ``NAME``, the class name is used instead.
+
+    Parameters
+    ----------
+    cls : Type[BaseMetric]
+        Metric class to register.
+
+    Returns
+    -------
+    Type[BaseMetric]
+        The same metric class passed as input. This allows the function to be
+        used as a decorator.
+
+    Raises
+    ------
+    ValueError
+        If another metric with the same name is already registered.
+
+    Examples
+    --------
+    >>> @register_metric
+    ... class MyMetric(BaseMetric):
+    ...     NAME = "my_metric"
+    ...     def run(self):
+    ...         return 0.0
+    """
     name = getattr(cls, 'NAME', cls.__name__)
 
     if name in METRIC_REGISTRY:
@@ -15,16 +45,58 @@ def register_metric(cls: Type[BaseMetric]) -> Type[BaseMetric]:
 
     return cls
 
-def list_metrics() -> list[str]:
+
+def list_metrics() -> List[str]:
+    """
+    Return the names of the registered metrics.
+
+    Returns
+    -------
+    List[str]
+        Sorted list containing the names of all metrics currently registered in
+        ``METRIC_REGISTRY``.
+    """
     return sorted(METRIC_REGISTRY.keys())
 
+
 def build_metrics_from_config(
-    config: Mapping[str, Any],
+    metrics_cfg: List[Mapping[str, Any]],
     context: MetricContext,
     dependencies: Mapping[str, Any] | None = None
 ) -> List[BaseMetric]:
+    """
+    Build metric instances from a configuration list.
+
+    Each metric configuration must contain a ``name`` field matching a
+    registered metric. It may also contain a ``params`` field with
+    metric-specific parameters. Additional dependencies are injected only if
+    their names are accepted by the metric class constructor.
+
+    Parameters
+    ----------
+    metrics_cfg : List[Mapping[str, Any]]
+        List of metric configuration dictionaries. Each dictionary must contain
+        the metric ``name`` and may contain ``params``.
+    context : MetricContext
+        Shared metric evaluation context passed to every metric instance.
+    dependencies : Mapping[str, Any] or None, optional
+        Optional dependency objects that can be injected into metric
+        constructors. Only dependencies whose names appear in the constructor
+        signature are passed.
+
+    Returns
+    -------
+    List[BaseMetric]
+        List of instantiated metric objects.
+
+    Raises
+    ------
+    ValueError
+        If a metric name from ``metrics_cfg`` is not registered.
+    KeyError
+        If a metric configuration does not contain the required ``name`` field.
+    """
     dependencies = dict(dependencies or {})
-    metrics_cfg = config.get("metrics", [])
     instances: List[BaseMetric] = []
 
     for metric_cfg in metrics_cfg:

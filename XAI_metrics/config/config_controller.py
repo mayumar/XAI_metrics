@@ -361,26 +361,36 @@ class ConfigController:
     
     def build_context(self, ctx_cfg: Mapping[str, Any] | None = None) -> Tuple[MetricContext, Dict[str, Any]]:
         """
-        Build a metric evaluation context from the loaded configuration.
+        Build a metric evaluation context.
 
-        The configuration must include a ``context`` section with the paths to
-        the model, test data, labels, and attributions. The method loads all
-        required objects, validates their indexes, and returns a
-        :class:`~XAI_metrics.base.MetricContext` instance.
+        The context configuration must contain paths to the model, test data,
+        test labels and attribution file. The method loads these objects,
+        validates their indexes, converts attribution values to a NumPy array,
+        and returns both the :class:`~XAI_metrics.base.MetricContext` and its identifying
+        metadata.
+
+        Parameters
+        ----------
+        ctx_cfg : Mapping[str, Any], optional
+            Context configuration to use. If not provided, the ``context``
+            section of the loaded configuration is used.
 
         Returns
         -------
-        MetricContext
-            Context object containing the model, test data, labels,
-            observations, and attribution values.
+        Tuple[MetricContext, dict[str, Any]]
+            Metric context and metadata dictionary. The metadata contains
+            ``dataset_name``, ``model_name`` and ``xai_method_name``.
 
         Raises
         ------
         ValueError
-            If the ``context`` section is missing or required fields are not
-            provided.
+            If the ``context`` section is missing, required paths are missing,
+            metadata is incomplete, or indexes are inconsistent.
         TypeError
             If the loaded model is not an instance of ``torch.nn.Module``.
+        UserWarning
+            If ``y_test`` contains more than one column. In that case, only the
+            first column is used.
         """
         ctx_cfg = dict(ctx_cfg or self.config.get("context") or {})
 
@@ -438,6 +448,18 @@ class ConfigController:
     
     
     def build_contexts(self) -> List[Tuple[MetricContext, Dict[str, Any]]]:
+        """
+        Build all metric evaluation contexts defined by the configuration.
+
+        The method first obtains all context configurations through
+        :meth:`_iter_context_configs` and then builds each corresponding
+        :class:`MetricContext`.
+
+        Returns
+        -------
+        List[Tuple[MetricContext, Dict[str, Any]]]
+            List of metric contexts together with their metadata.
+        """
         return [
             self.build_context(ctx_cfg)
             for ctx_cfg in self._iter_context_configs()

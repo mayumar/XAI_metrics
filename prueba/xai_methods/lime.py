@@ -52,6 +52,28 @@ def _lime_attributions(
     return np.asarray(attributions)
 
 
+def make_lime_explain_func(X_train: pd.DataFrame):
+    explainer, cols = _make_lime_explainer(X_train)
+
+    def explain_func(model, inputs, targets=None, **kwargs):
+        if hasattr(model, "predict_proba"):
+            pyod_model = model
+        elif hasattr(model, "model") and hasattr(model.model, "predict_proba"):
+            pyod_model = model.model
+        else:
+            raise AttributeError(
+                f"No se encontró predict_proba en {type(model)} ni en model.model"
+            )
+
+        return _lime_attributions(
+            model=pyod_model,
+            explainer=explainer,
+            X=inputs,
+            cols=cols
+        )
+    
+    return explain_func
+
 
 def usar_lime(
     clf: BaseDetector,
