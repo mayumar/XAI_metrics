@@ -46,8 +46,8 @@ class LocalLipschitzEstimate(BaseMetric):
             nr_samples=nr_samples
         )(
             model=ctx.model,
-            x_batch=ctx.X_test.loc[ctx.observations].values,
-            y_batch=ctx.y_test.loc[ctx.observations].values,
+            x_batch=ctx.X_test.loc[ctx.observations].to_numpy(copy=True),
+            y_batch=ctx.y_test.loc[ctx.observations].to_numpy(copy=True),
             a_batch=ctx.attributions,
             explain_func=self.explain_func
         )

@@ -47,8 +47,8 @@ class RelativeInputStability(BaseMetric):
             # return_nan_when_prediction_changes=False # Da nan cuando cambia, pero si se pone esto a False, no da un número que se pueda considerar como neutro
         )(
             model=ctx.model,
-            x_batch=ctx.X_test.loc[ctx.observations].values,
-            y_batch=ctx.y_test.loc[ctx.observations].values,
+            x_batch=ctx.X_test.loc[ctx.observations].to_numpy(copy=True),
+            y_batch=ctx.y_test.loc[ctx.observations].to_numpy(copy=True),
             a_batch=ctx.attributions,
             explain_func=self.explain_func
         )
