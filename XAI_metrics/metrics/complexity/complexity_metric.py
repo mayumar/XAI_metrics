@@ -2,7 +2,7 @@
 import quantus
 import numpy as np
 
-from XAI_metrics.base import BaseMetric, MetricContext, register_metric, MetricSkipped
+from XAI_metrics.base import BaseMetric, MetricContext, register_metric
 
 from typing import Mapping, Any, Callable, Dict
 

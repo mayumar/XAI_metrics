@@ -1,9 +1,10 @@
-from typing import Any, Mapping
-
+# XAI_metrics/metrics/faithfulness/faithfulness.py
 import numpy as np
 from aix360.metrics import faithfulness_metric
 
 from XAI_metrics.base import BaseMetric, MetricContext, register_metric
+
+from typing import Any, Mapping, Callable, Dict
 
 
 @register_metric
@@ -14,8 +15,12 @@ class Faithfulness(BaseMetric):
         self,
         context: MetricContext,
         params: Mapping[str, Any] | None = None,
+        base_func: Callable[[Any], Any] | None = None,
+        base_func_kwargs: Dict[str, Any] | None = None
     ):
         super().__init__(context, params)
+        self.base_func = base_func
+        self.base_func_kwargs = base_func_kwargs
 
     def run(self):
         ctx = self.context
@@ -24,9 +29,11 @@ class Faithfulness(BaseMetric):
         model = ctx.model
         X_selected = ctx.X_test.loc[ctx.observations]
         base = self._resolve_base(
-            X_reference=ctx.extras.get("X_reference", ctx.X_test),
+            X_reference=ctx.X_test,
             base_values=p.get("base_values"),
             base_strategy=p.get("base_strategy", "mean"),
+            base_func=self.base_func,
+            base_func_kwargs=self.base_func_kwargs
         )
 
         scores = []
@@ -42,9 +49,19 @@ class Faithfulness(BaseMetric):
         return scores
 
     @staticmethod
-    def _resolve_base(X_reference, base_values=None, base_strategy="mean"):
+    def _resolve_base(
+        X_reference,
+        base_values=None,
+        base_strategy="mean",
+        base_func: Callable[[Any], Any] | None = None,
+        base_func_kwargs: Dict[str, Any] | None = None,
+    ):
         if base_values is not None:
             return np.asarray(base_values, dtype=float)
+
+        if base_func is not None:
+            kwargs = base_func_kwargs or {}
+            return np.asarray(base_func(X_reference, **kwargs), dtype=float)
 
         values = (
             X_reference.values
