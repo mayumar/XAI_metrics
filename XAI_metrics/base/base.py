@@ -29,15 +29,12 @@ class MetricContext:
     attributions : numpy.ndarray
         Attribution values for the selected observations. Each row usually
         corresponds to one observation and each column to one feature.
-    extras : Dict[str, Any]
-        Optional additional information required by specific metrics.
     """
     model: nn.Module
     X_test: pd.DataFrame
     y_test: pd.Series
     observations: Any
     attributions: np.ndarray
-    extras: Dict[str, Any] = field(default_factory=dict)
 
 
 class MetricSkipped(Exception):

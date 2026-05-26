@@ -143,7 +143,7 @@ def run_evaluation(
 
         print(f"Evaluando el dataset {ctx_metadata['dataset_name']}, con el modelo {ctx_metadata['model_name']} y el método {ctx_metadata['xai_method_name']}")
 
-        deps = dict(ctx.extras or {})
+        deps = {}
 
         runtime_deps = dict(runtime_kwargs)
         explain_funcs = runtime_deps.pop("explain_funcs", None)

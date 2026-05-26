@@ -80,7 +80,7 @@ def main():
             explain_funcs=explain_funcs,
         )
 
-        print(results)
+        # print(results)
         return 1
 
     from config import BASE_DIR, DATASETS

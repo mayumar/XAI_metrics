@@ -15,10 +15,40 @@
       "SHAP": 0.9999999998571428
     },
     {
+      "metric": "Faithfulness",
+      "BreakDown": 0.6269927802689399,
+      "LIME": -0.8129475916877011,
+      "SHAP": -0.11538801643371949
+    },
+    {
       "metric": "FaithfulnessEstimate",
       "BreakDown": NaN,
-      "LIME": -0.05614421943239839,
-      "SHAP": -0.162749150072315
+      "LIME": -0.23666029181770187,
+      "SHAP": 0.022239760507540035
+    },
+    {
+      "metric": "Monotonicity",
+      "BreakDown": NaN,
+      "LIME": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "metric": "MonotonicityCorrelation",
+      "BreakDown": NaN,
+      "LIME": 0.057142857142857106,
+      "SHAP": -0.4
+    },
+    {
+      "metric": "MonotonicityMetric",
+      "BreakDown": 0.0,
+      "LIME": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "metric": "SensitivityN",
+      "BreakDown": NaN,
+      "LIME": -0.007958636816417697,
+      "SHAP": -0.3879580762976647
     },
     {
       "metric": "Sparseness",

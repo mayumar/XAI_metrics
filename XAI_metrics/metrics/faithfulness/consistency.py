@@ -28,14 +28,18 @@ class Consistency(BaseMetric):
         Shared metric evaluation context containing the model, test data,
         labels, observations and attribution values.
     params : Dict[str, Any]
-        Metric-specific parameters. Supported keys are ``abs``, ``normalise``
-        and ``normalise_func_kwargs``.
+        Metric-specific parameters. Supported keys are ``abs`` and
+        ``normalise``.
     discretise_func : Callable[[Any], Any] or None
         Optional function used to discretise attribution vectors before
-        comparing explanations. If ``None``, Quantus uses its default
+        comparing explanations. The function must accept one attribution vector
+        as input and return a discrete representation that can be compared
+        across observations. If ``None``, Quantus uses its default
         discretisation function.
-    normalise_func : Callable[[Any], Any] or None
-        Optional custom normalisation function passed to Quantus.
+    normalise_func : Callable[..., numpy.ndarray] or None
+        Optional custom normalisation function passed to Quantus. The function
+        must accept the attribution array as its first argument and may accept
+        additional keyword arguments from ``normalise_func_kwargs``.
     normalise_func_kwargs : Dict[str, Any] or None
         Optional keyword arguments passed to ``normalise_func`` when
         normalisation is enabled.
@@ -47,7 +51,7 @@ class Consistency(BaseMetric):
         context: MetricContext,
         params: Mapping[str, Any] | None = None,
         discretise_func: Callable[[Any], Any] | None = None,
-        normalise_func: Callable[[Any], Any] | None = None,
+        normalise_func: Callable[..., np.ndarray] | None = None,
         normalise_func_kwargs: Dict[str, Any] | None = None
     ):
         """
@@ -57,31 +61,33 @@ class Consistency(BaseMetric):
         ----------
         context : MetricContext
             Shared metric evaluation context. It must contain the model,
-            ``X_test``, ``y_test``, selected observations and attribution
-            values.
+            ``X_test``, ``y_test``, selected observations and attribution values.
         params : Mapping[str, Any] or None, optional
             Metric-specific parameters. Supported keys are:
 
             - ``abs`` : bool, optional
-              Whether to apply the absolute value operation to the attribution
-              values before computing the metric. The default value is ``True``.
+            Whether to apply the absolute value operation to the attribution
+            values before computing the metric. The default value is ``True``.
             - ``normalise`` : bool, optional
-              Whether to normalise the attribution values before computing the
-              metric. The default value is ``False``.
+            Whether to normalise the attribution values before computing the
+            metric. The default value is ``False``.
 
             If ``None``, an empty dictionary is used.
         discretise_func : Callable[[Any], Any] or None, optional
             Function used to discretise continuous attribution vectors before
-            comparing explanations. If ``None``, Quantus uses its default
+            comparing explanations. The function must accept one attribution vector
+            as input and return a discrete representation, such as a hashable label
+            or encoded pattern. If ``None``, Quantus uses its default
             discretisation function.
-        normalise_func : Callable[[Any], Any] or None, optional
-            Custom normalisation function passed to Quantus. If ``None``,
-            Quantus uses its default normalisation behaviour when
+        normalise_func : Callable[..., numpy.ndarray] or None, optional
+            Custom normalisation function passed to Quantus. The function must
+            accept the attribution array as its first argument and may accept
+            additional keyword arguments from ``normalise_func_kwargs``. If
+            ``None``, Quantus uses its default normalisation behaviour when
             ``normalise=True``.
         normalise_func_kwargs : Dict[str, Any] or None, optional
-            Keyword arguments passed to ``normalise_func`` when normalisation
-            is enabled. If ``None``, no additional keyword arguments are
-            passed.
+            Keyword arguments passed to ``normalise_func`` when normalisation is
+            enabled. If ``None``, no additional keyword arguments are passed.
         """
         super().__init__(context, params)
         self.discretise_func = discretise_func
@@ -94,9 +100,9 @@ class Consistency(BaseMetric):
         Compute the Consistency metric.
 
         The method selects the observations defined in the metric context,
-        retrieves their input data, labels and attribution values, and passes
-        them to :class:`quantus.Consistency`. The model is set to evaluation
-        mode before computing the metric.
+        retrieves their input data, labels and attribution values, and passes them
+        to :class:`quantus.Consistency`. The model is set to evaluation mode before
+        computing the metric.
 
         Returns
         -------
@@ -107,8 +113,8 @@ class Consistency(BaseMetric):
         Raises
         ------
         MetricSkipped
-            If all attribution values are negative, since the metric is skipped
-            for that attribution configuration.
+            If all attribution values are negative, since the metric is skipped for
+            that attribution configuration.
         """
         ctx = self.context
         p = self.params

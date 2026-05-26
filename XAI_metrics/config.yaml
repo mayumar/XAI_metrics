@@ -31,25 +31,39 @@ metrics:
       features_in_step: 1
       abs: true
       normalise: false
-      perturb_baseline: "uniform"
+      perturb_baseline: mean
 
-  # - name: MonotonicityCorrelation
-  #   params:
-  #     Type: Local
-  #     abs: true
-  #     normalise: false
+  - name: Faithfulness
+    params:
+      base_strategy: mean
 
-  # - name: Monotonicity
-  #   params:
-  #     Type: Local
-  #     abs: true
-  #     normalise: false
+  - name: MonotonicityCorrelation
+    params:
+      eps: 1e-5
+      nr_samples: 100
+      features_in_step: 1
+      abs: true
+      normalise: true
+      perturb_baseline: mean
 
-  # - name: SensitivityN
-  #   params:
-  #     Type: Local
-  #     abs: true
-  #     normalise: false
+  - name: MonotonicityMetric
+    params:
+      base_strategy: mean
+
+  - name: Monotonicity
+    params:
+      features_in_step: 1
+      abs: true
+      normalise: true
+      perturb_baseline: black
+
+  - name: SensitivityN
+    params:
+      n_max_percentage: 1.0
+      features_in_step: 1
+      abs: true
+      normalise: false
+      perturb_baseline: uniform
 
   # - name: Sufficiency
   #   params:
@@ -123,16 +137,6 @@ metrics:
   # #     n_samples: 100
   # #     seed: -1
   # #     n_jobs: -1
-
-  # - name: Faithfulness
-  #   params:
-  #     Type: Local
-  #     base_strategy: mean
-
-  # - name: MonotonicityMetric
-  #   params:
-  #     Type: Local
-  #     base_strategy: mean
 
   # - name: MuFidelity
   #   params:

@@ -27,10 +27,11 @@ class Sparseness(BaseMetric):
         Shared metric evaluation context containing the model, test data,
         labels, observations and attribution values.
     params : Dict[str, Any]
-        Metric-specific parameters. Supported keys are ``normalise`` and
-        ``normalise_func_kwargs``.
-    normalise_func : Callable[[Any], Any] or None
-        Optional custom normalisation function passed to Quantus.
+        Metric-specific parameters. Supported keys are ``normalise``.
+    normalise_func : Callable[..., numpy.ndarray] or None
+        Optional custom normalisation function passed to Quantus. The function
+        must accept the attribution array as its first argument and may accept
+        additional keyword arguments from ``normalise_func_kwargs``.
     normalise_func_kwargs : Dict[str, Any] or None
         Optional keyword arguments passed to ``normalise_func`` when
         normalisation is enabled.
@@ -41,7 +42,7 @@ class Sparseness(BaseMetric):
         self,
         context: MetricContext,
         params: Mapping[str, Any] | None = None,
-        normalise_func: Callable[[Any], Any] | None = None,
+        normalise_func: Callable[..., np.ndarray] | None = None,
         normalise_func_kwargs: Dict[str, Any] | None = None
     ):
         """
@@ -61,9 +62,11 @@ class Sparseness(BaseMetric):
               metric. The default value is ``False``.
 
             If ``None``, an empty dictionary is used.
-        normalise_func : Callable[[Any], Any] or None, optional
-            Custom normalisation function passed to Quantus. If ``None``,
-            Quantus uses its default normalisation behaviour when
+        normalise_func : Callable[..., numpy.ndarray] or None, optional
+            Custom normalisation function passed to Quantus. The function must
+            accept the attribution array as its first argument and may accept
+            additional keyword arguments from ``normalise_func_kwargs``. If
+            ``None``, Quantus uses its default normalisation behaviour when
             ``normalise=True``.
         normalise_func_kwargs : Dict[str, Any] or None, optional
             Keyword arguments passed to ``normalise_func`` when normalisation
