@@ -18,23 +18,6 @@ class Complexity(BaseMetric):
 
     The metric is based on the Complexity metric proposed by Bhatt et al.
     (2020) and implemented in Quantus.
-
-    Attributes
-    ----------
-    NAME : str
-        Name used to register the metric in the metric registry.
-    context : MetricContext
-        Shared metric evaluation context containing the model, test data,
-        labels, observations and attribution values.
-    params : Dict[str, Any]
-        Metric-specific parameters. Supported keys are ``normalise``.
-    normalise_func : Callable[..., numpy.ndarray] or None
-        Optional custom normalisation function passed to Quantus. The function
-        must accept the attribution array as its first argument and may accept
-        additional keyword arguments from ``normalise_func_kwargs``.
-    normalise_func_kwargs : Dict[str, Any] or None
-        Optional keyword arguments passed to ``normalise_func`` when
-        normalisation is enabled.
     """
     NAME = 'Complexity'
 
@@ -46,8 +29,6 @@ class Complexity(BaseMetric):
         normalise_func_kwargs: Dict[str, Any] | None = None
     ):
         """
-        Initialize the Complexity metric.
-
         Parameters
         ----------
         context : MetricContext
@@ -59,7 +40,7 @@ class Complexity(BaseMetric):
 
             - ``normalise`` : bool, optional
               Whether to normalise the attribution values before computing the
-              metric. The default value is ``False``.
+              metric. The default value is ``True``.
 
             If ``None``, an empty dictionary is used.
         normalise_func : Callable[..., numpy.ndarray] or None, optional
@@ -101,7 +82,7 @@ class Complexity(BaseMetric):
         if np.all(attributions < 0.0):
             attributions = np.abs(attributions)
 
-        normalise = bool(p.get("normalise", False))
+        normalise = bool(p.get("normalise", True))
         
         ctx.model.train()
 

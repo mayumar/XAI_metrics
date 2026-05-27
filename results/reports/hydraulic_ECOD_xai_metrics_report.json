@@ -3,6 +3,12 @@
   "model_name": "ECOD",
   "report": [
     {
+      "metric": "Completeness",
+      "BreakDown": NaN,
+      "LIME": 0.0,
+      "SHAP": 0.0
+    },
+    {
       "metric": "Complexity",
       "BreakDown": 1.7843712177482334,
       "LIME": 1.7611264048704285,
@@ -17,14 +23,14 @@
     {
       "metric": "Faithfulness",
       "BreakDown": 0.6269927802689399,
-      "LIME": -0.8129475916877011,
-      "SHAP": -0.11538801643371949
+      "LIME": -0.812947591687701,
+      "SHAP": -0.11538801643371951
     },
     {
       "metric": "FaithfulnessEstimate",
       "BreakDown": NaN,
-      "LIME": -0.23666029181770187,
-      "SHAP": 0.022239760507540035
+      "LIME": 0.41475538060062833,
+      "SHAP": 0.02223976050754009
     },
     {
       "metric": "Monotonicity",
@@ -45,16 +51,28 @@
       "SHAP": 0.0
     },
     {
+      "metric": "NonSensitivity",
+      "BreakDown": NaN,
+      "LIME": 1.0,
+      "SHAP": 1.0
+    },
+    {
       "metric": "SensitivityN",
       "BreakDown": NaN,
-      "LIME": -0.007958636816417697,
-      "SHAP": -0.3879580762976647
+      "LIME": -0.04220268446557354,
+      "SHAP": -0.9528359506116164
     },
     {
       "metric": "Sparseness",
-      "BreakDown": 0.055769701408370995,
-      "LIME": 0.0770156245355533,
-      "SHAP": 0.08318553723182635
+      "BreakDown": 0.05576969941595032,
+      "LIME": 0.07701581766302583,
+      "SHAP": 0.08318553119421815
+    },
+    {
+      "metric": "Sufficiency",
+      "BreakDown": NaN,
+      "LIME": 0.75,
+      "SHAP": 1.0
     }
   ]
 }

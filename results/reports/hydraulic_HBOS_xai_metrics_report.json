@@ -3,6 +3,12 @@
   "model_name": "HBOS",
   "report": [
     {
+      "metric": "Completeness",
+      "BreakDown": 0.0,
+      "LIME": 0.0,
+      "SHAP": 0.0
+    },
+    {
       "metric": "Complexity",
       "BreakDown": 1.6550466441058425,
       "LIME": 1.4885251662280976,
@@ -17,13 +23,13 @@
     {
       "metric": "Faithfulness",
       "BreakDown": -0.6613189892974035,
-      "LIME": -0.5321643753547932,
-      "SHAP": 0.24118144824243765
+      "LIME": -0.5321643753547931,
+      "SHAP": 0.2411814482424376
     },
     {
       "metric": "FaithfulnessEstimate",
-      "BreakDown": -0.2798219223079198,
-      "LIME": -0.43350750775738556,
+      "BreakDown": 0.8148714033570312,
+      "LIME": 0.3662602149354719,
       "SHAP": -0.2145009508862098
     },
     {
@@ -45,16 +51,28 @@
       "SHAP": 0.0
     },
     {
+      "metric": "NonSensitivity",
+      "BreakDown": 2.625,
+      "LIME": 2.625,
+      "SHAP": 2.625
+    },
+    {
       "metric": "SensitivityN",
-      "BreakDown": 0.7450912854726924,
-      "LIME": -0.46432618402155923,
-      "SHAP": 0.4635239618413019
+      "BreakDown": -0.3324633317063873,
+      "LIME": -0.25887056400650804,
+      "SHAP": 0.6218625835189651
     },
     {
       "metric": "Sparseness",
-      "BreakDown": 0.2778779191849178,
-      "LIME": 0.4117540902811757,
-      "SHAP": 0.26767704731279185
+      "BreakDown": 0.27787787246822726,
+      "LIME": 0.41175452972637205,
+      "SHAP": 0.26767700606246003
+    },
+    {
+      "metric": "Sufficiency",
+      "BreakDown": 0.75,
+      "LIME": 0.75,
+      "SHAP": 0.875
     }
   ]
 }

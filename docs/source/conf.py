@@ -27,6 +27,7 @@ extensions = [
     "sphinx.ext.viewcode",
 ]
 
+autoclass_content = "both"
 autodoc_typehints = "description"
 autodoc_typehints_format = "short"
 autodoc_mock_imports = ["quantus", "xplique"]

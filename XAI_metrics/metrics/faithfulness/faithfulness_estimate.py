@@ -22,36 +22,6 @@ class FaithfulnessEstimate(BaseMetric):
 
     The metric is based on the Faithfulness Estimate metric proposed by
     Alvarez-Melis and Jaakkola (2018) and implemented in Quantus.
-
-    Attributes
-    ----------
-    NAME : str
-        Name used to register the metric in the metric registry.
-    context : MetricContext
-        Shared metric evaluation context containing the model, test data,
-        labels, observations and attribution values.
-    params : Dict[str, Any]
-        Metric-specific parameters. Supported keys are ``features_in_step``,
-        ``abs``, ``normalise`` and ``perturb_baseline``.
-    similarity_func : Callable[..., float | numpy.ndarray]
-        Function used to compare attribution sums with prediction score drops.
-        The function must accept ``a`` and ``b`` as inputs and may accept
-        ``batched`` and other keyword arguments. If no function is provided,
-        ``_safe_pearson`` is used.
-    perturb_func : Callable[..., numpy.ndarray] or None
-        Optional perturbation function passed to Quantus. The function must be
-        compatible with Quantus perturbation functions, accepting at least an
-        input array and feature indices, and returning the perturbed array. If
-        ``None``, Quantus uses its default perturbation function.
-    perturb_func_kwargs : Dict[str, Any] or None
-        Optional keyword arguments passed to ``perturb_func``.
-    normalise_func : Callable[..., numpy.ndarray] or None
-        Optional custom normalisation function passed to Quantus. The function
-        must accept the attribution array as its first argument and may accept
-        additional keyword arguments from ``normalise_func_kwargs``.
-    normalise_func_kwargs : Dict[str, Any] or None
-        Optional keyword arguments passed to ``normalise_func`` when
-        normalisation is enabled.
     """
     NAME = 'FaithfulnessEstimate'
 
@@ -66,8 +36,6 @@ class FaithfulnessEstimate(BaseMetric):
         normalise_func_kwargs: Dict[str, Any] | None = None
     ):
         """
-        Initialize the Faithfulness Estimate metric.
-
         Parameters
         ----------
         context : MetricContext
@@ -77,19 +45,22 @@ class FaithfulnessEstimate(BaseMetric):
             Metric-specific parameters. Supported keys are:
 
             - ``features_in_step`` : int, optional
-            Number of features perturbed at each step. The default value is
-            ``1``.
+              Number of features perturbed at each step. The default value is
+              ``1``.
+
             - ``abs`` : bool, optional
-            Whether to apply the absolute value operation to the attribution
-            values before computing the metric. The default value is ``True``.
+              Whether to apply the absolute value operation to the attribution
+              values before computing the metric. The default value is ``False``.
+
             - ``normalise`` : bool, optional
-            Whether to normalise the attribution values before computing the
-            metric. The default value is ``False``.
+              Whether to normalise the attribution values before computing the
+              metric. The default value is ``True``.
+
             - ``perturb_baseline`` : str, optional
-            Baseline value used when perturbing features. Supported values depend
-            on the Quantus perturbation function. Common values are ``"black"``,
-            ``"white"``, ``"mean"``, ``"random"`` and ``"uniform"``. The default
-            value is ``"black"``.
+              Baseline value used when perturbing features. Supported values
+              depend on the Quantus perturbation function. Common values are
+              ``"black"``, ``"white"``, ``"mean"``, ``"random"`` and
+              ``"uniform"``. The default value is ``"black"``.
 
             If ``None``, an empty dictionary is used.
         similarity_func : Callable[..., float | numpy.ndarray] or None, optional
@@ -202,12 +173,12 @@ class FaithfulnessEstimate(BaseMetric):
 
         if np.all(ctx.attributions < 0.0):
             raise MetricSkipped(
-                f"{self.NAME} omitida: todas las atribuciones son negativas."
+                f"{self.NAME} skipped: all attributions are negative."
             )
 
         features_in_step = int(p.get("features_in_step", 1))
-        abs_ = bool(p.get("abs", True))
-        normalise = bool(p.get("normalise", False))
+        abs_ = bool(p.get("abs", False))
+        normalise = bool(p.get("normalise", True))
         perturb_baseline = str(p.get("perturb_baseline", "black"))
 
         ctx.model.eval()

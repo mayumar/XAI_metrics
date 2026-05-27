@@ -24,22 +24,6 @@ class Faithfulness(BaseMetric):
 
     The metric is based on the faithfulness metric proposed by Alvarez-Melis
     and Jaakkola (2018) and implemented in AIX360.
-
-    Attributes
-    ----------
-    NAME : str
-        Name used to register the metric in the metric registry.
-    context : MetricContext
-        Shared metric evaluation context containing the model, test data,
-        labels, observations and attribution values.
-    params : Dict[str, Any]
-        Metric-specific parameters. Supported keys are ``base_values`` and
-        ``base_strategy``.
-    base_func : Callable[[Any], Any] or None
-        Optional function used to compute the baseline values from the
-        reference dataset.
-    base_func_kwargs : Dict[str, Any] or None
-        Optional keyword arguments passed to ``base_func``.
     """
     NAME = "Faithfulness"
 
@@ -51,8 +35,6 @@ class Faithfulness(BaseMetric):
         base_func_kwargs: Dict[str, Any] | None = None
     ):
         """
-        Initialize the Faithfulness metric.
-
         Parameters
         ----------
         context : MetricContext
@@ -66,6 +48,7 @@ class Faithfulness(BaseMetric):
               Explicit baseline values used to replace feature values. If
               provided, this takes priority over ``base_func`` and
               ``base_strategy``.
+
             - ``base_strategy`` : str, optional
               Strategy used to compute baseline values from ``X_test`` when
               ``base_values`` and ``base_func`` are not provided. Supported

@@ -22,36 +22,6 @@ class MonotonicityCorrelation(BaseMetric):
 
     The metric is based on the Monotonicity Correlation metric proposed by
     Nguyen and Rodríguez Martínez (2020) and implemented in Quantus.
-
-    Attributes
-    ----------
-    NAME : str
-        Name used to register the metric in the metric registry.
-    context : MetricContext
-        Shared metric evaluation context containing the model, test data,
-        labels, observations and attribution values.
-    params : Dict[str, Any]
-        Metric-specific parameters. Supported keys are ``eps``,
-        ``nr_samples``, ``features_in_step``, ``abs``, ``normalise`` and
-        ``perturb_baseline``.
-    similarity_func : Callable[..., float | numpy.ndarray]
-        Function used to compare attribution values with output variation.
-        The function must accept ``a`` and ``b`` as inputs and may accept
-        ``batched`` and other keyword arguments. If no function is provided,
-        ``_safe_spearman`` is used.
-    normalise_func : Callable[..., numpy.ndarray] or None
-        Optional custom normalisation function passed to Quantus. The function
-        must accept the attribution array as its first argument and may accept
-        additional keyword arguments from ``normalise_func_kwargs``.
-    normalise_func_kwargs : Dict[str, Any] or None
-        Optional keyword arguments passed to ``normalise_func`` when
-        normalisation is enabled.
-    perturb_func : Callable[..., numpy.ndarray] or None
-        Optional perturbation function passed to Quantus. The function must be
-        compatible with Quantus perturbation functions, accepting at least an
-        input array and feature indices, and returning the perturbed array.
-    perturb_func_kwargs : Dict[str, Any] or None
-        Optional keyword arguments passed to ``perturb_func``.
     """
     NAME = 'MonotonicityCorrelation'
 
@@ -66,8 +36,6 @@ class MonotonicityCorrelation(BaseMetric):
         perturb_func_kwargs: Dict[str, Any] | None = None,
     ):
         """
-        Initialize the Monotonicity Correlation metric.
-
         Parameters
         ----------
         context : MetricContext
@@ -77,25 +45,30 @@ class MonotonicityCorrelation(BaseMetric):
             Metric-specific parameters. Supported keys are:
 
             - ``eps`` : float, optional
-            Threshold used when computing the inverse prediction factor. The
-            default value is ``1e-5``.
+              Threshold used when computing the inverse prediction factor. The
+              default value is ``1e-5``.
+
             - ``nr_samples`` : int, optional
-            Number of perturbation samples generated for each feature group. The
-            default value is ``100``.
+              Number of perturbation samples generated for each feature group.
+              The default value is ``100``.
+
             - ``features_in_step`` : int, optional
-            Number of features perturbed at each step. The default value is
-            ``1``.
+              Number of features perturbed at each step. The default value is
+              ``1``.
+
             - ``abs`` : bool, optional
-            Whether to apply the absolute value operation to the attribution
-            values before computing the metric. The default value is ``True``.
+              Whether to apply the absolute value operation to the attribution
+              values before computing the metric. The default value is ``True``.
+
             - ``normalise`` : bool, optional
-            Whether to normalise the attribution values before computing the
-            metric. The default value is ``True``.
+              Whether to normalise the attribution values before computing the
+              metric. The default value is ``True``.
+
             - ``perturb_baseline`` : str, optional
-            Baseline value used when perturbing features. Supported values depend
-            on the Quantus perturbation function. Common values are ``"black"``,
-            ``"white"``, ``"mean"``, ``"random"`` and ``"uniform"``. The default
-            value is ``"uniform"``.
+              Baseline value used when perturbing features. Supported values
+              depend on the Quantus perturbation function. Common values are
+              ``"black"``, ``"white"``, ``"mean"``, ``"random"`` and
+              ``"uniform"``. The default value is ``"uniform"``.
 
             If ``None``, an empty dictionary is used.
         similarity_func : Callable[..., float | numpy.ndarray] or None, optional
@@ -207,7 +180,7 @@ class MonotonicityCorrelation(BaseMetric):
 
         if np.all(ctx.attributions < 0.0):
             raise MetricSkipped(
-                f"{self.NAME} omitida: todas las atribuciones son negativas."
+                f"{self.NAME} skipped: all attributions are negative."
             )
 
         eps = float(p.get("eps", 1e-5))

@@ -25,24 +25,6 @@ class MonotonicityMetric(BaseMetric):
 
     The metric is based on the monotonicity metric proposed by Luss et al.
     (2019) and implemented in AIX360.
-
-    Attributes
-    ----------
-    NAME : str
-        Name used to register the metric in the metric registry.
-    context : MetricContext
-        Shared metric evaluation context containing the model, test data,
-        labels, observations and attribution values.
-    params : Dict[str, Any]
-        Metric-specific parameters. Supported keys are ``base_values`` and
-        ``base_strategy``.
-    base_func : Callable[..., Any] or None
-        Optional function used to compute the baseline values from the
-        reference dataset. The function must accept ``X_reference`` as its
-        first argument, usually a ``pandas.DataFrame``, and may accept
-        additional keyword arguments from ``base_func_kwargs``.
-    base_func_kwargs : Dict[str, Any] or None
-        Optional keyword arguments passed to ``base_func``.
     """
     NAME = "MonotonicityMetric"
 
@@ -54,8 +36,6 @@ class MonotonicityMetric(BaseMetric):
         base_func_kwargs: Dict[str, Any] | None = None
     ):
         """
-        Initialize the Monotonicity metric.
-
         Parameters
         ----------
         context : MetricContext
@@ -66,14 +46,15 @@ class MonotonicityMetric(BaseMetric):
             Metric-specific parameters. Supported keys are:
 
             - ``base_values`` : array-like or None, optional
-            Explicit baseline values used as the initial feature values. If
-            provided, this takes priority over ``base_func`` and
-            ``base_strategy``.
+              Explicit baseline values used as the initial feature values. If
+              provided, this takes priority over ``base_func`` and
+              ``base_strategy``.
+
             - ``base_strategy`` : str, optional
-            Strategy used to compute baseline values from ``X_test`` when
-            ``base_values`` and ``base_func`` are not provided. Supported values
-            are ``"mean"``, ``"median"`` and ``"zero"``. The default value is
-            ``"mean"``.
+              Strategy used to compute baseline values from ``X_test`` when
+              ``base_values`` and ``base_func`` are not provided. Supported
+              values are ``"mean"``, ``"median"`` and ``"zero"``. The default
+              value is ``"mean"``.
 
             If ``None``, an empty dictionary is used.
         base_func : Callable[..., Any] or None, optional

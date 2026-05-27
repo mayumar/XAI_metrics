@@ -3,6 +3,12 @@
   "model_name": "MCD",
   "report": [
     {
+      "metric": "Completeness",
+      "BreakDown": 0.0,
+      "LIME": 0.0,
+      "SHAP": 0.0
+    },
+    {
       "metric": "Complexity",
       "BreakDown": 1.3186025134044734,
       "LIME": 1.2106816126910513,
@@ -22,9 +28,9 @@
     },
     {
       "metric": "FaithfulnessEstimate",
-      "BreakDown": -0.390932296398357,
-      "LIME": -0.4831468729628259,
-      "SHAP": -0.3841165694692009
+      "BreakDown": 0.6414614029985658,
+      "LIME": 0.13565585103162986,
+      "SHAP": -0.3841165694692011
     },
     {
       "metric": "Monotonicity",
@@ -45,16 +51,28 @@
       "SHAP": 0.0
     },
     {
+      "metric": "NonSensitivity",
+      "BreakDown": 0.25,
+      "LIME": 1.25,
+      "SHAP": 0.25
+    },
+    {
       "metric": "SensitivityN",
-      "BreakDown": 0.08467688223446133,
-      "LIME": 0.5960967712378948,
-      "SHAP": 0.8293203967686794
+      "BreakDown": 0.9199521368213824,
+      "LIME": -0.7692316047551675,
+      "SHAP": -0.3728457934598078
     },
     {
       "metric": "Sparseness",
-      "BreakDown": 0.474840821396043,
-      "LIME": 0.5385199216462644,
-      "SHAP": 0.613882755222708
+      "BreakDown": 0.47484030180402514,
+      "LIME": 0.5385230415861901,
+      "SHAP": 0.6138805918541028
+    },
+    {
+      "metric": "Sufficiency",
+      "BreakDown": 0.875,
+      "LIME": 0.75,
+      "SHAP": 0.875
     }
   ]
 }

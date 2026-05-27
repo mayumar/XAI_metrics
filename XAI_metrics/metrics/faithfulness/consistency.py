@@ -19,30 +19,6 @@ class Consistency(BaseMetric):
 
     The metric is based on the Consistency metric proposed by Dasgupta et al.
     (2022) and implemented in Quantus.
-
-    Attributes
-    ----------
-    NAME : str
-        Name used to register the metric in the metric registry.
-    context : MetricContext
-        Shared metric evaluation context containing the model, test data,
-        labels, observations and attribution values.
-    params : Dict[str, Any]
-        Metric-specific parameters. Supported keys are ``abs`` and
-        ``normalise``.
-    discretise_func : Callable[[Any], Any] or None
-        Optional function used to discretise attribution vectors before
-        comparing explanations. The function must accept one attribution vector
-        as input and return a discrete representation that can be compared
-        across observations. If ``None``, Quantus uses its default
-        discretisation function.
-    normalise_func : Callable[..., numpy.ndarray] or None
-        Optional custom normalisation function passed to Quantus. The function
-        must accept the attribution array as its first argument and may accept
-        additional keyword arguments from ``normalise_func_kwargs``.
-    normalise_func_kwargs : Dict[str, Any] or None
-        Optional keyword arguments passed to ``normalise_func`` when
-        normalisation is enabled.
     """
     NAME = 'Consistency'
 
@@ -55,8 +31,6 @@ class Consistency(BaseMetric):
         normalise_func_kwargs: Dict[str, Any] | None = None
     ):
         """
-        Initialize the Consistency metric.
-
         Parameters
         ----------
         context : MetricContext
@@ -66,11 +40,12 @@ class Consistency(BaseMetric):
             Metric-specific parameters. Supported keys are:
 
             - ``abs`` : bool, optional
-            Whether to apply the absolute value operation to the attribution
-            values before computing the metric. The default value is ``True``.
+              Whether to apply the absolute value operation to the attribution
+              values before computing the metric. The default value is ``True``.
+
             - ``normalise`` : bool, optional
-            Whether to normalise the attribution values before computing the
-            metric. The default value is ``False``.
+              Whether to normalise the attribution values before computing the
+              metric. The default value is ``True``.
 
             If ``None``, an empty dictionary is used.
         discretise_func : Callable[[Any], Any] or None, optional
@@ -121,11 +96,11 @@ class Consistency(BaseMetric):
 
         if np.all(ctx.attributions < 0.0):
             raise MetricSkipped(
-                f"{self.NAME} omitida: todas las atribuciones son negativas."
+                f"{self.NAME} skipped: all attributions are negative."
             )
 
         abs_ = bool(p.get("abs", True))
-        normalise = bool(p.get("normalise", False))
+        normalise = bool(p.get("normalise", True))
 
         ctx.model.eval()
 

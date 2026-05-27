@@ -8,29 +8,29 @@ context:
   # y_test_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/data/hydraulic/y_test_train.csv"
   # attributions_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/attributions/hydraulic/IForest/LIME/hydraulic_IForest_lime_attributions.csv"
 
-  datasets_dir: "/home/usuario/Escritorio/XAI_metrics/prueba/data"
-  models_dir: "/home/usuario/Escritorio/XAI_metrics/prueba/results/models"
-  attributions_dir: "/home/usuario/Escritorio/XAI_metrics/prueba/results/attributions"
+  datasets_dir: "prueba/data"
+  models_dir: "prueba/results/models"
+  attributions_dir: "prueba/results/attributions"
 
 metrics:
   - name: Complexity
     params:
-      normalise: false
+      normalise: true
 
   - name: Sparseness
     params:
-      normalise: false
+      normalise: true
 
   - name: Consistency
     params:
       abs: true
-      normalise: false
+      normalise: true
 
   - name: FaithfulnessEstimate
     params:
       features_in_step: 1
-      abs: true
-      normalise: false
+      abs: false
+      normalise: true
       perturb_baseline: mean
 
   - name: Faithfulness
@@ -57,38 +57,59 @@ metrics:
       normalise: true
       perturb_baseline: black
 
+  # - name: PGU
+  #   params:
+  #     Type: Local
+  #     k: 0.25
+  #     AUC: true
+  #     str: 0.1
+  #     n_samples: 100
+  #     seed: -1
+  #     n_jobs: -1
+
+  # - name: PGI
+  #   params:
+  #     Type: Local
+  #     k: 0.25
+  #     AUC: true
+  #     str: 0.1
+  #     n_samples: 100
+  #     seed: -1
+  #     n_jobs: -1
+
   - name: SensitivityN
     params:
       n_max_percentage: 1.0
       features_in_step: 1
-      abs: true
-      normalise: false
+      abs: false
+      normalise: true
       perturb_baseline: uniform
 
-  # - name: Sufficiency
-  #   params:
-  #     Type: Local
-  #     abs: true
-  #     normalise: false
+  - name: Sufficiency
+    params:
+      threshold: 0.6
+      distance_func: seuclidean
+      abs: true
+      normalise: true
 
-  # - name: Completeness
-  #   params:
-  #     Type: Local
-  #     abs: false
-  #     normalise: false
+  - name: Completeness
+    params:
+      abs: false
+      normalise: true
 
-  # - name: NonSensitivity
-  #   params:
-  #     Type: Local
-  #     abs: true
-  #     normalise: false
+  - name: NonSensitivity
+    params:
+      eps: 1e-5
+      features_in_step: 1
+      abs: true
+      normalise: true
+      perturb_baseline: black
 
-  # - name: LocalLipschitzEstimate
-  #   params:
-  #     Type: Local
-  #     abs: false
-  #     normalise: true
-  #     nr_samples: 20
+  - name: LocalLipschitzEstimate
+    params:
+      nr_samples: 20
+      abs: false
+      normalise: true
 
   # - name: MaxSensitivity
   #   params:
@@ -117,26 +138,6 @@ metrics:
   #     abs: false
   #     normalise: false
   #     nr_samples: 20
-
-  # # - name: PGU
-  # #   params:
-  # #     Type: Local
-  # #     k: 0.25
-  # #     AUC: true
-  # #     str: 0.1
-  # #     n_samples: 100
-  # #     seed: -1
-  # #     n_jobs: -1
-
-  # # - name: PGI
-  # #   params:
-  # #     Type: Local
-  # #     k: 0.25
-  # #     AUC: true
-  # #     str: 0.1
-  # #     n_samples: 100
-  # #     seed: -1
-  # #     n_jobs: -1
 
   # - name: MuFidelity
   #   params:

@@ -3,6 +3,12 @@
   "model_name": "IForest",
   "report": [
     {
+      "metric": "Completeness",
+      "BreakDown": 0.0,
+      "LIME": 0.0,
+      "SHAP": 0.0
+    },
+    {
       "metric": "Complexity",
       "BreakDown": 1.5255145078148011,
       "LIME": 1.218711283816869,
@@ -18,12 +24,12 @@
       "metric": "Faithfulness",
       "BreakDown": -0.42214451632291716,
       "LIME": -0.48137837993138716,
-      "SHAP": 0.407577536184602
+      "SHAP": 0.40757753618460196
     },
     {
       "metric": "FaithfulnessEstimate",
-      "BreakDown": -0.2713812374110883,
-      "LIME": -0.8644510533312209,
+      "BreakDown": 0.5746688060928721,
+      "LIME": 0.3434038571054153,
       "SHAP": -0.3377423649156968
     },
     {
@@ -45,16 +51,28 @@
       "SHAP": 0.0
     },
     {
+      "metric": "NonSensitivity",
+      "BreakDown": 1.0,
+      "LIME": 1.0,
+      "SHAP": 1.0
+    },
+    {
       "metric": "SensitivityN",
-      "BreakDown": 0.4269878904234545,
-      "LIME": -0.3789391349221835,
-      "SHAP": 0.6145182266122028
+      "BreakDown": 0.4832501046878731,
+      "LIME": -0.5225343234446064,
+      "SHAP": 0.5364515895147317
     },
     {
       "metric": "Sparseness",
-      "BreakDown": 0.39035506990118823,
-      "LIME": 0.5324800138778425,
-      "SHAP": 0.38579398894472666
+      "BreakDown": 0.39035639118991516,
+      "LIME": 0.5324807803220825,
+      "SHAP": 0.38579770108192357
+    },
+    {
+      "metric": "Sufficiency",
+      "BreakDown": 0.49583333333333335,
+      "LIME": 0.3375,
+      "SHAP": 0.6875
     }
   ]
 }

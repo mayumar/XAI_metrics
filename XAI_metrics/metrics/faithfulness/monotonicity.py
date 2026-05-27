@@ -21,30 +21,6 @@ class Monotonicity(BaseMetric):
     The metric is based on the Monotonicity metric proposed by Arya et al.
     (2019) and related monotonic attribute function work by Luss et al. (2019),
     as implemented in Quantus.
-
-    Attributes
-    ----------
-    NAME : str
-        Name used to register the metric in the metric registry.
-    context : MetricContext
-        Shared metric evaluation context containing the model, test data,
-        labels, observations and attribution values.
-    params : Dict[str, Any]
-        Metric-specific parameters. Supported keys are ``features_in_step``,
-        ``abs``, ``normalise`` and ``perturb_baseline``.
-    normalise_func : Callable[..., numpy.ndarray] or None
-        Optional custom normalisation function passed to Quantus. The function
-        must accept the attribution array as its first argument and may accept
-        additional keyword arguments from ``normalise_func_kwargs``.
-    normalise_func_kwargs : Dict[str, Any] or None
-        Optional keyword arguments passed to ``normalise_func`` when
-        normalisation is enabled.
-    perturb_func : Callable[..., numpy.ndarray] or None
-        Optional perturbation function passed to Quantus. The function must be
-        compatible with Quantus perturbation functions, accepting at least an
-        input array and feature indices, and returning the perturbed array.
-    perturb_func_kwargs : Dict[str, Any] or None
-        Optional keyword arguments passed to ``perturb_func``.
     """
     NAME = 'Monotonicity'
 
@@ -58,8 +34,6 @@ class Monotonicity(BaseMetric):
         perturb_func_kwargs: Dict[str, Any] | None = None
     ):
         """
-        Initialize the Monotonicity metric.
-
         Parameters
         ----------
         context : MetricContext
@@ -69,19 +43,22 @@ class Monotonicity(BaseMetric):
             Metric-specific parameters. Supported keys are:
 
             - ``features_in_step`` : int, optional
-            Number of features added at each perturbation step. The default value
-            is ``1``.
+              Number of features added at each perturbation step. The default
+              value is ``1``.
+
             - ``abs`` : bool, optional
-            Whether to apply the absolute value operation to the attribution
-            values before computing the metric. The default value is ``True``.
+              Whether to apply the absolute value operation to the attribution
+              values before computing the metric. The default value is ``True``.
+
             - ``normalise`` : bool, optional
-            Whether to normalise the attribution values before computing the
-            metric. The default value is ``True``.
+              Whether to normalise the attribution values before computing the
+              metric. The default value is ``True``.
+
             - ``perturb_baseline`` : str, optional
-            Baseline value used to initialise the perturbed input. Supported
-            values depend on the Quantus perturbation function. Common values are
-            ``"black"``, ``"white"``, ``"mean"``, ``"random"`` and
-            ``"uniform"``. The default value is ``"black"``.
+              Baseline value used to initialise the perturbed input. Supported
+              values depend on the Quantus perturbation function. Common values
+              are ``"black"``, ``"white"``, ``"mean"``, ``"random"`` and
+              ``"uniform"``. The default value is ``"black"``.
 
             If ``None``, an empty dictionary is used.
         normalise_func : Callable[..., numpy.ndarray] or None, optional
@@ -135,7 +112,7 @@ class Monotonicity(BaseMetric):
 
         if np.all(ctx.attributions < 0.0):
             raise MetricSkipped(
-                f"{self.NAME} omitida: todas las atribuciones son negativas."
+                f"{self.NAME} skipped: all attributions are negative."
             )
 
         features_in_step = int(p.get("features_in_step", 1))
