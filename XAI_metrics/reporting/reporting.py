@@ -1,12 +1,11 @@
 # XAI_metrics/reporting/reporting.py
 import json
-import yaml
 import datetime
 from pathlib import Path
 import pandas as pd
 import numpy as np
 
-from typing import Mapping, Any, Sequence, List, Dict
+from typing import Mapping, Any, Sequence, Dict
 
 def _serialize(value: Any) -> Any:
     """

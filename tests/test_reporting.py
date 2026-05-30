@@ -3,27 +3,12 @@ import numpy as np
 import pandas as pd
 import json
 
-import XAI_metrics.reporting.reporting as reporting_module
-from XAI_metrics.reporting import load_scope_from_yaml, metrics_to_dataframe, metrics_report_markdown, save_metrics_report
-
-def test_load_scope_from_yaml_reads_metric_types(tmp_path):
-    config_path = tmp_path / "config.yaml"
-    config_path.write_text(
-        (
-            "metrics:\n"
-            "  - name: LocalMetric\n"
-            "    params:\n"
-            "      Type: Local\n"
-            "  - name: GlobalMetric\n"
-            "    params:\n"
-            "      Type: Global\n"
-        ),
-        encoding="utf-8",
-    )
-
-    result = load_scope_from_yaml(config_path)
-
-    assert result == {"LocalMetric": "local", "GlobalMetric": "global"}
+from XAI_metrics.reporting.reporting import (
+    _serialize,
+    _to_numeric_array,
+    build_reports,
+    save_reports
+)
 
 def test_serialize_converts_numpy_and_pandas_values():
     payload = {
@@ -34,7 +19,7 @@ def test_serialize_converts_numpy_and_pandas_values():
         "timestamp": pd.Timestamp("2024-01-01")
     }
 
-    result = reporting_module._serialize(payload)
+    result = _serialize(payload)
 
     assert result["array"] == [1.0, 2.0]
     assert result["float"] == 3.5
@@ -42,84 +27,99 @@ def test_serialize_converts_numpy_and_pandas_values():
     assert result["bool"] is True
     assert result["timestamp"] == "2024-01-01T00:00:00"
 
-def test_flatten_results_expandas_nested_mapping():
-    results = {
-        "MetricA": {"part1": 1, "part2": 2},
-        "MetricB": 3
-    }
-
-    flattened = reporting_module._flatten_results(results)
-
-    assert ("MetricA.part1", 1) in flattened
-    assert ("MetricA.part2", 2) in flattened
-    assert ("MetricB", 3) in flattened
 
 def test_to_numeric_array_returns_flat_non_nan_values():
-    result = reporting_module._to_numeric_array([[1, 2], [3, np.nan]])
+    result = _to_numeric_array([[1, 2], [3, np.nan]])
+
     assert np.array_equal(result, np.array([1.0, 2.0, 3.0]))
 
-def test_metrics_to_dataframe_creates_aggregate_and_observation_rows():
-    metric_results = {"results": {"AnyMetric": np.array([0.2, 0.4])}}
 
-    df = metrics_to_dataframe(metric_results, observations=["obs1", "obs2"])
+def test_build_reports_groups_metrics_by_dataset_model_and_xai_method():
+    context_outputs = [
+        {
+            "metadata": {
+                "dataset_name": "dataset",
+                "model_name": "model",
+                "xai_method_name": "lime",
+            },
+            "results": {
+                "MetricA": np.array([1.0, 2.0, 3.0]),
+                "MetricB": {"part1": [2.0, 4.0]},
+            },
+        },
+        {
+            "metadata": {
+                "dataset_name": "dataset",
+                "model_name": "model",
+                "xai_method_name": "shap",
+            },
+            "results": {
+                "MetricA": np.array([4.0, 6.0]),
+                "MetricB": {"part1": [10.0]},
+            },
+        },
+    ]
 
-    assert set(df["row_type"]) == {"aggregate", "observation"}
-    assert set(df.columns) == {
-        "metric",
-        "scope",
-        "row_type",
-        "observation",
-        "value",
-        "value_raw",
-        "n",
-        "mean",
-        "std",
-        "min",
-        "max",
+    reports = build_reports(context_outputs)
+    report = reports['dataset']['model']
+
+    assert isinstance(report, pd.DataFrame)
+    assert report.index.name == "metric"
+    assert report.loc["MetricA", "lime"] == 2.0
+    assert report.loc["MetricA", "shap"] == 5.0
+    assert report.loc["MetricB.part1", "lime"] == 3.0
+    assert report.loc["MetricB.part1", "shap"] == 10.0
+
+
+def test_build_reports_keeps_non_numeric_values_serialized():
+    context_outputs = [
+        {
+            "metadata": {
+                "dataset_name": "dataset",
+                "model_name": "model",
+                "xai_method_name": "lime",
+            },
+            "results": {
+                "MetricText": {"status": "ok"},
+                "MetricArray": np.array(["a", "b"]),
+            },
+        }
+    ]
+
+    report = build_reports(context_outputs)['dataset']['model']
+
+    assert report.loc["MetricText.status", "lime"] == "ok"
+    assert report.loc["MetricArray", "lime"] == ["a", "b"]
+
+
+def test_save_reports_creates_csv_and_json(tmp_path):
+    reports = {
+        "dataset": {
+            "model": pd.DataFrame(
+                {"lime": [1.0], "shap": [2.0]},
+                index=pd.Index(["MetricA"], name="metric"),
+            )
+        }
     }
 
-def test_metrics_to_dataframe_uses_numeric_index_when_observations_do_not_match():
-    metric_results = {"results": {"AnyMetric": np.array([0.2, 0.4, 0.6])}}
+    paths = save_reports(reports, output_dir=tmp_path)
 
-    df = metrics_to_dataframe(metric_results, observations=["only_one"])
-    obs_rows = df[df["row_type"] == "observation"]
+    csv_path = paths['dataset']['model']['csv']
+    json_path = paths['dataset']['model']['json']
 
-    assert list(obs_rows["observation"]) == [0, 1, 2]
+    assert csv_path.endswith("dataset_model_xai_metrics_report.csv")
+    assert json_path.endswith("dataset_model_xai_metrics_report.json")
 
-def test_fmt_num_formats_special_and_numeric_values():
-    assert reporting_module._fmt_num(None) == "-"
-    assert reporting_module._fmt_num(np.nan) == "-"
-    assert reporting_module._fmt_num(1.2345678910) == "1.234568"
-    assert reporting_module._fmt_num("x") == "x"
+    saved_csv = pd.read_csv(csv_path)
+    assert saved_csv.loc[0, "metric"] == "MetricA"
+    assert saved_csv.loc[0, "lime"] == 1.0
+    assert saved_csv.loc[0, "shap"] == 2.0
 
-def test_metrics_report_markdown_returns_empty_message_for_no_results():
-    report = metrics_report_markdown({"results": {}})
-    assert "No metrics available." in report
-
-def test_metrics_report_markdown_contains_table_sections():
-    metrics_results = {"results": {"SomeMetric": np.array([0.2, 0.4])}}
-
-    report = metrics_report_markdown(metrics_results, observations=["obs1", "obs2"])
-
-    assert "# Metrics Report" in report
-    assert "## Local Metrics (Aggregated)" in report
-    assert "## Local Metrics (Per Observation)" in report
-
-def test_save_metrics_report_creates_expected_files(tmp_path):
-    metric_results = {"results": {"MetricA": np.array([0.2, 0.4])}}
-
-    paths = save_metrics_report(
-        metric_results,
-        observations=["obs1", "obs2"],
-        output_dir=tmp_path,
-        report_name="report"
-    )
-
-    with open(paths["json"], "r", encoding="utf-8") as f:
+    with open(json_path, "r", encoding="utf-8") as f:
         payload = json.load(f)
 
-    assert "generated_at" in payload
-    assert "results" in payload
-    assert "summary" in payload
-    assert "observations" in payload
-    assert payload["results"]["MetricA"] == [0.2, 0.4]
+    assert payload['dataset_name'] == "dataset"
+    assert payload['model_name'] == "model"
+    assert payload['report'][0]['metric'] == "MetricA"
+    assert payload['report'][0]['lime'] == 1.0
+    assert payload['report'][0]['shap'] == 2.0

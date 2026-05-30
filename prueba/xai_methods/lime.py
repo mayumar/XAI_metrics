@@ -176,7 +176,7 @@ def evaluar_lime(
             "RelativeOutputStability"
         ],
         model_loader=load_model,
-        explain_func=explain_func
+        explain_funcs={"LIME": explain_func}
     )
     print(metric_results)
 

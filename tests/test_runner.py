@@ -1,95 +1,246 @@
 # tests/test_runner.py
-from pathlib import Path
+from typing import Any, Mapping
+
 import pytest
 
 import XAI_metrics.runner.runner as runner_module
-import XAI_metrics.base.registry as registry_module
-from XAI_metrics.runner import run_all_metrics
+from XAI_metrics.base import METRIC_REGISTRY, BaseMetric, MetricSkipped
+from XAI_metrics.runner import run_evaluation
 
-def test_normalize_seleccion_returns_all_when_none():
-    assert runner_module._normalize_selection(None, ["A", "B"]) == ["A", "B"]
 
-def test_normalize_seleccion_returns_selected_when_valid():
-    assert runner_module._normalize_selection(["B"], ["A", "B"]) == ["B"]
+def test_resolve_metric_selection_returns_configured_registered_metrics():
+    with pytest.warns(
+        UserWarning,
+        match="Configured metrics not registered and will be skipped",
+    ):
+        result = runner_module._resolve_metric_selection(
+            selected_metrics=None,
+            configured_metrics=['dummy', 'missing_metric'],
+            registered_metrics=['dummy']
+        )
 
-def test_normalize_selection_raises_for_missing_metrics():
-    with pytest.raises(ValueError, match="Metrics not registered"):
-        runner_module._normalize_selection(["Z"], ["A", "B"])
+    assert result == ['dummy']
 
-def test_load_config_from_mapping():
-    config = {"metrics": [{"name": "A"}]}
-    loaded = runner_module._load_config(config)
-    assert loaded == config
 
-def test_load_config_form_yaml_path(tmp_path):
-    config_path = tmp_path / "config.yaml"
-    config_path.write_text("metrics:\n  - name: Example\n", encoding="utf-8")
+def test_resolve_metric_selection_filters_selected_metrics():
+    with pytest.warns(UserWarning) as warnings:
+        result = runner_module._resolve_metric_selection(
+            selected_metrics=['dummy', 'missing_metric'],
+            configured_metrics=['dummy', 'other_metric'],
+            registered_metrics=['dummy', 'other_metric']
+        )
 
-    loaded = runner_module._load_config(config_path)
+    warning_messages = [str(warning.message) for warning in warnings]
 
-    assert loaded == {"metrics": [{"name": "Example"}]}
-
-def test_load_config_uses_default_path_when_none(monkeypatch):
-    default_path = Path(runner_module.__file__).resolve().parents[1] / "config.yaml"
-    original = default_path.read_text(encoding="utf-8")
-
-    try:
-        default_path.write_text("metrics:\n  - name: DefaultMetric\n", encoding="utf-8")
-        loaded = runner_module._load_config(None)
-        assert loaded == {"metrics": [{"name": "DefaultMetric"}]}
-    finally:
-        default_path.write_text(original, encoding="utf-8")
-
-def test_run_all_metrics_runs_selected_metrics(monkeypatch, metric_context):
-    class FakeMetric:
-        NAME = "FakeMetric"
-
-        def __init__(self, context, params=None) -> None:
-            self.context = context
-            self.params = params or {}
-
-        def run(self):
-            return {"value": 123}
-        
-    monkeypatch.setattr(runner_module, "autodiscover_metrics", lambda *args, **kwargs: None)
-    monkeypatch.setattr(registry_module, "METRIC_REGISTRY", {"FakeMetric": FakeMetric})
-
-    config = {
-        "metrics": [
-            {"name": "FakeMetric", "params": {"flag": True}},
-            {"name": "IgnoredMetric", "params": {}},
-        ]
-    }
-
-    result = run_all_metrics(
-        context=metric_context,
-        selected_metrics=["FakeMetric"],
-        config=config
+    assert result == ['dummy']
+    assert any(
+        "Selected metrics not present in config and will be skipped" in message
+        for message in warning_messages
+    )
+    assert any(
+        "Selected metrics not registered and will be skipped" in message
+        for message in warning_messages
     )
 
-    assert result == {"results": {"FakeMetric": {"value": 123}}}
 
-def test_run_all_metrics_passes_extras_as_dependencies(monkeypatch, metric_context, explain_func):
-    class DependencyMetric:
-        NAME = "DependencyMetric"
+def test_validate_context_metadata_requires_metadata():
+    with pytest.raises(ValueError, match="metadata must also be provided"):
+        runner_module._validate_context_metadata(None)
+
+
+def test_validate_context_metadata_requires_expected_fields():
+    with pytest.raises(ValueError, match="missing required fields"):
+        runner_module._validate_context_metadata(
+            {
+                "dataset_name": "dataset",
+                "model_name": "model"
+            }
+        )
+
+
+def test_run_evaluation_runs_registered_metric_without_saving_reports(
+    monkeypatch,
+    clean_registry,
+    metric_context,
+    dummy_metric_class
+):
+    METRIC_REGISTRY['dummy'] = dummy_metric_class
+
+    monkeypatch.setattr(
+        runner_module,
+        "autodiscover_metrics",
+        lambda *args, **kwargs: None
+    )
+
+    result = run_evaluation(
+        context=metric_context,
+        metadata={
+            "dataset_name": "dataset",
+            "model_name": "model",
+            "xai_method_name": "lime"
+        },
+        config={
+            "metrics": [
+                {"name": "dummy", "params": {"value": 3.0}}
+            ]
+        },
+        report_output_dir=None
+    )
+
+    assert result['contexts'][0]['results']['dummy'] == 3.0
+    assert result['contexts'][0]['skipped'] == {}
+    assert result['report_paths'] == {}
+
+    report = result['reports']['dataset']['model']
+    assert report.loc['dummy', 'lime'] == 3.0
+
+
+def test_run_evaluation_records_skipped_metrics(
+    monkeypatch,
+    clean_registry,
+    metric_context
+):
+    class SkippedMetric(BaseMetric):
+        NAME = "skipped"
+
+        def run(self):
+            raise MetricSkipped("not applicable")
+        
+    METRIC_REGISTRY['skipped'] = SkippedMetric
+
+    monkeypatch.setattr(
+        runner_module,
+        "autodiscover_metrics",
+        lambda *args, **kwargs: None,
+    )
+
+    result = run_evaluation(
+        context=metric_context,
+        metadata={
+            "dataset_name": "dataset",
+            "model_name": "model",
+            "xai_method_name": "lime",
+        },
+        config={"metrics": [{"name": "skipped"}]},
+        report_output_dir=None,
+    )
+
+    assert result['contexts'][0]['results'] == {}
+    assert result['contexts'][0]['skipped'] == {
+        "skipped": "not applicable",
+    }
+
+
+def test_run_evaluation_passes_explain_func_by_xai_method(
+    monkeypatch,
+    clean_registry,
+    metric_context
+):
+    def lime_explain_func():
+        return "lime explanation"
+    
+    class ExplainFuncMetric(BaseMetric):
+        NAME = "explain_func_metric"
 
         def __init__(self, context, params=None, explain_func=None):
+            super().__init__(context, params)
             self.explain_func = explain_func
 
         def run(self):
-            return self.explain_func is not None
+            return self.explain_func()
         
-    metric_context.extras["explain_func"] = explain_func
+    METRIC_REGISTRY['explain_func_metric'] = ExplainFuncMetric
 
-    monkeypatch.setattr(runner_module, "autodiscover_metrics", lambda *args, **kwargs: None)
-    monkeypatch.setattr(registry_module, "METRIC_REGISTRY", {"DependencyMetric": DependencyMetric})
-
-    config = {"metrics": [{"name": "DependencyMetric"}]}
-
-    result = run_all_metrics(
-        context=metric_context,
-        selected_metrics=["DependencyMetric"],
-        config=config,
+    monkeypatch.setattr(
+        runner_module,
+        "autodiscover_metrics",
+        lambda *args, **kwargs: None,
     )
 
-    assert result == {"results": {"DependencyMetric": True}}
+    result = run_evaluation(
+        context=metric_context,
+        metadata={
+            "dataset_name": "dataset",
+            "model_name": "model",
+            "xai_method_name": "lime"
+        },
+        config={"metrics": [{"name": "explain_func_metric"}]},
+        report_output_dir=None,
+        explain_funcs={"lime": lime_explain_func}
+    )
+
+    assert result['contexts'][0]['results']['explain_func_metric'] == "lime explanation"
+
+
+def test_run_evaluation_accepts_single_explain_func(
+    monkeypatch,
+    clean_registry,
+    metric_context
+):
+    def explain_func():
+        return "single explanation"
+    
+    class ExplainFuncMetric(BaseMetric):
+        NAME = "explain_func_metric"
+
+        def __init__(self, context, params=None, explain_func=None):
+            super().__init__(context, params)
+            self.explain_func = explain_func
+
+        def run(self):
+            return self.explain_func()
+        
+    METRIC_REGISTRY['explain_func_metric'] = ExplainFuncMetric
+
+    monkeypatch.setattr(
+        runner_module,
+        "autodiscover_metrics",
+        lambda *args, **kwargs: None
+    )
+
+    result = run_evaluation(
+        context=metric_context,
+        metadata={
+            "dataset_name": "dataset",
+            "model_name": "model",
+            "xai_method_name": "lime"
+        },
+        config={"metrics": [{"name": "explain_func_metric"}]},
+        report_output_dir=None,
+        explain_func=explain_func
+    )
+
+    assert result['contexts'][0]['results']['explain_func_metric'] == "single explanation"
+
+
+def test_run_evaluation_fails_when_explain_func_is_missing(
+    monkeypatch,
+    clean_registry,
+    metric_context
+):
+    class ExplainFuncMetric(BaseMetric):
+        NAME = "explain_func_metric"
+
+        def run(self):
+            return 1.0
+        
+    METRIC_REGISTRY['explain_func_metric'] = ExplainFuncMetric
+
+    monkeypatch.setattr(
+        runner_module,
+        "autodiscover_metrics",
+        lambda *args, **kwargs: None,
+    )
+
+    with pytest.raises(ValueError, match="No explain_func provided"):
+        run_evaluation(
+            context=metric_context,
+            metadata={
+                "dataset_name": "dataset",
+                "model_name": "model",
+                "xai_method_name": "shap"
+            },
+            config={"metrics": [{"name": "explain_func_metric"}]},
+            report_output_dir=None,
+            explain_funcs={"lime": lambda: None}
+        )

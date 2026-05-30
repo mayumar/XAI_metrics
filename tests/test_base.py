@@ -1,26 +1,30 @@
 # tests/test_base.py
+import torch.nn as nn
+import pandas as pd
+import numpy as np
 import pytest
-
-from dataclasses import FrozenInstanceError
 
 from XAI_metrics.base import MetricContext, BaseMetric
 
-def test_metric_context_exposes_expected_fields(metric_context: MetricContext):
-    assert list(metric_context.X_test.columns) == ["f1", "f2"]
-    assert list(metric_context.y_test.index) == [10, 11]
-    assert metric_context.observations == [10, 11]
-    assert metric_context.attributions.shape == (2, 2)
+def test_metric_context_stores_basic_inputs():
+    context = MetricContext(
+        model=nn.Identity(),
+        X_test=pd.DataFrame({"x1": [1.0, 2.0]}),
+        y_test=pd.Series([0, 1]),
+        observations=[0, 1],
+        attributions=np.array([[0.1], [0.2]]),
+        device="cpu"
+    )
 
-def test_metric_context_is_frozen(metric_context: MetricContext):
-    with pytest.raises(FrozenInstanceError):
-        metric_context.model = None # type: ignore
+    assert context.X_test.shape == (2, 1)
+    assert context.y_test.tolist() == [0, 1]
+    assert context.observations == [0, 1]
+    assert context.attributions.shape == (2, 1)
+    assert context.device == "cpu"
 
-def test_base_metric_stores_context_and_params(metric_context: MetricContext):
-    metric = BaseMetric(metric_context, params={"flag": True})
-    assert metric.context is metric_context
-    assert metric.params == {"flag": True}
 
-def test_base_metric_run_raises_not_implemented(metric_context: MetricContext):
-    metric = BaseMetric(metric_context)
+def test_base_metric_requires_run_implementation(metric_context):
+    metric = BaseMetric(context=metric_context)
+
     with pytest.raises(NotImplementedError):
         metric.run()

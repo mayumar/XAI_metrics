@@ -203,7 +203,7 @@ def evaluar_breakdown(
         ],
         config="XAI_metrics/config.yaml",
         model_loader=load_model,
-        explain_func=explain_func
+        explain_funcs={"BreakDown": explain_func}
     )
     print(metric_results)
 

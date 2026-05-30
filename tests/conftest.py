@@ -1,43 +1,40 @@
 # tests/conftest.py
+import pytest
+import torch.nn as nn
 import pandas as pd
 import numpy as np
-import pytest
 
-from XAI_metrics.base import MetricContext
+from XAI_metrics.base import BaseMetric, METRIC_REGISTRY, MetricContext
 
-class DummyModel:
-    def __init__(self):
-        self.mode = None
-    def train(self):
-        self.mode = "train"
-    def eval(self):
-        self.mode = "eval"
+class DummyMetric(BaseMetric):
+    NAME = "dummy"
+
+    def run(self):
+        return self.params.get("value", 1.0)
+    
+
+@pytest.fixture
+def dummy_metric_class():
+    return DummyMetric
+
+
+@pytest.fixture
+def clean_registry():
+    old_registry = dict(METRIC_REGISTRY)
+    METRIC_REGISTRY.clear()
+
+    yield
+
+    METRIC_REGISTRY.clear()
+    METRIC_REGISTRY.update(old_registry)
+
 
 @pytest.fixture
 def metric_context():
-    X = pd.DataFrame(
-        [[1.0, 2.0], [3.0, 4.0]],
-        index=[10, 11],
-        columns=["f1", "f2"]
-    )
-    y = pd.Series([0, 1], index=[10, 11])
-    a = np.array([[0.1, 0.9], [0.3, 0.7]], dtype=float)
-
     return MetricContext(
-        model=DummyModel(),
-        X_test=X,
-        y_test=y,
-        observations=[10, 11],
-        attributions=a,
-        extras={}
+        model=nn.Identity(),
+        X_test=pd.DataFrame({"x1": [1.0]}),
+        y_test=pd.Series([0]),
+        observations=[0],
+        attributions=np.array([[0.5]])
     )
-
-@pytest.fixture
-def explain_func():
-    def _explain(mode, inputs, targets=None, **kwargs):
-        arr = np.asarray(inputs, dtype=float)
-        if arr.ndim == 1:
-            arr = arr.reshape(1, -1)
-        return np.ones_like(arr, dtype=float)
-    
-    return _explain

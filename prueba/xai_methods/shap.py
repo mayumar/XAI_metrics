@@ -167,7 +167,7 @@ def evaluar_shap_local(
             "RelativeOutputStability"
         ],
         model_loader=load_model,
-        explain_func=explain_func
+        explain_funcs={"SHAP_local": explain_func}
     )
     print(metric_results)
 
@@ -217,7 +217,7 @@ def evaluar_shap_global(
     metadada = {
         "dataset_name": dataset_name,
         "model_name": model_name,
-        "xai_method_name": "SHAP_local"
+        "xai_method_name": "SHAP_global"
     }
 
     metric_results = run_evaluation(
@@ -241,7 +241,7 @@ def evaluar_shap_global(
             "RelativeOutputStability"
         ],
         model_loader=load_model,
-        explain_func=explain_func
+        explain_funcs={"SHAP_global": explain_func}
     )
 
     return metric_results

@@ -78,6 +78,7 @@ def main():
             config="XAI_metrics/config.yaml",
             model_loader=load_model,
             explain_funcs=explain_funcs,
+            report_output_dir=None # Comentar si se quiere guardar los reportes
         )
 
         # print(results)
