@@ -6,7 +6,6 @@ from lime.lime_tabular import LimeTabularExplainer
 
 from XAI_metrics.runner import run_evaluation
 from XAI_metrics.base import MetricContext
-from XAI_metrics.reporting import save_metrics_report
 
 from utils import QuantusWrapper, load_model
 from config import DATASETS
@@ -126,12 +125,14 @@ def evaluar_lime(
         X_test=X_test,
         y_test=y_test,
         observations=DATASETS["hydraulic"]["observations"],
-        attributions=explicaciones,
-        extras={
-            "explain_func": explain_func,
-            "X_reference": X_train
-        },
+        attributions=explicaciones
     )
+
+    metadada = {
+        "dataset_name": dataset_name,
+        "model_name": model_name,
+        "xai_method_name": "LIME"
+    }
 
     # metric_results = run_evaluation(
     #     ctx,
@@ -155,6 +156,8 @@ def evaluar_lime(
     # )
 
     metric_results = run_evaluation(
+        ctx,
+        metadata=metadada,
         config="XAI_metrics/config.yaml",
         selected_metrics=[
             "Complexity",
@@ -176,16 +179,5 @@ def evaluar_lime(
         explain_func=explain_func
     )
     print(metric_results)
-
-    report_paths = save_metrics_report(
-        metric_results=metric_results,
-        output_dir=Path("results") / "metric_reports",
-        report_name=f"{dataset_name}_{model_name}_lime_metrics_report",
-        observations=observations,
-    )
-
-    print("\nReportes guardados:")
-    for fmt, path in report_paths.items():
-        print(f"- {fmt}: {path}")
 
     return metric_results

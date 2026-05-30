@@ -4,12 +4,11 @@ import shap
 import torch
 from pathlib import Path
 
-from utils import QuantusWrapper
+from utils import QuantusWrapper, load_model
 from config import DATASETS
 
 from XAI_metrics.runner import run_evaluation
 from XAI_metrics.base import MetricContext
-from XAI_metrics.reporting import save_metrics_report
 
 from pyod.models.base import BaseDetector
 from typing import List
@@ -139,14 +138,18 @@ def evaluar_shap_local(
         y_test=y_test,
         observations=DATASETS["hydraulic"]["observations"],
         attributions=explicaciones,
-        extras={
-            "explain_func": explain_func,
-            "X_reference": X_train
-        },
     )
+
+    metadada = {
+        "dataset_name": dataset_name,
+        "model_name": model_name,
+        "xai_method_name": "SHAP_local"
+    }
 
     metric_results = run_evaluation(
         ctx,
+        metadata=metadada,
+        config="XAI_metrics/config.yaml",
         selected_metrics=[
             "Complexity",
             "Sparseness",
@@ -158,22 +161,15 @@ def evaluar_shap_local(
             "Sufficiency",
             "Completeness",
             "NonSensitivity",
-            "LocalLipschitzEstimate"
+            "LocalLipschitzEstimate",
+            "MaxSensitivity",
+            "RelativeInputStability",
+            "RelativeOutputStability"
         ],
-        config="XAI_metrics/config.yaml"
+        model_loader=load_model,
+        explain_func=explain_func
     )
     print(metric_results)
-
-    report_paths = save_metrics_report(
-        metric_results=metric_results,
-        output_dir=Path("results") / "metric_reports",
-        report_name=f"{dataset_name}_{model_name}_lime_metrics_report",
-        observations=observations,
-    )
-
-    print("\nReportes guardados:")
-    for fmt, path in report_paths.items():
-        print(f"- {fmt}: {path}")
 
     return metric_results
 
@@ -215,32 +211,37 @@ def evaluar_shap_global(
         X_test=X_test,
         y_test=y_test,
         observations=None,
-        attributions=attributions,
-        extras={
-            "explain_func": explain_func,
-            "X_reference": X_train
-        },
+        attributions=attributions
     )
+
+    metadada = {
+        "dataset_name": dataset_name,
+        "model_name": model_name,
+        "xai_method_name": "SHAP_local"
+    }
 
     metric_results = run_evaluation(
         ctx,
+        metadata=metadada,
+        config="XAI_metrics/config.yaml",
         selected_metrics=[
-            "MuFidelity"
+            "Complexity",
+            "Sparseness",
+            "Consistency",
+            "FaithfulnessEstimate",
+            "MonotonicityCorrelation",
+            "Monotonicity",
+            "SensitivityN",
+            "Sufficiency",
+            "Completeness",
+            "NonSensitivity",
+            "LocalLipschitzEstimate",
+            "MaxSensitivity",
+            "RelativeInputStability",
+            "RelativeOutputStability"
         ],
-        config="XAI_metrics/config.yaml"
+        model_loader=load_model,
+        explain_func=explain_func
     )
-
-    print(metric_results)
-
-    report_paths = save_metrics_report(
-        metric_results=metric_results,
-        output_dir=Path("results") / "metric_reports",
-        report_name=f"{dataset_name}_{model_name}_shap_global_metrics_report",
-        observations=None,
-    )
-
-    print("\nReportes guardados:")
-    for fmt, path in report_paths.items():
-        print(f"- {fmt}: {path}")
 
     return metric_results

@@ -4,12 +4,11 @@ import dalex as dx
 import torch
 from pathlib import Path
 
-from utils import QuantusWrapper
+from utils import QuantusWrapper, load_model
 from config import DATASETS
 
 from XAI_metrics.base import MetricContext
 from XAI_metrics.runner import run_evaluation
-from XAI_metrics.reporting import save_metrics_report
 
 from pyod.models.base import BaseDetector
 from typing import List
@@ -138,7 +137,6 @@ def evaluar_breakdown(
     model_name: str
 ):
     wrapped_model = QuantusWrapper(model)
-    observations = DATASETS[dataset_name]['observations']
 
     cols = list(X_train.columns)
 
@@ -172,15 +170,18 @@ def evaluar_breakdown(
         X_test=X_test,
         y_test=y_test,
         observations=DATASETS["hydraulic"]["observations"],
-        attributions=explicaciones,
-        extras={
-            "explain_func": explain_func,
-            "X_reference": X_train
-        },
+        attributions=explicaciones
     )
+
+    metadada = {
+        "dataset_name": dataset_name,
+        "model_name": model_name,
+        "xai_method_name": "BreakDown"
+    }
 
     metric_results = run_evaluation(
         ctx,
+        metadata=metadada,
         selected_metrics=[
             "Complexity",
             "Sparseness",
@@ -200,19 +201,10 @@ def evaluar_breakdown(
             "Faithfulness",
             "MonotonicityMetric"
         ],
-        config="XAI_metrics/config.yaml"
+        config="XAI_metrics/config.yaml",
+        model_loader=load_model,
+        explain_func=explain_func
     )
     print(metric_results)
-
-    report_paths = save_metrics_report(
-        metric_results=metric_results,
-        output_dir=Path("results") / "metric_reports",
-        report_name=f"{dataset_name}_{model_name}_breakdown_metrics_report",
-        observations=observations,
-    )
-
-    print("\nReportes guardados:")
-    for fmt, path in report_paths.items():
-        print(f"- {fmt}: {path}")
 
     return metric_results

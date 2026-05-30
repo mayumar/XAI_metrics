@@ -8,19 +8,24 @@ import numpy as np
 
 from typing import Mapping, Any, Sequence, List, Dict
 
-def load_scope_from_yaml(config_path="XAI_metrics/config.yaml"):
-    with open(config_path, "r", encoding="utf-8") as f:
-        cfg = yaml.safe_load(f)
-
-    scope_map = {}
-    for m in cfg.get("metrics", []):
-        name = m.get("name")
-        t = (m.get("params", {}).get("Type", "") or "").strip().lower()
-        if name and t in {"local", "global"}:
-            scope_map[name] = t
-    return scope_map
-
 def _serialize(value: Any) -> Any:
+    """
+    Convert values to JSON-serializable Python objects.
+
+    NumPy arrays, NumPy scalar values, booleans, timestamps, mappings and
+    sequences are recursively converted into standard Python types that can be
+    safely written to JSON.
+
+    Parameters
+    ----------
+    value : Any
+        Value to serialize.
+
+    Returns
+    -------
+    Any
+        JSON-serializable representation of ``value``.
+    """
     if isinstance(value, np.ndarray):
         return value.tolist()
     if isinstance(value, (np.floating, np.integer)):
@@ -36,17 +41,25 @@ def _serialize(value: Any) -> Any:
     return value
 
 
-def _flatten_results(results: Mapping[str, Any]) -> List[tuple[str, Any]]:
-    flattened = []
-    for metric_name, metric_value in results.items():
-        if isinstance(metric_value, Mapping):
-            for k, v in metric_value.items():
-                flattened.append((f"{metric_name}.{k}", v))
-        else:
-            flattened.append((metric_name, metric_value))
-    return flattened
-
 def _to_numeric_array(value: Any) -> np.ndarray:
+    """
+    Convert a metric value to a one-dimensional numeric array.
+
+    The function is used to extract numeric values from metric outputs so that
+    they can be averaged in reports. Non-numeric values are converted to an
+    empty array. Missing values represented as ``nan`` are removed.
+
+    Parameters
+    ----------
+    value : Any
+        Metric output value to convert.
+
+    Returns
+    -------
+    numpy.ndarray
+        One-dimensional array of numeric values. If ``value`` cannot be
+        converted to numeric values, an empty array is returned.
+    """
     if value is None:
         return np.array([], dtype=float)
     if isinstance(value, (float, int, np.floating, np.integer)):
@@ -59,234 +72,38 @@ def _to_numeric_array(value: Any) -> np.ndarray:
         return np.array([], dtype=float)
     return arr[~np.isnan(arr)]
 
-def metrics_to_dataframe(
-    metric_results: Mapping[str, Any],
-    observations: Sequence[Any] | None = None,
-) -> pd.DataFrame:
-    if "results" in metric_results and isinstance(metric_results["results"], Mapping):
-        results = metric_results["results"]
-    else:
-        results = metric_results
 
-    rows = []
-    scope_map = load_scope_from_yaml()
+def build_reports(
+    context_outputs: Sequence[Mapping[str, Any]]
+) -> Dict[str, Dict[str, pd.DataFrame]]:
+    """
+    Build metric reports from context outputs.
 
-    for metric_name, metric_values in _flatten_results(results):
-        numeric_values = _to_numeric_array(metric_values)
-        scope = scope_map.get(metric_name, "local")
+    Each context output is expected to contain a ``metadata`` dictionary with
+    ``dataset_name``, ``model_name`` and ``xai_method_name`` fields, and a
+    ``results`` dictionary containing metric outputs.
 
-        rows.append(
-            {
-                "metric": metric_name,
-                "scope": scope,
-                "row_type": "aggregate",
-                "observation": None,
-                "value": None,
-                "value_raw": _serialize(metric_values),
-                "n": int(numeric_values.size),
-                "mean": float(np.mean(numeric_values)) if numeric_values.size else np.nan,
-                "std": float(np.std(numeric_values)) if numeric_values.size else np.nan,
-                "min": float(np.min(numeric_values)) if numeric_values.size else np.nan,
-                "max": float(np.max(numeric_values)) if numeric_values.size else np.nan,
-            }
-        )
+    Reports are grouped by dataset and model. For each report, rows correspond
+    to metric names and columns correspond to XAI methods. Numeric metric
+    outputs are averaged before being inserted into the report. Non-numeric
+    outputs are serialized and inserted as-is.
 
-        if scope == "local" and numeric_values.size:
-            if observations is not None and len(observations) == numeric_values.size:
-                obs_labels = list(observations)
-            else:
-                obs_labels = list(range(numeric_values.size))
+    If a metric output is a mapping, each key is expanded into a separate row
+    using the format ``"<metric_name>.<key>"``.
 
-            for obs, val in zip(obs_labels, numeric_values):
-                rows.append(
-                    {
-                        "metric": metric_name,
-                        "scope": scope,
-                        "row_type": "observation",
-                        "observation": obs,
-                        "value": float(val),
-                        "value_raw": None,
-                        "n": None,
-                        "mean": None,
-                        "std": None,
-                        "min": None,
-                        "max": None,
-                    }
-                )
+    Parameters
+    ----------
+    context_outputs : Sequence[Mapping[str, Any]]
+        Sequence of context output dictionaries. Each dictionary must contain
+        ``metadata`` and ``results`` entries.
 
-    if not rows:
-        return pd.DataFrame(
-            columns=[
-                "metric",
-                "scope",
-                "row_type",
-                "observation",
-                "value",
-                "value_raw",
-                "n",
-                "mean",
-                "std",
-                "min",
-                "max",
-            ]
-        )
-    
-    return pd.DataFrame(rows).sort_values(["metric", "row_type"]).reset_index(drop=True)
-
-def _fmt_num(value: Any) -> str:
-    if value is None:
-        return "-"
-    if isinstance(value, (float, int, np.floating, np.integer)):
-        if pd.isna(value):
-            return "-"
-        return f"{float(value):.6f}"
-    return str(value)
-
-def _summarise_metric_value(value: Any) -> float | Any:
-    numeric_values = _to_numeric_array(value)
-
-    if numeric_values.size:
-        return float(np.mean(numeric_values))
-
-    return _serialize(value)
-
-
-def _flatten_results_for_report(results: Mapping[str, Any]) -> Dict[str, Any]:
-    flattened = {}
-
-    for metric_name, metric_value in results.items():
-        if isinstance(metric_value, Mapping):
-            for key, value in metric_value.items():
-                flattened[f"{metric_name}.{key}"] = _summarise_metric_value(value)
-        else:
-            flattened[metric_name] = _summarise_metric_value(metric_value)
-
-    return flattened
-
-def metrics_report_markdown(
-    metric_results: Mapping[str, Any],
-    observations: Sequence[Any] | None = None
-) -> str:
-    df = metrics_to_dataframe(
-        metric_results=metric_results,
-        observations=observations
-    )
-    generated_at = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
-
-    lines = [f"# Metrics Report", "", f"Generated at: {generated_at}", ""]
-    if df.empty:
-        lines.extend(["No metrics available.", ""])
-        return "\n".join(lines)
-    
-    agg = df[df["row_type"] == "aggregate"].copy()
-    local_agg = agg[agg["scope"] == "local"]
-    global_agg = agg[agg["scope"] == "global"]
-    local_obs = df[((df["row_type"] == "observation") & (df["scope"] == "local"))]
-
-    if not local_agg.empty:
-        lines.extend(
-            [
-                "## Local Metrics (Aggregated)",
-                "",
-                "| metric | n | mean | std | min | max |",
-                "|---|---:|---:|---:|---:|---:|",
-            ]
-        )
-        for _, row in local_agg.iterrows():
-            lines.append(
-                f"| {row['metric']} | {int(row['n'])} | {_fmt_num(row['mean'])} | {_fmt_num(row['std'])} | {_fmt_num(row['min'])} | {_fmt_num(row['max'])} |"
-            )
-        lines.append("")
-
-    if not local_obs.empty:
-        lines.extend(
-            [
-                "## Local Metrics (Per Observation)",
-                "",
-                "| metric | observation | value |",
-                "|---|---|---:|",
-            ]
-        )
-        for _, row in local_obs.iterrows():
-            lines.append(
-                f"| {row['metric']} | {row['observation']} | {_fmt_num(row['value'])} |"
-            )
-        lines.append("")
-
-    if not global_agg.empty:
-        lines.extend(
-            [
-                "## Global Metrics",
-                "",
-                "| metric | n | mean | std | min | max |",
-                "|---|---:|---:|---:|---:|---:|",
-            ]
-        )
-        for _, row in global_agg.iterrows():
-            lines.append(
-                f"| {row['metric']} | {int(row['n'])} | {_fmt_num(row['mean'])} | {_fmt_num(row['std'])} | {_fmt_num(row['min'])} | {_fmt_num(row['max'])} |"
-            )
-        lines.append("")
-
-    return "\n".join(lines)
-
-
-def save_metrics_report(
-    metric_results: Mapping[str, Any],
-    observations: Sequence[Any] | None = None,
-    output_dir: str | Path = ".",
-    report_name: str = "metrics_report"
-) -> dict[str, str]:
-    out_dir = Path(output_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    if "results" in metric_results and isinstance(metric_results["results"], Mapping):
-        results = metric_results["results"]
-    else:
-        results = metric_results
-
-    df = metrics_to_dataframe(
-         metric_results=metric_results,
-         observations=observations
-    )
-
-    markdown = metrics_report_markdown(
-        metric_results=metric_results,
-        observations=observations
-    )
-
-    summary_df = df[df["row_type"] == "aggregate"].copy()
-    observations_df = df[df["row_type"] == "observation"].copy()
-    
-    summary_csv_path = out_dir / f"{report_name}_summary.csv"
-    observations_csv_path = out_dir / f"{report_name}_observations.csv"
-    json_path = out_dir / f"{report_name}.json"
-    md_path = out_dir / f"{report_name}.md"
-
-    summary_df.to_csv(summary_csv_path, index=False)
-    observations_df.to_csv(observations_csv_path, index=False)
-
-    payload = {
-        "generated_at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
-        "results": _serialize(results),
-        "summary": _serialize(summary_df.to_dict(orient="records")),
-        "observations": _serialize(observations_df.to_dict(orient="records")),
-    }
-
-    with json_path.open("w", encoding="utf-8") as f:
-        json.dump(payload, f, ensure_ascii=False, indent=2)
-
-    md_path.write_text(markdown, encoding="utf-8")
-
-    return {
-        "summary_csv": str(summary_csv_path),
-        "observations_csv": str(observations_csv_path),
-        "json": str(json_path),
-        "markdown": str(md_path),
-    }
-
-
-def build_reports(context_outputs: Sequence[Mapping[str, Any]]) -> Dict[str, Dict[str, pd.DataFrame]]:
+    Returns
+    -------
+    Dict[str, Dict[str, pandas.DataFrame]]
+        Nested dictionary of reports. The first level is indexed by dataset
+        name, the second level by model name, and each value is a report
+        dataframe.
+    """
     grouped = {}
 
     for context_out in context_outputs:
@@ -296,10 +113,27 @@ def build_reports(context_outputs: Sequence[Mapping[str, Any]]) -> Dict[str, Dic
         model_name = metadata['model_name']
         xai_method_name = metadata['xai_method_name']
 
-        key = (dataset_name, model_name)
+        metrics = {}
+        for metric_name, metric_value in context_out["results"].items():
+            if isinstance(metric_value, Mapping):
+                values_to_report = {
+                    f"{metric_name}.{key}": value
+                    for key, value in metric_value.items()
+                }
+            else:
+                values_to_report = {metric_name: metric_value}
 
-        grouped.setdefault(key, {})
-        grouped[key][xai_method_name] = _flatten_results_for_report(context_out['results'])
+            for report_metric_name, value in values_to_report.items():
+                numeric_values = _to_numeric_array(value)
+
+                if numeric_values.size:
+                    metrics[report_metric_name] = float(np.mean(numeric_values))
+                else:
+                    metrics[report_metric_name] = _serialize(value)
+
+        grouped.setdefault((dataset_name, model_name), {})
+        grouped[(dataset_name, model_name)][xai_method_name] = metrics
+
 
     reports = {}
 
@@ -316,7 +150,30 @@ def build_reports(context_outputs: Sequence[Mapping[str, Any]]) -> Dict[str, Dic
 def save_reports(
     reports: Mapping[str, Mapping[str, pd.DataFrame]],
     output_dir: str | Path,
-) -> Dict[str, Dict[str, Dict[str, str]]]:
+) -> Dict[str, dict[str, dict[str, str]]]:
+    """
+    Save metric reports to CSV and JSON files.
+
+    For each dataset and model report, this function creates two files in
+    ``output_dir``: one CSV file containing the report dataframe and one JSON
+    file containing the dataset name, model name and serialized report records.
+
+    Parameters
+    ----------
+    reports : Mapping[str, Mapping[str, pandas.DataFrame]]
+        Nested dictionary of reports, usually returned by :func:`build_reports`.
+        The first level is indexed by dataset name and the second level by
+        model name.
+    output_dir : str or pathlib.Path
+        Directory where report files will be saved. The directory is created if
+        it does not exist.
+
+    Returns
+    -------
+    dict[str, dict[str, dict[str, str]]]
+        Nested dictionary with the saved file paths. For each dataset and model,
+        the dictionary contains the keys ``"csv"`` and ``"json"``.
+    """
     out_dir = Path(output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -336,9 +193,7 @@ def save_reports(
             payload = {
                 "dataset_name": dataset_name,
                 "model_name": model_name,
-                "report": _serialize(
-                    report_df.reset_index().to_dict(orient="records")
-                ),
+                "report": _serialize(report_df.reset_index().to_dict(orient="records")),
             }
 
             with json_path.open("w", encoding="utf-8") as f:
