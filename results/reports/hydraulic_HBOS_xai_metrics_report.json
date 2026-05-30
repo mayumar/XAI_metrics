@@ -3,6 +3,12 @@
   "model_name": "HBOS",
   "report": [
     {
+      "metric": "AvgSensitivity",
+      "BreakDown": 4.677649046187264,
+      "LIME": 0.8248103295033042,
+      "SHAP": 3.354035003019123
+    },
+    {
       "metric": "Completeness",
       "BreakDown": 0.0,
       "LIME": 0.0,
@@ -23,14 +29,26 @@
     {
       "metric": "Faithfulness",
       "BreakDown": -0.6613189892974035,
-      "LIME": -0.5321643753547931,
-      "SHAP": 0.2411814482424376
+      "LIME": -0.5321643753547932,
+      "SHAP": 0.24118144824243765
     },
     {
       "metric": "FaithfulnessEstimate",
       "BreakDown": 0.8148714033570312,
-      "LIME": 0.3662602149354719,
-      "SHAP": -0.2145009508862098
+      "LIME": 0.366260214935472,
+      "SHAP": -0.21450095088620982
+    },
+    {
+      "metric": "LocalLipschitzEstimate",
+      "BreakDown": 13.733290260221152,
+      "LIME": 14.355576921554789,
+      "SHAP": 8.36825688533801
+    },
+    {
+      "metric": "MaxSensitivity",
+      "BreakDown": 7.780106860674551,
+      "LIME": 1.6215983706523391,
+      "SHAP": 5.997545186092621
     },
     {
       "metric": "Monotonicity",
@@ -57,10 +75,76 @@
       "SHAP": 2.625
     },
     {
+      "metric": "RelativeInputStability",
+      "BreakDown": [
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN
+      ],
+      "LIME": [
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN
+      ],
+      "SHAP": [
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN
+      ]
+    },
+    {
+      "metric": "RelativeOutputStability",
+      "BreakDown": [
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN
+      ],
+      "LIME": [
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN
+      ],
+      "SHAP": [
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        NaN
+      ]
+    },
+    {
       "metric": "SensitivityN",
-      "BreakDown": -0.3324633317063873,
-      "LIME": -0.25887056400650804,
-      "SHAP": 0.6218625835189651
+      "BreakDown": -0.14150255214528426,
+      "LIME": 0.2388568012940132,
+      "SHAP": 0.9350439409938419
     },
     {
       "metric": "Sparseness",

@@ -5,11 +5,7 @@
 
 import os
 import sys
-from unittest.mock import MagicMock
 sys.path.insert(0, os.path.abspath("../.."))
-sys.modules.setdefault("quantus", MagicMock())
-sys.modules.setdefault("xplique", MagicMock())
-sys.modules.setdefault("xplique.metrics", MagicMock())
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information

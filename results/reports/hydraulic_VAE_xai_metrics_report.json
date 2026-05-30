@@ -3,6 +3,12 @@
   "model_name": "VAE",
   "report": [
     {
+      "metric": "AvgSensitivity",
+      "BreakDown": 1.279217696634674,
+      "LIME": 0.9460727583829585,
+      "SHAP": 1.480981769895597
+    },
+    {
       "metric": "Completeness",
       "BreakDown": 0.0,
       "LIME": 0.0,
@@ -22,15 +28,27 @@
     },
     {
       "metric": "Faithfulness",
-      "BreakDown": 0.06175701127665393,
-      "LIME": 0.2423354320170288,
-      "SHAP": -0.08331221082057697
+      "BreakDown": -0.05278436287627382,
+      "LIME": 0.0715535810821167,
+      "SHAP": 0.0094967898168029
     },
     {
       "metric": "FaithfulnessEstimate",
-      "BreakDown": 0.42117539128619114,
-      "LIME": 0.1484939964631685,
-      "SHAP": 0.04128630613141586
+      "BreakDown": 0.42012411961197815,
+      "LIME": 0.17253462939382094,
+      "SHAP": 0.03673892890270053
+    },
+    {
+      "metric": "LocalLipschitzEstimate",
+      "BreakDown": 3.2920154983110885,
+      "LIME": 15.669635603863485,
+      "SHAP": 2.0407532231920853
+    },
+    {
+      "metric": "MaxSensitivity",
+      "BreakDown": 2.5535830453142374,
+      "LIME": 1.7579753851389615,
+      "SHAP": 3.845485088042388
     },
     {
       "metric": "Monotonicity",
@@ -40,8 +58,8 @@
     },
     {
       "metric": "MonotonicityCorrelation",
-      "BreakDown": 0.21016700042401254,
-      "LIME": 0.18480201761421797,
+      "BreakDown": 0.275391241934913,
+      "LIME": 0.2282848452881516,
       "SHAP": 0.35873332830995247
     },
     {
@@ -57,10 +75,22 @@
       "SHAP": 1.375
     },
     {
+      "metric": "RelativeInputStability",
+      "BreakDown": 6.02615331500499,
+      "LIME": 0.1348708771847141,
+      "SHAP": 0.29052925625868986
+    },
+    {
+      "metric": "RelativeOutputStability",
+      "BreakDown": 535588.7803336993,
+      "LIME": 257187.02092840333,
+      "SHAP": 272795.21644093626
+    },
+    {
       "metric": "SensitivityN",
-      "BreakDown": 0.39644856352514746,
-      "LIME": 0.6568562781478496,
-      "SHAP": 0.2457927280705843
+      "BreakDown": 0.4454950845007214,
+      "LIME": 0.6102673523519008,
+      "SHAP": 0.20726083246935648
     },
     {
       "metric": "Sparseness",

@@ -8,6 +8,7 @@ context:
   # y_test_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/data/hydraulic/y_test_train.csv"
   # attributions_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/attributions/hydraulic/IForest/LIME/hydraulic_IForest_lime_attributions.csv"
 
+  device: "cuda"
   datasets_dir: "prueba/data"
   models_dir: "prueba/results/models"
   attributions_dir: "prueba/results/attributions"
@@ -107,37 +108,37 @@ metrics:
 
   - name: LocalLipschitzEstimate
     params:
-      nr_samples: 20
+      nr_samples: 200
       abs: false
       normalise: true
+      perturb_mean: 0.0
+      perturb_std: 0.1
 
-  # - name: MaxSensitivity
-  #   params:
-  #     Type: Local
-  #     abs: false
-  #     normalise: false
-  #     nr_samples: 20
+  - name: MaxSensitivity
+    params:
+      nr_samples: 200
+      abs: false
+      normalise: false
+      lower_bound: 0.2
 
-  # - name: RelativeInputStability
-  #   params:
-  #     Type: Local
-  #     abs: false
-  #     normalise: false
-  #     nr_samples: 20
+  - name: RelativeInputStability
+    params:
+      nr_samples: 200
+      abs: false
+      normalise: false
 
-  # - name: RelativeOutputStability
-  #   params:
-  #     Type: Local
-  #     abs: false
-  #     normalise: false
-  #     nr_samples: 20
+  - name: RelativeOutputStability
+    params:
+      nr_samples: 200
+      abs: false
+      normalise: false
 
-  # - name: AvgSensitivity
-  #   params:
-  #     Type: Local
-  #     abs: false
-  #     normalise: false
-  #     nr_samples: 20
+  - name: AvgSensitivity
+    params:
+      nr_samples: 200
+      abs: false
+      normalise: false
+      lower_bound: 0.2
 
   # - name: MuFidelity
   #   params:

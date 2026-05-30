@@ -5,18 +5,21 @@ import torch.nn as nn
 import pandas as pd
 from itertools import product
 import pickle
+import joblib
 
 from XAI_metrics.base import MetricContext
 
 from typing import Mapping, Any, Callable, Dict, Tuple, List
 import warnings
 
-def default_model_loader(model_path: str | Path):
+def default_model_loader(model_path: str | Path) -> Any:
     """
     Load a model from disk.
 
-    Pickle files, with ``.pkl`` or ``.pickle`` extensions, are loaded with
-    :mod:`pickle`. Any other file extension is loaded with :func:`torch.load`.
+    Files with ``.pkl`` or ``.pickle`` extensions are loaded with
+    :mod:`pickle`. Files with ``.joblib`` or ``.jl`` extensions are loaded
+    with :mod:`joblib`. Any other file extension is loaded with
+    :func:`torch.load` using ``weights_only=False``.
 
     Parameters
     ----------
@@ -29,10 +32,14 @@ def default_model_loader(model_path: str | Path):
         Loaded model object.
     """
     model_path = Path(model_path)
+    suffix = model_path.suffix.lower()
 
-    if model_path.suffix.lower() in {".pkl", ".pickle"}:
+    if suffix in {".pkl", ".pickle"}:
         with model_path.open("rb") as f:
             return pickle.load(f)
+
+    if suffix in {".joblib", ".jl"}:
+        return joblib.load(model_path)
 
     return torch.load(model_path, weights_only=False)
 
@@ -45,22 +52,24 @@ class ConfigController:
     The controller can load a configuration from a dictionary-like object or
     from a YAML file. It supports both direct context definitions and automatic
     discovery of contexts from dataset, model and attribution directories.
-
-    Parameters
-    ----------
-    config : Mapping[str, Any], str or pathlib.Path, default="config.yaml"
-        Configuration source. If a mapping is provided, it is copied directly.
-        If a path is provided, the YAML file is loaded. The default value loads
-        the ``config.yaml`` file located next to this module.
-    model_loader : Callable, optional
-        Function used to load models from disk. If not provided,
-        :func:`default_model_loader` is used.
     """
     def __init__(
         self,
         config: Mapping[str, Any] | str | Path = "config.yaml",
-        model_loader: Callable | None = None
+        model_loader: Callable[[str | Path], Any] | None = None
     ):
+        """
+        Parameters
+        ----------
+        config : Mapping[str, Any], str or pathlib.Path, default="config.yaml"
+            Configuration source. If a mapping is provided, it is copied directly.
+            If a path is provided, the YAML file is loaded. The default value loads
+            the ``config.yaml`` file located next to this module.
+        model_loader : Callable or None, optional
+            Function used to load models from disk. The function must accept a
+            model path as input and return the loaded model object. If ``None``,
+            :func:`default_model_loader` is used.
+        """
         self.config = self._load_config(config)
         self.model_loader = model_loader or default_model_loader
 
@@ -72,13 +81,15 @@ class ConfigController:
         Parameters
         ----------
         config : Mapping[str, Any], str or pathlib.Path
-            Configuration mapping or path to a YAML configuration file.
+            Configuration mapping or path to a YAML configuration file. If the
+            value is ``"config.yaml"``, the file is loaded from the directory that
+            contains this module.
 
         Returns
         -------
         Dict
-            Loaded configuration dictionary. If the YAML file is empty, an
-            empty dictionary is returned.
+            Loaded configuration dictionary. If the YAML file is empty, an empty
+            dictionary is returned.
         """
         if not isinstance(config, Mapping) and config == "config.yaml":
             config_path = Path(__file__).resolve().parent / config
@@ -240,16 +251,23 @@ class ConfigController:
         Build the list of context configurations to evaluate.
 
         If the ``context`` section contains direct paths, a single context
-        configuration is returned. If it contains ``datasets_dir``,
-        ``models_dir`` and ``attributions_dir``, the method searches those
-        directories and creates one configuration for each valid combination of
-        dataset, model, test data and attribution file.
+        configuration is returned. If it contains ``datasets_dir``, ``models_dir``
+        and ``attributions_dir``, the method searches those directories and creates
+        one configuration for each valid combination of dataset, model, test data
+        and attribution file.
+
+        When automatic discovery is used, the optional ``device`` field from the
+        root ``context`` section is copied into each generated context
+        configuration.
 
         Returns
         -------
-        List[dict[str, Any]]
-            List of context configuration dictionaries. Each dictionary
-            contains metadata and paths required by :meth:`build_context`.
+        List[Dict[str, Any]]
+            List of context configuration dictionaries. Each dictionary contains
+            metadata and paths required by :meth:`build_context`, namely
+            ``dataset_name``, ``model_name``, ``xai_method_name``, ``model_path``,
+            ``X_test_path``, ``y_test_path`` and ``attributions_path``. It may also
+            contain ``device``.
 
         Raises
         ------
@@ -335,7 +353,8 @@ class ConfigController:
                             "model_path": str(model_path),
                             "X_test_path": str(X_path),
                             "y_test_path": str(y_path),
-                            "attributions_path": str(attributions_path)
+                            "attributions_path": str(attributions_path),
+                            "device": ctx_cfg.get("device")
                         })
 
         if not context_configs:
@@ -363,21 +382,25 @@ class ConfigController:
         """
         Build a metric evaluation context.
 
-        The context configuration must contain paths to the model, test data,
-        test labels and attribution file. The method loads these objects,
-        validates their indexes, converts attribution values to a NumPy array,
-        and returns both the :class:`~XAI_metrics.base.MetricContext` and its identifying
-        metadata.
+        The context configuration must contain paths to the model, test data, test
+        labels and attribution file. The method loads these objects, validates
+        their indexes, converts attribution values to a NumPy array, optionally
+        moves the model to the configured device, and returns both the
+        :class:`~XAI_metrics.base.MetricContext` and its identifying metadata.
 
         Parameters
         ----------
-        ctx_cfg : Mapping[str, Any], optional
-            Context configuration to use. If not provided, the ``context``
-            section of the loaded configuration is used.
+        ctx_cfg : Mapping[str, Any] or None, optional
+            Context configuration to use. If ``None``, the ``context`` section of
+            the loaded configuration is used. The configuration must contain
+            ``model_path``, ``X_test_path``, ``y_test_path`` and
+            ``attributions_path``. It must also contain the metadata fields
+            ``dataset_name``, ``model_name`` and ``xai_method_name``. It may
+            optionally contain ``device``.
 
         Returns
         -------
-        Tuple[MetricContext, dict[str, Any]]
+        Tuple[MetricContext, Dict[str, Any]]
             Metric context and metadata dictionary. The metadata contains
             ``dataset_name``, ``model_name`` and ``xai_method_name``.
 
@@ -388,6 +411,11 @@ class ConfigController:
             metadata is incomplete, or indexes are inconsistent.
         TypeError
             If the loaded model is not an instance of ``torch.nn.Module``.
+        RuntimeError
+            If a CUDA device is requested but CUDA is not available.
+
+        Warns
+        -----
         UserWarning
             If ``y_test`` contains more than one column. In that case, only the
             first column is used.
@@ -407,10 +435,21 @@ class ConfigController:
         missing = [key for key in required if key not in ctx_cfg]
         if missing:
             raise ValueError(f"Missing context config fields: {missing}")
+
+        device = ctx_cfg.get("device")
+
+        if device is not None:
+            device = str(device)
+            if device.startswith("cuda") and not torch.cuda.is_available():
+                raise RuntimeError(f"Device {device!r} requested but CUDA is not available.")
         
-        model = self.model_loader(ctx_cfg['model_path'])
+        model = self.model_loader(ctx_cfg["model_path"])
+
         if not isinstance(model, nn.Module):
             raise TypeError("The loaded model must be a torch.nn.Module.")
+
+        if device is not None:
+            model = model.to(device)
         
         X_test = pd.read_csv(ctx_cfg["X_test_path"], index_col=0)
 
@@ -439,7 +478,8 @@ class ConfigController:
             X_test=X_test,
             y_test=y_test,
             observations=observations,
-            attributions=attributions
+            attributions=attributions,
+            device=device
         )
 
         metadata = self._validate_context_metadata(ctx_cfg)
@@ -453,7 +493,7 @@ class ConfigController:
 
         The method first obtains all context configurations through
         :meth:`_iter_context_configs` and then builds each corresponding
-        :class:`MetricContext`.
+        :class:`~XAI_metrics.base.MetricContext`.
 
         Returns
         -------

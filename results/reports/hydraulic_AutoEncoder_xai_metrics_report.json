@@ -3,6 +3,12 @@
   "model_name": "AutoEncoder",
   "report": [
     {
+      "metric": "AvgSensitivity",
+      "BreakDown": 1.0659127262289512,
+      "LIME": 0.9744028045030063,
+      "SHAP": 1.209584577877731
+    },
+    {
       "metric": "Completeness",
       "BreakDown": 0.0,
       "LIME": 0.0,
@@ -22,15 +28,27 @@
     },
     {
       "metric": "Faithfulness",
-      "BreakDown": 0.03436834070001563,
-      "LIME": 0.1048322322206526,
-      "SHAP": 0.026644527845608494
+      "BreakDown": 0.03436846508147298,
+      "LIME": 0.10483216031232716,
+      "SHAP": 0.026644563548286544
     },
     {
       "metric": "FaithfulnessEstimate",
-      "BreakDown": 0.5153612604023549,
-      "LIME": 0.24002717238291257,
-      "SHAP": -0.1806072282041186
+      "BreakDown": 0.5153612703343534,
+      "LIME": 0.24002723995917327,
+      "SHAP": -0.1806071846472871
+    },
+    {
+      "metric": "LocalLipschitzEstimate",
+      "BreakDown": 2.956838716577712,
+      "LIME": 16.023556346837083,
+      "SHAP": 1.7827969663201597
+    },
+    {
+      "metric": "MaxSensitivity",
+      "BreakDown": 2.2641472660831834,
+      "LIME": 1.8469311445984467,
+      "SHAP": 3.263276948707568
     },
     {
       "metric": "Monotonicity",
@@ -57,10 +75,22 @@
       "SHAP": 1.625
     },
     {
+      "metric": "RelativeInputStability",
+      "BreakDown": 0.7366767880972575,
+      "LIME": 0.17744288997714183,
+      "SHAP": 0.14487693115660763
+    },
+    {
+      "metric": "RelativeOutputStability",
+      "BreakDown": 1121933.1795592362,
+      "LIME": 342135.12182401505,
+      "SHAP": 428378.5448495263
+    },
+    {
       "metric": "SensitivityN",
-      "BreakDown": 0.3153505726598197,
-      "LIME": 0.15710978363951725,
-      "SHAP": 0.43908694414560456
+      "BreakDown": 0.4582330343162349,
+      "LIME": -0.3397742421077011,
+      "SHAP": 0.4390868449802658
     },
     {
       "metric": "Sparseness",

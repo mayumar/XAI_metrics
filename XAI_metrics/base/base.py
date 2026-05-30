@@ -29,12 +29,16 @@ class MetricContext:
     attributions : numpy.ndarray
         Attribution values for the selected observations. Each row usually
         corresponds to one observation and each column to one feature.
+    device : str or None
+        Device where the model is placed, such as ``"cpu"`` or ``"cuda"``.
+        If ``None``, no explicit device was configured.
     """
     model: nn.Module
     X_test: pd.DataFrame
     y_test: pd.Series
     observations: Any
     attributions: np.ndarray
+    device: str | None = None
 
 
 class MetricSkipped(Exception):
@@ -52,27 +56,20 @@ class BaseMetric:
 
     Metric classes should inherit from this class, define their own ``NAME``,
     and implement the :meth:`run` method.
-
-    Attributes
-    ----------
-    NAME : str
-        Name used to identify the metric.
-    context : MetricContext
-        Shared metric evaluation context.
-    params : Dict[str, Any]
-        Metric-specific parameters.
     """
     NAME: str = 'metric'
 
-    def __init__(self, context: MetricContext, params: Mapping[str, Any] | None = None):
+    def __init__(
+        self,
+        context: MetricContext,
+        params: Mapping[str, Any] | None = None
+    ):
         """
-        Initialize the metric.
-
         Parameters
         ----------
         context : MetricContext
             Shared context containing the model, test data, labels,
-            observations and attribution values.
+            observations, attribution values and optional device information.
         params : Mapping[str, Any] or None, optional
             Metric-specific configuration parameters. If ``None``, an empty
             dictionary is used.

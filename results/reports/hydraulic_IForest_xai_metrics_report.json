@@ -3,6 +3,12 @@
   "model_name": "IForest",
   "report": [
     {
+      "metric": "AvgSensitivity",
+      "BreakDown": 1.3850972088942708,
+      "LIME": 1.0014498738070017,
+      "SHAP": 1.573208753697013
+    },
+    {
       "metric": "Completeness",
       "BreakDown": 0.0,
       "LIME": 0.0,
@@ -24,13 +30,25 @@
       "metric": "Faithfulness",
       "BreakDown": -0.42214451632291716,
       "LIME": -0.48137837993138716,
-      "SHAP": 0.40757753618460196
+      "SHAP": 0.407577536184602
     },
     {
       "metric": "FaithfulnessEstimate",
       "BreakDown": 0.5746688060928721,
-      "LIME": 0.3434038571054153,
+      "LIME": 0.3434038571054154,
       "SHAP": -0.3377423649156968
+    },
+    {
+      "metric": "LocalLipschitzEstimate",
+      "BreakDown": 17.25509509612605,
+      "LIME": 15.066338020346087,
+      "SHAP": 7.9891052591572675
+    },
+    {
+      "metric": "MaxSensitivity",
+      "BreakDown": 2.187123586212568,
+      "LIME": 1.7985671786165647,
+      "SHAP": 2.552483196702433
     },
     {
       "metric": "Monotonicity",
@@ -57,10 +75,22 @@
       "SHAP": 1.0
     },
     {
+      "metric": "RelativeInputStability",
+      "BreakDown": 1.0000781595198807,
+      "LIME": 0.0014083921078482627,
+      "SHAP": 0.0003757069331388273
+    },
+    {
+      "metric": "RelativeOutputStability",
+      "BreakDown": 79.16880751009262,
+      "LIME": 278.45942376978996,
+      "SHAP": 243.04155082152457
+    },
+    {
       "metric": "SensitivityN",
-      "BreakDown": 0.4832501046878731,
-      "LIME": -0.5225343234446064,
-      "SHAP": 0.5364515895147317
+      "BreakDown": -0.015089047961626282,
+      "LIME": -0.5994265163397512,
+      "SHAP": 0.6971309881990293
     },
     {
       "metric": "Sparseness",
