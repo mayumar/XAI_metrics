@@ -45,4 +45,4 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["XAI_metrics*"]
+include = ["xai_metrics*"]

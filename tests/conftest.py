@@ -4,7 +4,7 @@ import torch.nn as nn
 import pandas as pd
 import numpy as np
 
-from XAI_metrics.base import BaseMetric, METRIC_REGISTRY, MetricContext
+from xai_metrics.base import BaseMetric, METRIC_REGISTRY, MetricContext
 
 class DummyMetric(BaseMetric):
     NAME = "dummy"

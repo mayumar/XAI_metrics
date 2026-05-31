@@ -124,9 +124,9 @@ def main():
 def evaluar_shap(model, X_test, y_test, explicaciones, dataset_name, model_name):
     wrapped_model = QuantusWrapper(model)
 
-    from XAI_metrics.runner import run_all_metrics
-    from XAI_metrics.base import MetricContext
-    from XAI_metrics.reporting import save_metrics_report
+    from xai_metrics.runner import run_all_metrics
+    from xai_metrics.base import MetricContext
+    from xai_metrics.reporting import save_metrics_report
 
     def make_explain_func_shap(dataset_name: str, X_background, observations, feature_names=None):
         # Background + nombres de columnas
@@ -199,9 +199,9 @@ def evaluar_shap(model, X_test, y_test, explicaciones, dataset_name, model_name)
 def evaluar_lime(model, X_train_bg, X_test, y_test, explicaciones, dataset_name, model_name):
     wrapped_model = QuantusWrapper(model)
 
-    from XAI_metrics.runner import run_all_metrics
-    from XAI_metrics.base import MetricContext
-    from XAI_metrics.reporting import save_metrics_report
+    from xai_metrics.runner import run_all_metrics
+    from xai_metrics.base import MetricContext
+    from xai_metrics.reporting import save_metrics_report
 
     def make_explain_func_lime(dataset_name: str, X_background, feature_names=None):
         from lime.lime_tabular import LimeTabularExplainer
@@ -396,9 +396,9 @@ def evaluar_lime(model, X_train_bg, X_test, y_test, explicaciones, dataset_name,
 def evaluar_global(model, X_test, y_test, global_scores, dataset_name, model_name, method_name):
     wrapped_model = QuantusWrapper(model)
 
-    from XAI_metrics.runner import run_all_metrics
-    from XAI_metrics.base import MetricContext
-    from XAI_metrics.reporting import save_metrics_report
+    from xai_metrics.runner import run_all_metrics
+    from xai_metrics.base import MetricContext
+    from xai_metrics.reporting import save_metrics_report
 
     scores = np.asarray(global_scores, dtype=float).ravel()
 
@@ -463,9 +463,9 @@ def evaluar_global(model, X_test, y_test, global_scores, dataset_name, model_nam
 def evaluar_permutation(model, X_test, y_test, scores_df, dataset_name, model_name):
     wrapped_model = QuantusWrapper(model)
 
-    from XAI_metrics.runner import run_all_metrics
-    from XAI_metrics.base import MetricContext
-    from XAI_metrics.reporting import save_metrics_report
+    from xai_metrics.runner import run_all_metrics
+    from xai_metrics.base import MetricContext
+    from xai_metrics.reporting import save_metrics_report
 
     if not isinstance(scores_df, pd.DataFrame):
         raise TypeError("scores_df de permutation debe ser un DataFrame.")
@@ -555,9 +555,9 @@ def evaluar_permutation(model, X_test, y_test, scores_df, dataset_name, model_na
 def evaluar_morris(model, X_test, y_test, scores_df, dataset_name, model_name):
     wrapped_model = QuantusWrapper(model)
 
-    from XAI_metrics.runner import run_all_metrics
-    from XAI_metrics.base import MetricContext
-    from XAI_metrics.reporting import save_metrics_report
+    from xai_metrics.runner import run_all_metrics
+    from xai_metrics.base import MetricContext
+    from xai_metrics.reporting import save_metrics_report
 
     if not isinstance(scores_df, pd.DataFrame):
         raise TypeError("scores_df de Morris debe ser un DataFrame.")

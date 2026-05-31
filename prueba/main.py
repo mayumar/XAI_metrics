@@ -54,7 +54,7 @@ def main():
     experiment_type = args.experiment
 
     if experiment_type == "eval":
-        from XAI_metrics.runner import run_evaluation
+        from xai_metrics.runner import run_evaluation
         from utils import load_model
         from config import DATASETS
         from data_processing import preprocess_dataset
@@ -75,7 +75,7 @@ def main():
         }
 
         results = run_evaluation(
-            config="XAI_metrics/config.yaml",
+            config="xai_metrics/config.yaml",
             model_loader=load_model,
             explain_funcs=explain_funcs,
             report_output_dir=None # Comentar si se quiere guardar los reportes

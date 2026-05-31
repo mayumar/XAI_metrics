@@ -3,9 +3,9 @@ from typing import Any, Mapping
 
 import pytest
 
-import XAI_metrics.runner.runner as runner_module
-from XAI_metrics.base import METRIC_REGISTRY, BaseMetric, MetricSkipped
-from XAI_metrics.runner import run_evaluation
+import xai_metrics.runner.runner as runner_module
+from xai_metrics.base import METRIC_REGISTRY, BaseMetric, MetricSkipped
+from xai_metrics.runner import run_evaluation
 
 
 def test_resolve_metric_selection_returns_configured_registered_metrics():

@@ -1,7 +1,7 @@
 # tests/test_autodiscover.py
 import types
 
-from XAI_metrics.metrics import autodiscover_metrics
+from xai_metrics.metrics import autodiscover_metrics
 
 def test_autodiscover_metrics_imports_walked_modules(monkeypatch):
     def make_fake_package():

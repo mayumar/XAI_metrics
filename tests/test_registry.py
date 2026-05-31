@@ -1,7 +1,7 @@
 # tests/test_registry.py
 import pytest
 
-from XAI_metrics.base import (
+from xai_metrics.base import (
     register_metric,
     METRIC_REGISTRY,
     list_metrics,

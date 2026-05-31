@@ -1,7 +1,7 @@
-XAI_metrics
+xai_metrics
 ===========
 
 .. toctree::
    :maxdepth: 4
 
-   XAI_metrics
+   xai_metrics

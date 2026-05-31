@@ -4,8 +4,8 @@ import pandas as pd
 
 from lime.lime_tabular import LimeTabularExplainer
 
-from XAI_metrics.runner import run_evaluation
-from XAI_metrics.base import MetricContext
+from xai_metrics.runner import run_evaluation
+from xai_metrics.base import MetricContext
 
 from utils import QuantusWrapper, load_model
 from config import DATASETS

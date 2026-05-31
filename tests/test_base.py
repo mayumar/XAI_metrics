@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from XAI_metrics.base import MetricContext, BaseMetric
+from xai_metrics.base import MetricContext, BaseMetric
 
 def test_metric_context_stores_basic_inputs():
     context = MetricContext(

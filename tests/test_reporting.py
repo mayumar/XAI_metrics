@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import json
 
-from XAI_metrics.reporting.reporting import (
+from xai_metrics.reporting.reporting import (
     _serialize,
     _to_numeric_array,
     build_reports,

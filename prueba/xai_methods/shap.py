@@ -7,8 +7,8 @@ from pathlib import Path
 from utils import QuantusWrapper, load_model
 from config import DATASETS
 
-from XAI_metrics.runner import run_evaluation
-from XAI_metrics.base import MetricContext
+from xai_metrics.runner import run_evaluation
+from xai_metrics.base import MetricContext
 
 from pyod.models.base import BaseDetector
 from typing import List

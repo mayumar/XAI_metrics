@@ -4,8 +4,8 @@ import pytest
 import torch.nn as nn
 import numpy as np
 
-from XAI_metrics.config import ConfigController
-from XAI_metrics.base import MetricContext
+from xai_metrics.config import ConfigController
+from xai_metrics.base import MetricContext
 
 def test_config_controller_loads_config_from_mapping():
     config = {

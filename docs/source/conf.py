@@ -42,5 +42,7 @@ html_static_path = ['_static']
 
 
 autodoc_type_aliases = {
-    "MetricContext": "XAI_metrics.base.MetricContext",
+    "BaseMetric": "xai_metrics.base.base.BaseMetric",
+    "MetricContext": "xai_metrics.base.base.MetricContext",
+    "MetricSkipped": "xai_metrics.base.base.MetricSkipped",
 }
