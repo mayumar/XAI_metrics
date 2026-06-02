@@ -135,42 +135,16 @@ Para el descubrimiento automático, se espera una organización como la siguient
 ```text
 prueba/
 ├── data_dir/
-│   ├── dataset1_name/
-│   │   ├── X_test.csv
-│   │   └── y_test.csv
-│   └── dataset2_name/
+│   └── dataset1_name/
 │       ├── X_test.csv
 │       └── y_test.csv
 ├── models_dir/
-│   ├── dataset1_name/
-│   │   ├── ML_model1_name/
-│   │   │   └── model.pkl
-│   │   └── ML_model2_name/
-│   │       └── model.pkl
-│   └── dataset2_name/
-│       ├── ML_model1_name/
-│       │   └── model.pkl
-│       └── ML_model2_name/
+│   └── dataset1_name/
+│       └── ML_model1_name/
 │           └── model.pkl
 └── attributions_dir/
-    ├── dataset1_name/
-    │   ├── ML_model1_name/
-    │   │   ├── XAI_method1_name/
-    │   │   │   └── attributions.csv
-    │   │   └── XAI_method2_name/
-    │   │       └── attributions.csv
-    │   └── ML_model2_name/
-    │       ├── XAI_method1_name/
-    │       │   └── attributions.csv
-    │       └── XAI_method2_name/
-    │           └── attributions.csv
-    └── dataset2_name/
-        ├── ML_model1_name/
-        │   ├── XAI_method1_name/
-        │   │   └── attributions.csv
-        │   └── XAI_method2_name/
-        │       └── attributions.csv
-        └── ML_model2_name/
+    └── dataset1_name/
+        └── ML_model1_name/
             ├── XAI_method1_name/
             │   └── attributions.csv
             └── XAI_method2_name/
