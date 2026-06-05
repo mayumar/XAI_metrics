@@ -259,7 +259,7 @@ def run_evaluation(
 
     for ctx, ctx_metadata in context_list:
 
-        print(
+        print( # TODO: CAMBIAR ESTE PRINT
             f"Evaluating dataset {ctx_metadata['dataset_name']}, "
             f"model {ctx_metadata['model_name']} and "
             f"XAI method {ctx_metadata['xai_method_name']}"
@@ -273,13 +273,18 @@ def run_evaluation(
         deps.update(runtime_deps)
 
         if explain_funcs is not None:
+            normalized_explain_funcs = {
+                str(name).lower(): func
+                for name, func in explain_funcs.items()
+            }
+
             xai_method_name = str(ctx_metadata['xai_method_name']).lower()
-            explain_func = explain_funcs.get(xai_method_name)
+            explain_func = normalized_explain_funcs.get(xai_method_name)
 
             if explain_func is None:
                 raise ValueError(
                     f"No explain_func provided for XAI method '{xai_method_name}'. "
-                    f"Available: {list(explain_funcs.keys())}"
+                    f"Available: {list(normalized_explain_funcs.keys())}"
                 )
 
             deps['explain_func'] = explain_func

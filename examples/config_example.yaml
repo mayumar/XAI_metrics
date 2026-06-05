@@ -1,0 +1,23 @@
+context:
+  device: "cuda"
+  datasets_dir: "data"
+  models_dir: "results/models"
+  attributions_dir: "results/attributions"
+
+metrics:
+  - name: Complexity
+    params:
+      normalise: true
+
+  - name: Sparseness
+    params:
+      normalise: true
+
+  - name: Faithfulness
+    params:
+      base_strategy: mean
+
+  - name: LocalLipschitzEstimate
+    params:
+      nr_samples: 200
+      normalise: true
