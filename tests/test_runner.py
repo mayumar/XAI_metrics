@@ -92,7 +92,12 @@ def test_run_evaluation_runs_registered_metric_without_saving_reports(
     assert result['report_paths'] == {}
 
     report = result['reports']['dataset']['model']
-    assert report.loc['dummy', 'lime'] == 3.0
+    report_by_metric = report.set_index("metric")
+
+    assert report_by_metric.loc["dummy", "dataset_name"] == "dataset"
+    assert report_by_metric.loc["dummy", "model_name"] == "model"
+    assert report_by_metric.loc["dummy", "metric_params"] == {"value": 3.0}
+    assert report_by_metric.loc['dummy', 'lime'] == 3.0
 
 
 def test_run_evaluation_records_skipped_metrics(

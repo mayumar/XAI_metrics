@@ -18,11 +18,11 @@ def test_autodiscover_metrics_imports_walked_modules(monkeypatch):
     imported = []
 
     monkeypatch.setattr(
-        "XAI_metrics.metrics.autodiscover.pkgutil.walk_packages",
+        "xai_metrics.metrics.autodiscover.pkgutil.walk_packages",
         lambda path, prefix: walked
     )
     monkeypatch.setattr(
-        "XAI_metrics.metrics.autodiscover.importlib.import_module",
+        "xai_metrics.metrics.autodiscover.importlib.import_module",
         lambda name: imported.append(name),
     )
 
