@@ -59,10 +59,8 @@ def usar_iforest(X_train, y_train, X_test, y_test, metricas, normalizado, contam
     else:
         clf_IForest = IForest(contamination=contaminacion,random_state=random_state)
     clf_IForest.fit(_as_numpy(X_train))
-    _make_iforest_dataframe_safe(clf_IForest)
 
-    # Obtenemos la prediccion
-    y_pred = clf_IForest.predict(X_test)
+    y_pred = clf_IForest.predict(_as_numpy(X_test))
 
     # Una vez tenemos los resultados, finalizamos el tiempo
     t1 = time()

@@ -1,8 +1,8 @@
 context:
   device: "cuda"
   datasets_dir: "data"
-  models_dir: "results/models"
-  attributions_dir: "results/attributions"
+  models_dir: "models"
+  attributions_dir: "attributions"
 
 metrics:
   - name: Complexity

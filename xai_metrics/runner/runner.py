@@ -162,65 +162,98 @@ def run_evaluation(
     """
     Run the XAI metric evaluation pipeline.
 
-    The function discovers available metrics, loads the configuration, builds
-    one or more metric contexts, resolves the metrics to execute, injects
-    runtime dependencies, runs each metric, collects the results, and builds
-    summary reports.
+    The function discovers all metric modules, loads the experiment
+    configuration, builds or accepts one or more metric contexts, resolves the
+    metrics that can be executed, injects runtime dependencies and evaluates
+    each metric.
 
-    If ``context`` is not provided, contexts are built from ``config`` using
-    :class:`~XAI_metrics.config.ConfigController`. If ``context`` is provided
-    directly, ``metadata`` must also be provided with ``dataset_name``,
-    ``model_name`` and ``xai_method_name``.
+    When ``context`` is ``None``, contexts are built from ``config`` through
+    :class:`~xai_metrics.config.ConfigController`. When a context is supplied
+    directly, ``metadata`` must also be provided.
 
-    Runtime dependencies can be passed through ``runtime_kwargs``. These values
-    are forwarded to metric constructors when their parameter names match. A
-    special ``explain_funcs`` dependency can be provided as a mapping from XAI
-    method names to explanation functions. In that case, the function matching
-    the current ``xai_method_name`` is injected as ``explain_func``.
+    Runtime keyword arguments are forwarded as dependencies to metric
+    constructors when their names match constructor parameters. The special
+    ``model_loader`` argument is also passed to
+    :class:`~xai_metrics.config.ConfigController`.
+
+    The special ``explain_funcs`` argument may contain a mapping from XAI
+    method names to explanation functions. Method names are matched
+    case-insensitively. The function corresponding to the current context is
+    injected into compatible metrics under the ``explain_func`` dependency.
+
+    Successfully evaluated metrics are stored together with the parameters
+    defined for them in the configuration. Metrics that raise
+    :class:`~xai_metrics.base.MetricSkipped` are recorded separately and do not
+    stop the remaining evaluations.
+
+    Finally, the collected outputs are transformed into report dataframes. If
+    ``report_output_dir`` is not ``None``, the reports are also saved to disk.
 
     Parameters
     ----------
     context : MetricContext or None, optional
-        Optional pre-built metric context. If ``None``, contexts are built from
-        the configuration.
+        Pre-built metric evaluation context. If ``None``, one or more contexts
+        are constructed from ``config``.
     metadata : Mapping[str, Any] or None, optional
-        Metadata for ``context`` when a context is passed directly. Required
-        fields are ``dataset_name``, ``model_name`` and ``xai_method_name``.
+        Metadata associated with a directly supplied ``context``. It must
+        contain ``dataset_name``, ``model_name`` and ``xai_method_name``.
+        Ignored when contexts are built from the configuration.
     selected_metrics : Iterable[str] or None, optional
-        Optional metric names to execute. If ``None``, all valid metrics from
-        the configuration are executed.
+        Metric names to execute. Only metrics that are also configured and
+        registered are evaluated. If ``None``, all configured and registered
+        metrics are evaluated.
     config : Mapping[str, Any], str or pathlib.Path, default="config.yaml"
-        Configuration source used by :class:`~XAI_metrics.config.ConfigController`.
-        It can be a mapping or a path to a YAML file.
+        Experiment configuration source. It may be a mapping or the path to a
+        YAML configuration file.
     report_output_dir : str, pathlib.Path or None, optional
-        Directory where CSV and JSON reports are saved. If ``None``, reports
-        are built but not written to disk. The default value is
+        Directory where the generated reports are saved. If ``None``, reports
+        are built but are not written to disk. The default directory is
         ``results/reports``.
     **runtime_kwargs : Any
-        Additional runtime dependencies passed to metric constructors. Common
-        entries include ``model_loader``, explain functions, custom normalisation
-        functions, perturbation functions, similarity functions, and ``explain_funcs``.
+        Runtime dependencies made available to metric constructors. Supported
+        values depend on the selected metrics and may include custom similarity,
+        normalisation, perturbation or explanation functions.
+
+        Two arguments receive special handling:
+
+        - ``model_loader`` : Callable, optional
+          Function used by the configuration controller to load models.
+        - ``explain_funcs`` : Mapping[str, Callable], optional
+          Mapping from XAI method names to explanation functions. Method names
+          are matched case-insensitively.
 
     Returns
     -------
     Dict[str, Any]
-        Dictionary with three entries:
+        Dictionary containing the following entries:
 
-        - ``"contexts"`` : list
-          Raw outputs for each evaluated context, including metadata, metric
-          results and skipped metrics.
-        - ``"reports"`` : dict
-          Report dataframes grouped by dataset and model.
-        - ``"report_paths"`` : dict
-          Paths to saved CSV and JSON report files. Empty if
+        - ``"contexts"`` : List[Dict[str, Any]]
+          Raw output for each evaluated context. Every context output contains
+          ``metadata``, ``results``, ``metric_params`` and ``skipped``.
+        - ``"reports"`` : Dict[str, Dict[str, pandas.DataFrame]]
+          Report dataframes grouped first by dataset name and then by model
+          name.
+        - ``"report_paths"`` : Dict[str, str]
+          Paths of the saved report files. The dictionary is empty when
           ``report_output_dir`` is ``None``.
 
     Raises
     ------
     ValueError
-        If direct context metadata is missing, if a required explanation
-        function is not provided for the current XAI method, or if the
-        configuration is invalid.
+        If metadata required for a directly supplied context is missing, if no
+        explanation function is available for the current XAI method, or if
+        the configuration or report data is invalid.
+    TypeError
+        If context construction loads an object that is not a supported model
+        type.
+    RuntimeError
+        If context construction requests a device that is not available.
+
+    Warns
+    -----
+    UserWarning
+        If configured or selected metrics cannot be executed because they are
+        missing from the configuration or metric registry.
     """
     autodiscover_metrics(metrics_pkg)
 
@@ -255,14 +288,22 @@ def run_evaluation(
         if metric.get("name") in allowed
     ]
 
+    metric_params_by_name = {
+        str(metric_cfg['name']): dict(metric_cfg.get("params") or {})
+        for metric_cfg in filtered_cfg
+    }
+
     context_outputs = []
 
     for ctx, ctx_metadata in context_list:
 
-        print( # TODO: CAMBIAR ESTE PRINT
-            f"Evaluating dataset {ctx_metadata['dataset_name']}, "
-            f"model {ctx_metadata['model_name']} and "
-            f"XAI method {ctx_metadata['xai_method_name']}"
+        print(
+            f"\n{"=" * 60}\n"
+            "Running XAI evaluation\n"
+            f"  Dataset    : {ctx_metadata['dataset_name']}\n"
+            f"  Model      : {ctx_metadata['model_name']}\n"
+            f"  XAI method : {ctx_metadata['xai_method_name']}\n"
+            f"{"=" * 60}"
         )
 
         deps = {}
@@ -295,15 +336,21 @@ def run_evaluation(
             dependencies=deps,
         )
         
-        out = {"metadata": ctx_metadata, "results": {}, "skipped": {}}
+        out = {
+            "metadata": ctx_metadata,
+            "results": {},
+            "metric_params": {},
+            "skipped": {}
+        }
 
         for metric in metrics:
             name = getattr(metric, "NAME", metric.__class__.__name__)
 
             try:
-                out["results"][name] = metric.run()
+                out['results'][name] = metric.run()
+                out['metric_params'][name] = metric_params_by_name.get(name, {})
             except MetricSkipped as exc:
-                out["skipped"][name] = str(exc)
+                out['skipped'][name] = str(exc)
                 print(str(exc))
 
         context_outputs.append(out)

@@ -26,21 +26,55 @@ def guardar_atribuciones(explicaciones, observaciones, cols, dataset_name, model
     print(f"Atribuciones guardadas en: {output_path}")
 
 def guardar_modelo(model, dataset_name, model_name, seed):
+    import os
     import cloudpickle
+    import torch
+    import torch.nn as nn
+    import numpy as np
 
     from config import BASE_DIR
-    from utils import QuantusWrapper
 
-    output_dir = os.path.join(BASE_DIR, "prueba", "results", "models", dataset_name)
+    class ExportedQuantusWrapper(nn.Module):
+        def __init__(self, pyod_model):
+            super().__init__()
+            self.model = pyod_model
+
+        def forward(self, inputs):
+            return self.predict_proba(inputs)
+
+        def _to_numpy(self, inputs):
+            if isinstance(inputs, torch.Tensor):
+                return inputs.detach().cpu().numpy().astype(np.float32)
+            if hasattr(inputs, "to_numpy"):
+                return inputs.to_numpy().astype(np.float32)
+            return np.asarray(inputs, dtype=np.float32)
+
+        def predict(self, inputs):
+            return self.model.predict(self._to_numpy(inputs))
+
+        def predict_proba(self, inputs):
+            return self.model.predict_proba(self._to_numpy(inputs))
+
+        def decision_function(self, inputs):
+            return self.model.decision_function(self._to_numpy(inputs))
+
+    output_dir = os.path.join(
+        BASE_DIR,
+        "prueba",
+        "results",
+        "models",
+        dataset_name,
+        model_name,
+    )
     os.makedirs(output_dir, exist_ok=True)
 
     output_path = os.path.join(
         output_dir,
-        f"{dataset_name}_{model_name}_seed_{seed}.pkl"
+        f"{dataset_name}_{model_name}_seed_{seed}.pkl",
     )
 
     with open(output_path, "wb") as f:
-        cloudpickle.dump(QuantusWrapper(model), f)
+        cloudpickle.dump(ExportedQuantusWrapper(model), f)
 
     print(f"Modelo guardado en: {output_path}")
 
@@ -126,7 +160,7 @@ def main():
 
         metrics_df, model = model_function(X_train_norm, y_train, X_train_norm, y_train, metrics_df, True, anomalias_fraccion, 0)
 
-        # guardar_modelo(model, 'hydraulic', model_name, 0)
+        guardar_modelo(model, 'hydraulic', model_name, 0)
 
         if experiment_type == "lime":
             explicaciones = usar_lime(model, X_train_norm, X_train_norm, DATASETS['hydraulic']['observations'])
@@ -134,7 +168,7 @@ def main():
             print(explicaciones)
             # guardar_atribuciones(explicaciones, DATASETS['hydraulic']['observations'], list(X_train_norm.columns), 'hydraulic', model_name, 'lime')
 
-            evaluar_lime(model, X_train_norm, X_train_norm, y_train, explicaciones, 'hydraulic', model_name)
+            # evaluar_lime(model, X_train_norm, X_train_norm, y_train, explicaciones, 'hydraulic', model_name)
 
         if experiment_type == "shap_local":
             explicaciones = usar_shap_local(model, X_train_norm, X_train_norm, DATASETS['hydraulic']['observations'])
