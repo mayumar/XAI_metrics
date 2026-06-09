@@ -1,0 +1,15 @@
+context:
+  dataset_name: "hydraulic"
+  model_name: "IForest"
+  xai_method_name: "LIME"
+  device: "cpu"
+  model_path: "../models/hydraulic/IForest/hydraulic_IForest_seed_0.pkl"
+  X_test_path: "../data/hydraulic/X_test.csv"
+  y_test_path: "../data/hydraulic/y_test.csv"
+  attributions_path: "../attributions/hydraulic/IForest/LIME/hydraulic_IForest_lime_attributions.csv"
+
+metrics:
+  - name: Consistency
+    params:
+      abs: true
+      normalise: true

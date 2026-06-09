@@ -2,6 +2,7 @@ import argparse
 import os
 import pandas as pd
 
+
 def guardar_atribuciones(explicaciones, observaciones, cols, dataset_name, model_name, method_name):
     from config import BASE_DIR
 
@@ -28,9 +29,9 @@ def guardar_atribuciones(explicaciones, observaciones, cols, dataset_name, model
 def guardar_modelo(model, dataset_name, model_name, seed):
     import os
     import cloudpickle
+    import numpy as np
     import torch
     import torch.nn as nn
-    import numpy as np
 
     from config import BASE_DIR
 
@@ -40,7 +41,9 @@ def guardar_modelo(model, dataset_name, model_name, seed):
             self.model = pyod_model
 
         def forward(self, inputs):
-            return self.predict_proba(inputs)
+            probs = self.predict_proba(inputs)
+            device = inputs.device if isinstance(inputs, torch.Tensor) else None
+            return torch.as_tensor(probs, dtype=torch.float32, device=device)
 
         def _to_numpy(self, inputs):
             if isinstance(inputs, torch.Tensor):
