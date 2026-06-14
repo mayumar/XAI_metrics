@@ -1,0 +1,8 @@
+{
+    "best_f1_validation": 0.5211995863495347,
+    "params": {
+        "contamination": 0.02,
+        "assume_centered": true,
+        "support_fraction": 1.0
+    }
+}

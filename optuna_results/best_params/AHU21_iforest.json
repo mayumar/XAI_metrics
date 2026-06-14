@@ -1,0 +1,10 @@
+{
+    "best_f1_validation": 0.0795258088416893,
+    "params": {
+        "contamination": 0.01,
+        "n_estimators": 350,
+        "max_samples": 0.75,
+        "max_features": 1.0,
+        "bootstrap": false
+    }
+}

@@ -1,0 +1,6 @@
+{
+    "best_f1_validation": 0.04691953518965139,
+    "params": {
+        "contamination": 0.15
+    }
+}
