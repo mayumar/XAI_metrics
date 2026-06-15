@@ -394,6 +394,26 @@ def crear_estudio(
 
     storage = f"sqlite:///{OPTUNA_DATABASE.resolve()}"
 
+    # estudios = optuna.study.get_all_study_summaries(
+    #     storage=storage
+    # )
+
+    # nombres_estudios = {
+    #     estudio.study_name
+    #     for estudio in estudios
+    # }
+
+    # if nombre_estudio in nombres_estudios:
+    #     optuna.delete_study(
+    #         study_name=nombre_estudio,
+    #         storage=storage,
+    #     )
+
+    #     print(
+    #         f"Estudio anterior eliminado: "
+    #         f"{nombre_estudio}"
+    #     )
+
     return optuna.create_study(
         study_name=nombre_estudio,
         storage=storage,

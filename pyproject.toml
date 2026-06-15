@@ -29,6 +29,7 @@ dependencies = [
   "sphinx-rtd-theme>=3.1.0",
   "joblib>=1.5.3",
   "optuna>=4.9.0",
+  "phmd==2026.0.1",
 ]
 license = { text = "MIT" }
 authors = [
@@ -47,3 +48,17 @@ include-package-data = true
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["xai_metrics*"]
+
+[tool.uv]
+override-dependencies = [
+  "h5py>=3.12",
+  "numpy==2.4.6",
+  "pandas==2.3.3",
+  "scikit-learn==1.9.0",
+  "scipy==1.17.1",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.3.0",
+]

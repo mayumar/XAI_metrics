@@ -6,6 +6,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 from pathlib import Path
+import pickle
+import joblib
 
 from xai_metrics.runner import run_evaluation
 
@@ -27,9 +29,42 @@ from models import (
 from optimizacion_hiperparametros import optimizar_modelo, entrenar_modelo_optimizado
 
 
+def seleccionar_observaciones(
+    model,
+    X_test,
+    y_test,
+    n=10,
+    random_state=0,
+):
+    y_true = np.asarray(y_test).ravel()
+    y_pred = model.predict(X_test)
+
+    grupos = [
+        np.where((y_true == 1) & (y_pred == 1))[0],  # TP
+        np.where((y_true == 1) & (y_pred == 0))[0],  # FN
+        np.where((y_true == 0) & (y_pred == 1))[0],  # FP
+        np.where((y_true == 0) & (y_pred == 0))[0],  # TN
+    ]
+
+    rng = np.random.default_rng(random_state)
+    seleccion = []
+
+    for grupo in grupos:
+        if len(grupo) > 0:
+            seleccion.extend(
+                rng.choice(
+                    grupo,
+                    size=min(n, len(grupo)),
+                    replace=False,
+                )
+            )
+
+    return sorted(seleccion)
+
+
 def guardar_atribuciones(explicaciones, observaciones, cols, dataset_name, model_name, method_name):
 
-    output_dir = os.path.join(BASE_DIR, "prueba", "results", "attributions", dataset_name)
+    output_dir = os.path.join(BASE_DIR, "prueba", "results", "attributions", dataset_name, model_name, method_name)
     os.makedirs(output_dir, exist_ok=True)
 
     atribuciones_df = pd.DataFrame(
@@ -102,7 +137,7 @@ def main():
     parser.add_argument("-e", "--experiment", type=str, required=True,
                         choices=["lime", "shap_local", "shap_global", "breakdown", "eval", "optuna", "train"],
                         help="Tipo de experimento a ejecutar")
-    parser.add_argument("-d", "--dataset", type=str, required=True, choices={'hydraulic', 'AHU21', 'ARAMIS20'},
+    parser.add_argument("-d", "--dataset", type=str, required=True, choices={'hydraulic', 'AHU21', 'ARAMIS20', 'PHM14', 'HSG18'},
                         help="Nombre del dataset a usar")
     
     args = parser.parse_args()
@@ -196,83 +231,139 @@ def main():
     else:
 
         input_path = Path(BASE_DIR) / "prueba/data" / dataset_name
-        X_train = pd.read_csv(input_path / "X_train.csv")
-        y_train = pd.read_csv(input_path / "y_train.csv")
-        X_val = pd.read_csv(input_path / "X_val.csv")
-        y_val = pd.read_csv(input_path / "y_val.csv")
-        X_test = pd.read_csv(input_path / "X_test.csv")
-        y_test = pd.read_csv(input_path / "y_test.csv")
+        X_train = pd.read_csv(input_path / "X_train.csv", index_col=0)
+        y_train = pd.read_csv(input_path / "y_train.csv", index_col=0)
+        X_val = pd.read_csv(input_path / "X_val.csv", index_col=0)
+        y_val = pd.read_csv(input_path / "y_val.csv", index_col=0)
+        X_test = pd.read_csv(input_path / "X_test.csv", index_col=0)
+        y_test = pd.read_csv(input_path / "y_test.csv", index_col=0)
 
         output_dir = Path(BASE_DIR) / "prueba" / "results" / "datasets" / dataset_name
-        output_dir.mkdir(exist_ok=True)
+        output_dir.mkdir(parents=True, exist_ok=True)
         
-        metrics_path = output_dir / f"{dataset_name}_model_metrics.csv"
+        if experiment_type == "optuna" or experiment_type == "train":
+            metrics_path = output_dir / f"{dataset_name}_model_metrics.csv"
 
-        modelos_optimizados = [
-            "IForest",
-            "ECOD",
-            "HBOS",
-            "MCD",
-            "AutoEncoder",
-            "VAE",
-        ]
+            modelos_optimizados = [
+                "IForest",
+                "ECOD",
+                "HBOS",
+                "MCD",
+                "AutoEncoder",
+                "VAE",
+            ]
 
-        metrics_df = pd.DataFrame(columns=['Modelo', 'Semilla', 'TN', 'FP', 'FN', 'TP', 'Accuracy', 'F1-score', 'Sensibilidad', 'Especificidad', 'Precisión', 'ROC-AUC', 'Params'])
+            metrics_df = pd.DataFrame(columns=['Modelo', 'Semilla', 'TN', 'FP', 'FN', 'TP', 'Accuracy', 'F1-score', 'Sensibilidad', 'Especificidad', 'Precisión', 'ROC-AUC', 'Params'])
 
-        for model_name in modelos_optimizados:
-            print(f'\n********** {model_name} **********')
+            for model_name in modelos_optimizados:
+                print(f'\n********** {model_name} **********')
 
-            y_total = np.concatenate([
-                np.asarray(y_train).ravel(),
-                np.asarray(y_val).ravel(),
-                np.asarray(y_test).ravel(),
-            ])
-            anomalias_fraccion = np.mean(y_total == 1)
+                if experiment_type == "optuna":
 
-            if experiment_type == "optuna":
+                    optimizar_modelo(
+                        dataset_name=dataset_name,
+                        nombre_modelo=model_name,
+                        X_train=X_train,
+                        y_train=y_train,
+                        X_val=X_val,
+                        y_val=y_val,
+                        random_state=0,
+                        n_trials=30
+                    )
 
-                optimizar_modelo(
-                    dataset_name=dataset_name,
-                    nombre_modelo=model_name,
-                    X_train=X_train,
-                    y_train=y_train,
-                    X_val=X_val,
-                    y_val=y_val,
-                    random_state=0,
-                    n_trials=30
+                elif experiment_type == "train":
+
+                    metrics_df, model = entrenar_modelo_optimizado(
+                        dataset=dataset_name,
+                        nombre_modelo=model_name,
+                        X_train=X_train,
+                        y_train=y_train,
+                        X_val=X_val,
+                        y_val=y_val,
+                        X_test=X_test,
+                        y_test=y_test,
+                        metricas=metrics_df,
+                        random_state=0
+                    )
+
+                    guardar_modelo(
+                        model=model,
+                        dataset_name=dataset_name,
+                        model_name=model_name,
+                        seed=0
+                    )
+
+                    metrics_df.to_csv(metrics_path, index=False)
+
+                    print(f"Metricas guardades en: {metrics_path}")
+
+            print("\nResultados:")
+            print(metrics_df.to_string(index=False))
+        
+        else:
+
+            if experiment_type == "eval":
+                # explain_funcs = {
+                #     "lime": make_lime_explain_func(X_train),
+                #     "shap": make_shap_local_explain_func(X_train),
+                #     "breakdown": make_breakdown_explain_func(X_train),
+                # }
+
+                input_path_aramis = Path(BASE_DIR) / "prueba/data" / "ARAMIS20"
+                input_path_ahu = Path(BASE_DIR) / "prueba/data" / "AHU21"
+                X_train_aramis = pd.read_csv(input_path_aramis / "X_train.csv", index_col=0)
+                X_train_ahu = pd.read_csv(input_path_ahu / "X_train.csv", index_col=0)
+
+                explain_funcs = {
+                    "ARAMIS20": {
+                        "lime": make_lime_explain_func(X_train_aramis),
+                        "shap": make_shap_local_explain_func(X_train_aramis),
+                    },
+                    "AHU21": {
+                        "lime": make_lime_explain_func(X_train_ahu),
+                        "shap": make_shap_local_explain_func(X_train_ahu),
+                    },
+                }
+
+                results = run_evaluation(
+                    config="xai_metrics/config.yaml",
+                    model_loader=load_model,
+                    explain_funcs=explain_funcs,
+                    # report_output_dir=None # Comentar si se quiere guardar los reportes
                 )
 
-            elif experiment_type == "train":
+                print(results)
+                return 1
 
-                metrics_df, model = entrenar_modelo_optimizado(
-                    dataset=dataset_name,
-                    nombre_modelo=model_name,
-                    X_train=X_train,
-                    y_train=y_train,
-                    X_val=X_val,
-                    y_val=y_val,
-                    X_test=X_test,
-                    y_test=y_test,
-                    metricas=metrics_df,
-                    random_state=0
-                )
+            models_path = Path(BASE_DIR) / "prueba" / "results" / "models" / dataset_name
 
-                guardar_modelo(
-                    model=model,
-                    dataset_name=dataset_name,
-                    model_name=model_name,
-                    seed=0
-                )
+            for model_dir in models_path.iterdir():
+                if model_dir.is_dir():
+                    for model_path in model_dir.iterdir():
+                        model_name = model_path.parent.name
+                        model = load_model(model_path)
+                        posiciones = seleccionar_observaciones(
+                            model=model,
+                            X_test=X_test,
+                            y_test=y_test,
+                            n=10,
+                            random_state=0,
+                        )
 
-                metrics_df.to_csv(metrics_path, index=False)
+                        X_explicar = X_test.iloc[posiciones]
+                        observaciones = X_test.index[posiciones].tolist()
 
-                print(f"Metricas guardades en: {metrics_path}")
+                        if experiment_type == "lime":
+                            explicaciones = usar_lime(model, X_train, X_explicar, observaciones)
 
-        print("\nResultados:")
-        print(metrics_df.to_string(index=False))
+                            print(explicaciones)
+                            guardar_atribuciones(explicaciones, observaciones, X_train.columns, dataset_name, model_name, "lime")
 
-        return 0
-                
+                        if experiment_type == "shap_local":
+                            explicaciones = usar_shap_local(model, X_train, X_explicar, observaciones)
+
+                            print(explicaciones)
+                            guardar_atribuciones(explicaciones, observaciones, X_train.columns, dataset_name, model_name, "shap_local")
 
             # metrics_df, model = model_function(X_train, y_train, X_val, y_val, X_test, y_test, metrics_df, True, 0)
 

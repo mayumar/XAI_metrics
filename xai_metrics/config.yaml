@@ -8,7 +8,7 @@ context:
   # y_test_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/data/hydraulic/y_test_train.csv"
   # attributions_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/attributions/hydraulic/IForest/LIME/hydraulic_IForest_lime_attributions.csv"
 
-  device: "cuda"
+  device: "cpu"
   datasets_dir: "prueba/data"
   models_dir: "prueba/results/models"
   attributions_dir: "prueba/results/attributions"
