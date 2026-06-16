@@ -1,0 +1,212 @@
+{
+  "report": [
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 200,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "lime": 1.1366750826268965,
+      "shap_local": 1.946713834624044
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "lime": 0.0,
+      "shap_local": 0.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "lime": 2.320955625575119,
+      "shap_local": 2.0405971830600933
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "lime": 0.6153846153688363,
+      "shap_local": 0.6153846153688363
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "lime": 0.2823027692212639,
+      "shap_local": 0.20884527371068992
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "lime": -0.03310796502624409,
+      "shap_local": -0.032024732220661975
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 200,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "lime": 8.620646212090417,
+      "shap_local": 1.453882827494551
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 200,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "lime": 1.8269557036127124,
+      "shap_local": 4.667120571864954
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "lime": 1.0,
+      "shap_local": 1.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "lime": 0.29988873965621166,
+      "shap_local": 0.018809656454336982
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "lime": 0.0,
+      "shap_local": 0.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "lime": 6.7,
+      "shap_local": 6.7
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 200,
+        "abs": false,
+        "normalise": false
+      },
+      "lime": 0.00037159188310370003,
+      "shap_local": 0.0006548463587537322
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 200,
+        "abs": false,
+        "normalise": false
+      },
+      "lime": 21434.478952248202,
+      "shap_local": 10591.912921862766
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "lime": -0.01897124866851782,
+      "shap_local": -0.24223125769454576
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "lime": 0.5447521106703819,
+      "shap_local": 0.597829223917851
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "AutoEncoder",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "lime": 0.661672937100502,
+      "shap_local": 0.6068862712530504
+    }
+  ]
+}

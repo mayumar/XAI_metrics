@@ -1,0 +1,18 @@
+dataset_name,model_name,metric,metric_params,lime,shap_local
+AHU21,AutoEncoder,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 200}",1.1366750826268965,1.946713834624044
+AHU21,AutoEncoder,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0
+AHU21,AutoEncoder,Complexity,"{""normalise"": true}",2.320955625575119,2.0405971830600933
+AHU21,AutoEncoder,Consistency,"{""abs"": true, ""normalise"": true}",0.6153846153688363,0.6153846153688363
+AHU21,AutoEncoder,Faithfulness,"{""base_strategy"": ""mean""}",0.2823027692212639,0.20884527371068992
+AHU21,AutoEncoder,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.03310796502624409,-0.032024732220661975
+AHU21,AutoEncoder,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 200, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",8.620646212090417,1.453882827494551
+AHU21,AutoEncoder,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 200}",1.8269557036127124,4.667120571864954
+AHU21,AutoEncoder,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0
+AHU21,AutoEncoder,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.29988873965621166,0.018809656454336982
+AHU21,AutoEncoder,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0
+AHU21,AutoEncoder,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",6.7,6.7
+AHU21,AutoEncoder,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 200}",0.00037159188310370003,0.0006548463587537322
+AHU21,AutoEncoder,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 200}",21434.478952248202,10591.912921862766
+AHU21,AutoEncoder,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.01897124866851782,-0.24223125769454576
+AHU21,AutoEncoder,Sparseness,"{""normalise"": true}",0.5447521106703819,0.597829223917851
+AHU21,AutoEncoder,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.661672937100502,0.6068862712530504
