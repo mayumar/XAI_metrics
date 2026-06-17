@@ -136,6 +136,19 @@ def make_explain_func(X_test, observations, xai_method, dataset_name):
 import cloudpickle
 
 
+def _silence_ecod_parallel_logs(model):
+    candidates = [model]
+    inner_model = getattr(model, "model", None)
+    if inner_model is not None:
+        candidates.append(inner_model)
+
+    for candidate in candidates:
+        if candidate.__class__.__name__ == "ECOD" and hasattr(candidate, "n_jobs"):
+            candidate.n_jobs = 1
+
+    return model
+
+
 def load_model(model_path):
     with open(model_path, "rb") as f:
-        return cloudpickle.load(f)
+        return _silence_ecod_parallel_logs(cloudpickle.load(f))

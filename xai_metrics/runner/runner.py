@@ -294,6 +294,7 @@ def run_evaluation(
     }
 
     context_outputs = []
+    report_paths = {}
 
     for ctx, ctx_metadata in context_list:
 
@@ -381,14 +382,13 @@ def run_evaluation(
 
         context_outputs.append(out)
     
-    reports = build_reports(context_outputs)
-    report_paths = {}
+        if report_output_dir is not None:
+            report_paths = save_reports(
+                reports=build_reports(context_outputs),
+                output_dir=report_output_dir,
+            )
 
-    if report_output_dir is not None:
-        report_paths = save_reports(
-            reports=reports,
-            output_dir=report_output_dir,
-        )
+    reports = build_reports(context_outputs)
 
     return {
         "contexts": context_outputs,

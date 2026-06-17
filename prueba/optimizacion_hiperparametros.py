@@ -68,7 +68,7 @@ def _crear_modelo_optuna(trial: optuna.Trial, nombre_modelo: str, random_state: 
     if nombre_modelo == "ecod":
         return ECOD(
             contamination=contaminacion,
-            n_jobs=-1
+            n_jobs=1
         )
     
     if nombre_modelo == "hbos":

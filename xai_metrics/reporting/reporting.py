@@ -25,9 +25,15 @@ def _serialize(value: Any) -> Any:
     Any
         JSON-serializable representation of ``value``.
     """
+    if value is pd.NA:
+        return None
     if isinstance(value, np.ndarray):
-        return value.tolist()
-    if isinstance(value, (np.floating, np.integer)):
+        return _serialize(value.tolist())
+    if isinstance(value, (float, np.floating)):
+        if not np.isfinite(value):
+            return None
+        return float(value)
+    if isinstance(value, (np.integer,)):
         return value.item()
     if isinstance(value, np.bool_):
         return bool(value)

@@ -163,6 +163,8 @@ def _fit_model(model_name, params, X, y, contamination, seed):
         constructor_params["random_state"] = seed
     if model_name in {"AutoEncoder", "VAE"}:
         constructor_params["verbose"] = 0
+    if model_name == "ECOD":
+        constructor_params["n_jobs"] = 1
 
     model = MODEL_CLASSES[model_name](**constructor_params)
     X_model = X[y == 0] if model_name in NORMAL_ONLY_MODELS else X

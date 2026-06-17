@@ -25,7 +25,8 @@ def _shap_attributions(
         return model
 
     # Importancia de la variable en el score de anomalia
-    explainer = shap.Explainer(f, X_train)
+    background_shap = shap.sample(X_train, 100, random_state=0)
+    explainer = shap.Explainer(f, background_shap)
     shap_values = explainer(X_test)
 
     return np.abs(shap_values.values)
