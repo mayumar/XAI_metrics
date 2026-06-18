@@ -283,6 +283,40 @@ def build_reports(
     return reports
 
 
+def save_attributions(
+    context_outputs: Sequence[Mapping[str, Any]],
+    output_dir: str | Path
+) -> Dict[str, str]:
+    output_root = Path(output_dir)
+    paths = {}
+
+    for context_out in context_outputs:
+        metadata = context_out['metadata']
+
+        dataset_name = str(metadata['dataset_name'])
+        model_name = str(metadata['model_name'])
+        xai_method_name = str(metadata['xai_method_name'])
+
+        attributions_df = pd.DataFrame(
+            context_out['attributions'],
+            index=context_out['observations'],
+            columns=context_out['features']
+        )
+
+        method_dir = output_root / dataset_name / model_name / xai_method_name
+        method_dir.mkdir(parents=True, exist_ok=True)
+
+        path = (
+            method_dir
+            / f"{dataset_name}_{model_name}_{xai_method_name.lower()}_attributions.csv"
+        )
+
+        attributions_df.to_csv(path)
+        paths[xai_method_name] = str(path)
+
+    return paths
+
+
 def save_reports(
     reports: Mapping[str, Mapping[str, pd.DataFrame]],
     output_dir: str | Path,

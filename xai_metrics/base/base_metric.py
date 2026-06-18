@@ -1,6 +1,6 @@
-# XAI_metrics/base/base.py
-from dataclasses import dataclass, field
-from typing import Any, Dict, Mapping
+# XAI_metrics/base/base_metric.py
+from dataclasses import dataclass
+from typing import Any, Mapping
 import numpy as np
 import torch.nn as nn
 import pandas as pd

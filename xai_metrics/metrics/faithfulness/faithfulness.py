@@ -1,11 +1,11 @@
-# XAI_metrics/metrics/faithfulness/faithfulness.py
+# xai_metrics/metrics/faithfulness/faithfulness.py
 import numpy as np
 import pandas as pd
 from aix360.metrics import faithfulness_metric
 
 from xai_metrics.base import BaseMetric, MetricContext, register_metric
 
-from typing import Any, Mapping, Callable, Dict
+from typing import Any, Mapping
 
 
 @register_metric
@@ -13,26 +13,28 @@ class Faithfulness(BaseMetric):
     """
     AIX360 Faithfulness metric.
 
-    This metric evaluates the correlation between feature importance values and
-    the effect of removing each feature from the input. For each observation,
-    features are individually replaced by a baseline value and the resulting
-    change in the predicted class probability is compared with the attribution
-    values.
+    This metric evaluates whether feature attribution values reflect the
+    influence of the corresponding features on the model prediction. For each
+    observation, every feature is individually replaced with a baseline value
+    and the probability assigned to the original predicted class is recorded.
+    The score is the negative Pearson correlation between the attribution
+    values and these probabilities.
 
-    The wrapped AIX360 implementation expects a model exposing a
-    ``predict_proba`` method.
+    Higher scores indicate stronger agreement between feature importance and
+    the effect of replacing features with their baseline values.
 
-    The metric is based on the faithfulness metric proposed by Alvarez-Melis
-    and Jaakkola (2018) and implemented in AIX360.
+    The wrapped AIX360 implementation requires a classification model exposing
+    a ``predict_proba`` method.
+
+    The metric is based on the faithfulness criterion proposed by
+    Alvarez-Melis and Jaakkola (2018) and implemented in AIX360.
     """
     NAME = "Faithfulness"
 
     def __init__(
         self,
         context: MetricContext,
-        params: Mapping[str, Any] | None = None,
-        base_func: Callable[..., Any] | None = None,
-        base_func_kwargs: Dict[str, Any] | None = None
+        params: Mapping[str, Any] | None = None
     ):
         """
         Parameters
@@ -56,42 +58,44 @@ class Faithfulness(BaseMetric):
               value is ``"mean"``.
 
             If ``None``, an empty dictionary is used.
-        base_func : Callable[[Any], Any] or None, optional
-            Custom function used to compute baseline values from ``context.X_test``.
-            The function must accept a ``pandas.DataFrame`` as its first argument and
-            may accept additional keyword arguments from ``base_func_kwargs``. It must
-            return an array-like object with one baseline value per feature.
-        base_func_kwargs : Dict[str, Any] or None, optional
-            Keyword arguments passed to ``base_func``. If ``None``, no
-            additional keyword arguments are passed.
         """
         super().__init__(context, params)
-        self.base_func = base_func
-        self.base_func_kwargs = base_func_kwargs
+
 
     def run(self):
         """
         Compute the Faithfulness metric.
 
-        The method selects the observations defined in the metric context,
-        resolves the baseline values, and computes one faithfulness score per
-        selected observation using :func:`aix360.metrics.faithfulness_metric`.
+        The method resolves a common baseline vector from the complete test
+        dataset and evaluates each selected observation independently using
+        :func:`aix360.metrics.faithfulness_metric`.
+
+        For each observation, AIX360 determines the predicted class, replaces
+        each feature individually with its baseline value and records the
+        resulting probability for that class. The returned score is the
+        negative Pearson correlation between these probabilities and the
+        attribution values.
 
         Returns
         -------
         List[float]
             Faithfulness score for each evaluated observation. Higher values
-            indicate stronger agreement between feature attribution values and
-            the effect of replacing those features with baseline values.
+            indicate that features with larger attribution values produce
+            greater decreases in the predicted class probability when replaced.
 
         Raises
         ------
         ValueError
-            If ``base_strategy`` is not one of ``"mean"``, ``"median"`` or
+            If ``base_strategy`` is not ``"mean"``, ``"median"`` or
             ``"zero"``.
         AttributeError
-            If the model does not expose the ``predict_proba`` method required
-            by the AIX360 implementation.
+            If the model does not implement the ``predict_proba`` method
+            required by AIX360.
+
+        Notes
+        -----
+        The score may be ``nan`` when the attribution values or the probabilities
+        obtained after feature replacement have zero variance.
         """
         ctx = self.context
         p = self.params
@@ -101,9 +105,7 @@ class Faithfulness(BaseMetric):
         base = self._resolve_base(
             X_reference=ctx.X_test,
             base_values=p.get("base_values"),
-            base_strategy=p.get("base_strategy", "mean"),
-            base_func=self.base_func,
-            base_func_kwargs=self.base_func_kwargs
+            base_strategy=p.get("base_strategy", "mean")
         )
 
         scores = []
@@ -122,56 +124,41 @@ class Faithfulness(BaseMetric):
     def _resolve_base(
         X_reference: pd.DataFrame | np.ndarray,
         base_values: np.ndarray | None = None,
-        base_strategy: str = "mean",
-        base_func: Callable[..., Any] | None = None,
-        base_func_kwargs: Dict[str, Any] | None = None,
+        base_strategy: str = "mean"
     ) -> np.ndarray:
         """
-        Resolve the baseline values used by the Faithfulness metric.
+        Resolve the baseline vector used by the Faithfulness metric.
 
-        The baseline can be provided directly through ``base_values``, computed
-        with a custom ``base_func``, or derived from the reference dataset using
-        one of the supported baseline strategies.
+        Explicit baseline values are used when provided. Otherwise, one
+        baseline value per feature is computed from the reference dataset
+        according to the selected strategy.
 
         Parameters
         ----------
         X_reference : pandas.DataFrame or numpy.ndarray
-            Reference dataset used to compute baseline values when
-            ``base_values`` and ``base_func`` are not provided.
-        base_values : numpy.ndarray or None, optional
-            Explicit baseline values. If provided, these values are returned as
-            a NumPy array and no strategy is applied.
+            Reference dataset used to compute the baseline. Rows represent
+            observations and columns represent features.
+        base_values : array-like or None, optional
+            Explicit baseline values containing one value per feature. If
+            provided, ``base_strategy`` is ignored.
         base_strategy : str, default="mean"
-            Strategy used to compute baseline values from ``X_reference``.
-            Supported values are ``"mean"``, ``"median"`` and ``"zero"``.
-        base_func : Callable[..., Any] or None, optional
-            Custom function used to compute baseline values from the reference
-            dataset. The function must accept ``X_reference`` as its first argument,
-            where ``X_reference`` is the test data, usually a ``pandas.DataFrame``.
-            It may also accept additional keyword arguments provided through
-            ``base_func_kwargs``. The returned value must be array-like and convertible
-            to ``numpy.ndarray`` with one value per feature.
-        base_func_kwargs : Dict[str, Any] or None, optional
-            Keyword arguments passed to ``base_func``. If ``None``, an empty
-            dictionary is used.
+            Strategy used to compute the baseline. Supported values are
+            ``"mean"``, ``"median"`` and ``"zero"``.
 
         Returns
         -------
         numpy.ndarray
-            Baseline values used to replace feature values during metric
-            computation.
+            One-dimensional floating-point array containing one baseline value
+            per feature.
 
         Raises
         ------
         ValueError
-            If ``base_strategy`` is unknown.
+            If ``base_strategy`` is not ``"mean"``, ``"median"`` or
+            ``"zero"``.
         """
         if base_values is not None:
             return np.asarray(base_values, dtype=float)
-
-        if base_func is not None:
-            kwargs = base_func_kwargs or {}
-            return np.asarray(base_func(X_reference, **kwargs), dtype=float)
 
         values = (
             X_reference.values

@@ -1,6 +1,6 @@
-# XAI_metrics/base/registry.py
+# XAI_metrics/base/metric_registry.py
 import inspect
-from typing import Dict, Type, Mapping, Any, List
+from typing import Type, Mapping, Any, List
 from xai_metrics.base import BaseMetric, MetricContext
 
 METRIC_REGISTRY = {}

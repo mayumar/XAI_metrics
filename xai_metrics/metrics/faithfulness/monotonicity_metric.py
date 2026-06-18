@@ -1,11 +1,11 @@
-# XAI_metrics/metrics/faithfulness/monotonicity_metric.py
+# xai_metrics/metrics/faithfulness/monotonicity_metric.py
 import numpy as np
 import pandas as pd
 from aix360.metrics import monotonicity_metric
 
 from xai_metrics.base import BaseMetric, MetricContext, register_metric
 
-from typing import Any, Mapping, Callable, Dict
+from typing import Any, Mapping
 
 
 @register_metric
@@ -13,17 +13,18 @@ class MonotonicityMetric(BaseMetric):
     """
     AIX360 Monotonicity metric.
 
-    This metric evaluates whether the model output changes monotonically when
-    features are incrementally added according to their attribution values. For
-    each observation, the input starts from a baseline vector and features are
-    added one by one in increasing order of importance. The metric returns
-    ``True`` when the predicted probability of the original predicted class
-    increases monotonically.
+    This metric evaluates whether the probability assigned to the originally
+    predicted class increases monotonically as features are progressively
+    restored from a baseline input.
 
-    The wrapped AIX360 implementation expects a model exposing a
-    ``predict_proba`` method.
+    For each observation, features are restored in increasing order of their
+    attribution values. The metric returns ``True`` when the resulting sequence
+    of predicted-class probabilities is monotonically non-decreasing.
 
-    The metric is based on the monotonicity metric proposed by Luss et al.
+    The wrapped AIX360 implementation requires a classification model exposing
+    a ``predict_proba`` method.
+
+    The metric is based on the monotonicity criterion described by Luss et al.
     (2019) and implemented in AIX360.
     """
     NAME = "MonotonicityMetric"
@@ -31,9 +32,7 @@ class MonotonicityMetric(BaseMetric):
     def __init__(
         self,
         context: MetricContext,
-        params: Mapping[str, Any] | None = None,
-        base_func: Callable[..., Any] | None = None,
-        base_func_kwargs: Dict[str, Any] | None = None
+        params: Mapping[str, Any] | None = None
     ):
         """
         Parameters
@@ -57,43 +56,38 @@ class MonotonicityMetric(BaseMetric):
               value is ``"mean"``.
 
             If ``None``, an empty dictionary is used.
-        base_func : Callable[..., Any] or None, optional
-            Custom function used to compute baseline values from the reference
-            dataset. The function must accept ``X_reference`` as its first
-            argument, usually a ``pandas.DataFrame``, and may accept additional
-            keyword arguments from ``base_func_kwargs``. It must return an
-            array-like object with one baseline value per feature.
-        base_func_kwargs : Dict[str, Any] or None, optional
-            Keyword arguments passed to ``base_func``. If ``None``, no additional
-            keyword arguments are passed.
         """
         super().__init__(context, params)
-        self.base_func = base_func
-        self.base_func_kwargs = base_func_kwargs
+
 
     def run(self):
         """
         Compute the Monotonicity metric.
 
-        The method selects the observations defined in the metric context, resolves
-        the baseline values, and computes one monotonicity result per selected
-        observation using :func:`aix360.metrics.monotonicity_metric`.
+        The method resolves a common baseline vector from the complete test
+        dataset and evaluates each selected observation independently using
+        :func:`aix360.metrics.monotonicity_metric`.
+
+        For each observation, AIX360 determines the class predicted for the
+        original input. Starting from the baseline, it restores features
+        cumulatively in increasing order of attribution value and evaluates the
+        probability assigned to that class after each restoration.
 
         Returns
         -------
         List[bool]
-            Monotonicity result for each evaluated observation. ``True`` indicates
-            that the predicted probability increases monotonically as features are
-            added in increasing order of attribution importance.
+            Monotonicity result for each evaluated observation. ``True``
+            indicates that the predicted-class probability never decreases as
+            features are progressively restored.
 
         Raises
         ------
         ValueError
-            If ``base_strategy`` is not one of ``"mean"``, ``"median"`` or
+            If ``base_strategy`` is not ``"mean"``, ``"median"`` or
             ``"zero"``.
         AttributeError
-            If the model does not expose the ``predict_proba`` method required by
-            the AIX360 implementation.
+            If the model does not implement the ``predict_proba`` method
+            required by AIX360.
         """
         ctx = self.context
         p = self.params
@@ -103,9 +97,7 @@ class MonotonicityMetric(BaseMetric):
         base = self._resolve_base(
             X_reference=ctx.X_test,
             base_values=p.get("base_values"),
-            base_strategy=p.get("base_strategy", "mean"),
-            base_func=self.base_func,
-            base_func_kwargs=self.base_func_kwargs
+            base_strategy=p.get("base_strategy", "mean")
         )
 
         scores = []
@@ -124,54 +116,44 @@ class MonotonicityMetric(BaseMetric):
     def _resolve_base(
         X_reference: pd.DataFrame | np.ndarray,
         base_values: np.ndarray | None = None,
-        base_strategy: str = "mean",
-        base_func: Callable[..., Any] | None = None,
-        base_func_kwargs: Dict[str, Any] | None = None,
+        base_strategy: str = "mean"
     ) -> np.ndarray:
         """
-        Resolve the baseline values used by the Monotonicity metric.
+        Resolve the baseline vector used by the Monotonicity metric.
 
-        The baseline can be provided directly through ``base_values``, computed
-        with a custom ``base_func``, or derived from the reference dataset using
-        one of the supported baseline strategies.
+        Explicit baseline values are used when provided. Otherwise, the
+        baseline is computed feature-wise from the reference dataset using the
+        selected strategy.
 
         Parameters
         ----------
         X_reference : pandas.DataFrame or numpy.ndarray
-            Reference dataset used to compute baseline values when ``base_values``
-            and ``base_func`` are not provided.
-        base_values : numpy.ndarray or None, optional
-            Explicit baseline values. If provided, these values are returned as a
-            NumPy array and no strategy is applied.
+            Reference dataset used to compute the baseline. Rows represent
+            observations and columns represent input features.
+        base_values : array-like or None, optional
+            Explicit baseline containing one value per feature. If provided,
+            it is converted to a floating-point NumPy array and returned
+            directly.
         base_strategy : str, default="mean"
-            Strategy used to compute baseline values from ``X_reference``.
-            Supported values are ``"mean"``, ``"median"`` and ``"zero"``.
-        base_func : Callable[..., Any] or None, optional
-            Custom function used to compute baseline values from ``X_reference``.
-            The function must accept ``X_reference`` as its first argument and may
-            accept additional keyword arguments from ``base_func_kwargs``. It must
-            return an array-like object with one value per feature.
-        base_func_kwargs : Dict[str, Any] or None, optional
-            Keyword arguments passed to ``base_func``. If ``None``, an empty
-            dictionary is used.
+            Strategy used when ``base_values`` is not provided:
+
+            - ``"mean"``: feature-wise mean of the reference dataset.
+            - ``"median"``: feature-wise median of the reference dataset.
+            - ``"zero"``: vector of zeros.
 
         Returns
         -------
         numpy.ndarray
-            Baseline values used as the initial feature values during metric
-            computation.
+            One-dimensional baseline array containing one value per feature.
 
         Raises
         ------
         ValueError
-            If ``base_strategy`` is unknown.
+            If ``base_strategy`` is not ``"mean"``, ``"median"`` or
+            ``"zero"``.
         """
         if base_values is not None:
             return np.asarray(base_values, dtype=float)
-
-        if base_func is not None:
-            kwargs = base_func_kwargs or {}
-            return np.asarray(base_func(X_reference, **kwargs), dtype=float)
 
         values = (
             X_reference.values

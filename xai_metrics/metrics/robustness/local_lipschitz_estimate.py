@@ -1,10 +1,10 @@
-# XAI_metrics/metrics/robustness/local_lipschitz_estimate.py
+# xai_metrics/metrics/robustness/local_lipschitz_estimate.py
 import quantus
 import numpy as np
 
 from xai_metrics.base import BaseMetric, MetricContext, register_metric, MetricSkipped
 
-from typing import Callable, Any, Mapping, Dict
+from typing import Any, Mapping
 from xai_metrics.base.types import ExplainFunc
 
 @register_metric
@@ -12,14 +12,18 @@ class LocalLipschitzEstimate(BaseMetric):
     """
     Quantus Local Lipschitz Estimate metric.
 
-    This metric evaluates explanation stability in a local neighbourhood of
-    each input. For each observation, Quantus samples perturbed versions of the
-    input, recomputes explanations with ``explain_func``, and estimates the
-    maximum ratio between explanation changes and input changes.
+    This metric evaluates the local stability of an explanation by comparing
+    changes in the explanation with changes in the corresponding input. For
+    each observation, Quantus generates neighbouring inputs using Gaussian
+    noise, recomputes their explanations and calculates the ratio between the
+    explanation distance and the input distance. The score is the maximum ratio
+    obtained across the sampled neighbours.
 
-    The metric is based on the Local Lipschitz Estimate, also referred to as a
-    stability test, proposed by Alvarez-Melis and Jaakkola (2018), as
-    implemented in Quantus.
+    Lower scores indicate that nearby inputs receive similar explanations and
+    therefore correspond to more locally robust explanations.
+
+    The metric is based on the Local Lipschitz Estimate proposed by
+    Alvarez-Melis and Jaakkola (2018) and implemented in Quantus.
     """
     NAME = 'LocalLipschitzEstimate'
 
@@ -27,14 +31,7 @@ class LocalLipschitzEstimate(BaseMetric):
         self,
         context: MetricContext,
         explain_func: ExplainFunc,
-        params: Mapping[str, Any] | None = None,
-        similarity_func: Callable[..., np.ndarray] | None = None,
-        norm_numerator: Callable[..., np.ndarray] | None = None,
-        norm_denominator: Callable[..., np.ndarray] | None = None,
-        normalise_func: Callable[..., np.ndarray] | None = None,
-        normalise_func_kwargs: Dict[str, Any] | None = None,
-        perturb_func: Callable[..., np.ndarray] | None = None,
-        perturb_func_kwargs: Dict[str, Any] | None = None
+        params: Mapping[str, Any] | None = None
     ):
         """
         Parameters
@@ -68,38 +65,17 @@ class LocalLipschitzEstimate(BaseMetric):
               default value is ``0.1``.
 
             If ``None``, an empty dictionary is used.
-        similarity_func : Callable[..., numpy.ndarray] or None, optional
-            Function used to compute the local Lipschitz estimate from explanation
-            changes and input changes. The function must be compatible with the
-            Quantus similarity interface, accepting arguments such as ``a``, ``b``,
-            ``c``, ``d``, ``norm_numerator`` and ``norm_denominator``. If
-            ``None``, Quantus uses its default Lipschitz constant function.
-        norm_numerator : Callable[..., numpy.ndarray] or None, optional
-            Function used to compute the norm of the explanation difference in the
-            numerator of the Lipschitz ratio. If ``None``, Quantus uses its default
-            Euclidean distance.
-        norm_denominator : Callable[..., numpy.ndarray] or None, optional
-            Function used to compute the norm of the input difference in the
-            denominator of the Lipschitz ratio. If ``None``, Quantus uses its
-            default Euclidean distance.
-        normalise_func : Callable[..., numpy.ndarray] or None, optional
-            Custom normalisation function passed to Quantus. The function must
-            accept the attribution array as its first argument and may accept
-            additional keyword arguments from ``normalise_func_kwargs``. If
-            ``None``, Quantus uses its default normalisation behaviour when
-            ``normalise=True``.
-        normalise_func_kwargs : Dict[str, Any] or None, optional
-            Keyword arguments passed to ``normalise_func`` when normalisation is
-            enabled. If ``None``, no additional keyword arguments are passed.
-        perturb_func : Callable[..., numpy.ndarray] or None, optional
-            Perturbation function passed to Quantus. The function must be
-            compatible with Quantus perturbation functions, accepting at least an
-            input array and feature indices, and returning the perturbed array. If
-            ``None``, Quantus uses its default Gaussian-noise perturbation
-            function.
-        perturb_func_kwargs : Dict[str, Any] or None, optional
-            Keyword arguments passed to ``perturb_func``. If ``None``, no
-            additional keyword arguments are passed.
+
+        Notes
+        -----
+        The wrapper uses the default functions provided by Quantus: the
+        Lipschitz constant as the comparison function, Euclidean distance for
+        the numerator and denominator, the default attribution normalisation
+        function and Gaussian-noise perturbations.
+
+        The score is a finite-sample estimate based on the generated
+        neighbours, rather than the exact maximum over the complete local
+        neighbourhood.
 
         Raises
         ------
@@ -113,44 +89,35 @@ class LocalLipschitzEstimate(BaseMetric):
 
         self.explain_func = explain_func
 
-        self.similarity_func = similarity_func
-        self.norm_numerator = norm_numerator
-        self.norm_denominator = norm_denominator
-        self.normalise_func = normalise_func
-        self.normalise_func_kwargs = normalise_func_kwargs
-        self.perturb_func = perturb_func
-        self.perturb_func_kwargs = perturb_func_kwargs
     
     def run(self):
         """
         Compute the Local Lipschitz Estimate metric.
 
-        The method selects the observations defined in the metric context,
-        retrieves their input data, labels and attribution values, and passes them
-        to :class:`quantus.LocalLipschitzEstimate`. The model is set to training
-        mode before computing the metric, and ``ctx.device`` is forwarded to
-        Quantus when available.
+        The method passes the selected inputs, target labels, original
+        attributions and explanation function to
+        :class:`quantus.LocalLipschitzEstimate`. Quantus samples neighbouring
+        inputs, recomputes their explanations and returns the maximum ratio
+        between explanation and input changes for each observation.
+
+        If all attribution values are negative, their absolute values are used
+        when ``abs=True``; otherwise, the metric is skipped. The model is set
+        to training mode and the device stored in the context is forwarded to
+        Quantus.
 
         Returns
         -------
         List[float]
-            Local Lipschitz Estimate score for each evaluated observation. Lower
-            values indicate more stable explanations under local input
-            perturbations.
+            Local Lipschitz Estimate score for each evaluated observation.
+            Lower values indicate greater local explanation stability.
 
         Raises
         ------
         MetricSkipped
-            If all attribution values are negative, since the metric is skipped for
-            that attribution configuration.
+            If all attribution values are negative and ``abs`` is ``False``.
         """
         ctx = self.context
         p = self.params
-
-        if np.all(ctx.attributions < 0.0):
-            raise MetricSkipped(
-                f"{self.NAME} skipped: all attributions are negative."
-            )
 
         nr_samples = int(p.get("nr_samples", 200))
         abs_ = bool(p.get("abs", False))
@@ -158,26 +125,28 @@ class LocalLipschitzEstimate(BaseMetric):
         perturb_mean = float(p.get("perturb_mean", 0.0))
         perturb_std = float(p.get("perturb_std", 0.1))
 
+        attributions = ctx.attributions
+        if np.all(attributions < 0.0):
+            if not abs_:
+                raise MetricSkipped(
+                    f"{self.NAME} skipped: all attributions are negative."
+                )
+            else:
+                attributions = np.abs(attributions)
+
         ctx.model.train()
 
         results = quantus.LocalLipschitzEstimate(
-            similarity_func=self.similarity_func,
-            norm_numerator=self.norm_numerator,
-            norm_denominator=self.norm_denominator,
             nr_samples=nr_samples,
             abs=abs_,
             normalise=normalise,
-            normalise_func=self.normalise_func,
-            normalise_func_kwargs=self.normalise_func_kwargs,
-            perturb_func=self.perturb_func,
             perturb_mean=perturb_mean,
-            perturb_std=perturb_std,
-            perturb_func_kwargs=self.perturb_func_kwargs
+            perturb_std=perturb_std
         )(
             model=ctx.model,
             x_batch=ctx.X_test.loc[ctx.observations].to_numpy(copy=True),
             y_batch=ctx.y_test.loc[ctx.observations].to_numpy(copy=True),
-            a_batch=ctx.attributions,
+            a_batch=attributions,
             explain_func=self.explain_func,
             device=ctx.device
         )

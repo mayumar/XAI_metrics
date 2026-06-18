@@ -1,10 +1,10 @@
-# XAI_metrics/metrics/faithfulness/faithfulness_estimate.py
+# xai_metrics/metrics/faithfulness/faithfulness_estimate.py
 import quantus
 import numpy as np
 
 from xai_metrics.base import BaseMetric, MetricContext, register_metric, MetricSkipped
 
-from typing import Mapping, Any, Callable, Dict
+from typing import Mapping, Any
 
 
 @register_metric
@@ -12,28 +12,28 @@ class FaithfulnessEstimate(BaseMetric):
     """
     Quantus Faithfulness Estimate metric.
 
-    This metric evaluates whether features with higher attribution values have
-    a stronger effect on the model output when they are perturbed. It computes
-    the similarity between attribution sums and prediction score drops across
-    perturbation steps.
+    This metric evaluates whether features with higher attribution values
+    produce larger changes in the model output when they are perturbed.
+    Features are perturbed in groups ordered by attribution importance, and the
+    metric compares the sum of their attributions with the corresponding drop
+    in the target output.
 
-    By default, this wrapper uses a safe Pearson correlation implementation
-    that returns ``0.0`` when one of the compared vectors has zero variance.
+    This wrapper uses a safe Pearson correlation function that returns ``0.0``
+    when either of the compared vectors has zero variance, avoiding undefined
+    correlation values.
 
-    The metric is based on the Faithfulness Estimate metric proposed by
-    Alvarez-Melis and Jaakkola (2018) and implemented in Quantus.
+    Higher scores indicate stronger agreement between attribution importance
+    and changes in the model output.
+
+    The metric is based on the Faithfulness Estimate proposed by Alvarez-Melis
+    and Jaakkola (2018) and implemented in Quantus.
     """
     NAME = 'FaithfulnessEstimate'
 
     def __init__(
         self,
         context: MetricContext,
-        params: Mapping[str, Any] | None = None,
-        similarity_func: Callable[..., float | np.ndarray] | None = None,
-        perturb_func: Callable[..., np.ndarray] | None = None,
-        perturb_func_kwargs: Dict[str, Any] | None = None,
-        normalise_func: Callable[..., np.ndarray] | None = None,
-        normalise_func_kwargs: Dict[str, Any] | None = None
+        params: Mapping[str, Any] | None = None
     ):
         """
         Parameters
@@ -63,35 +63,14 @@ class FaithfulnessEstimate(BaseMetric):
               ``"uniform"``. The default value is ``"black"``.
 
             If ``None``, an empty dictionary is used.
-        similarity_func : Callable[..., float | numpy.ndarray] or None, optional
-            Function used to compare attribution sums with prediction score drops.
-            The function must accept ``a`` and ``b`` as inputs and may accept
-            ``batched`` and other keyword arguments. If ``None``,
-            :meth:`_safe_pearson` is used.
-        perturb_func : Callable[..., numpy.ndarray] or None, optional
-            Perturbation function passed to Quantus. The function must be
-            compatible with Quantus perturbation functions, accepting at least an
-            input array and feature indices, and returning the perturbed array. If
-            ``None``, Quantus uses its default perturbation function.
-        perturb_func_kwargs : Dict[str, Any] or None, optional
-            Keyword arguments passed to ``perturb_func``. If ``None``, no
-            additional keyword arguments are passed.
-        normalise_func : Callable[..., numpy.ndarray] or None, optional
-            Custom normalisation function passed to Quantus. The function must
-            accept the attribution array as its first argument and may accept
-            additional keyword arguments from ``normalise_func_kwargs``. If
-            ``None``, Quantus uses its default normalisation behaviour when
-            ``normalise=True``.
-        normalise_func_kwargs : Dict[str, Any] or None, optional
-            Keyword arguments passed to ``normalise_func`` when normalisation is
-            enabled. If ``None``, no additional keyword arguments are passed.
+
+        Notes
+        -----
+        This wrapper uses its internal :meth:`_safe_pearson` method as the
+        similarity function. The default normalisation and perturbation
+        functions provided by Quantus are used.
         """
         super().__init__(context, params)
-        self.similarity_func = similarity_func or self._safe_pearson
-        self.perturb_func = perturb_func
-        self.perturb_func_kwargs = perturb_func_kwargs
-        self.normalise_func = normalise_func
-        self.normalise_func_kwargs = normalise_func_kwargs
 
 
     def _safe_pearson(
@@ -150,54 +129,60 @@ class FaithfulnessEstimate(BaseMetric):
         """
         Compute the Faithfulness Estimate metric.
 
-        The method selects the observations defined in the metric context,
-        retrieves their input data, labels and attribution values, and passes them
-        to :class:`quantus.FaithfulnessEstimate`. The model is set to evaluation
-        mode before computing the metric.
+        The method selects the observations defined in the metric context and
+        passes their input data, labels and attribution values to
+        :class:`quantus.FaithfulnessEstimate`. Features are perturbed in groups,
+        and the internal safe Pearson correlation function compares attribution
+        sums with the resulting target-output drops.
+
+        If all attribution values are negative, their treatment depends on the
+        ``abs`` parameter. Their absolute values are used when ``abs=True``;
+        otherwise, the metric is skipped.
+
+        The model is set to evaluation mode before the metric is computed.
 
         Returns
         -------
         List[float]
             Faithfulness Estimate score for each evaluated observation. Higher
-            values indicate stronger agreement between attribution importance and
-            model output changes after perturbation.
+            values indicate stronger agreement between attribution importance
+            and model output changes after perturbation.
 
         Raises
         ------
         MetricSkipped
-            If all attribution values are negative, since the metric is skipped for
-            that attribution configuration.
+            If all attribution values are negative and ``abs`` is ``False``.
         """
         ctx = self.context
         p = self.params
-
-        if np.all(ctx.attributions < 0.0):
-            raise MetricSkipped(
-                f"{self.NAME} skipped: all attributions are negative."
-            )
 
         features_in_step = int(p.get("features_in_step", 1))
         abs_ = bool(p.get("abs", False))
         normalise = bool(p.get("normalise", True))
         perturb_baseline = str(p.get("perturb_baseline", "black"))
 
+        attributions = ctx.attributions
+        if np.all(attributions < 0.0):
+            if not abs_:
+                raise MetricSkipped(
+                    f"{self.NAME} skipped: all attributions are negative."
+                )
+            else:
+                attributions = np.abs(attributions)
+
         ctx.model.eval()
 
         results = quantus.FaithfulnessEstimate(
-            similarity_func=self.similarity_func,
+            similarity_func=self._safe_pearson,
             features_in_step=features_in_step,
             abs=abs_,
             normalise=normalise,
-            normalise_func=self.normalise_func,
-            normalise_func_kwargs=self.normalise_func_kwargs,
-            perturb_func=self.perturb_func,
-            perturb_baseline=perturb_baseline,
-            perturb_func_kwargs=self.perturb_func_kwargs
+            perturb_baseline=perturb_baseline
         )(
             model=ctx.model,
             x_batch=ctx.X_test.loc[ctx.observations].to_numpy(copy=True),
             y_batch=ctx.y_test.loc[ctx.observations].to_numpy(copy=True),
-            a_batch=ctx.attributions
+            a_batch=attributions
         )
 
         return results

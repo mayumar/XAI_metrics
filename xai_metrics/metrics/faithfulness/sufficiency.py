@@ -1,23 +1,31 @@
-# XAI_metrics/metrics/faithfulness/sufficiency.py
+# xai_metrics/metrics/faithfulness/sufficiency.py
 import quantus
 import numpy as np
 
 from xai_metrics.base import BaseMetric, MetricContext, register_metric, MetricSkipped
 
-from typing import Mapping, Any, Callable, Dict
+from typing import Mapping, Any
 
 @register_metric
 class Sufficiency(BaseMetric):
     """
     Quantus Sufficiency metric.
 
-    This metric evaluates whether an explanation is sufficient to identify the
-    model prediction. Two observations are considered to share a similar
-    explanation when the distance between their attribution vectors is below a
-    user-defined threshold. The score measures how often observations with
-    similar explanations also share the same predicted class.
+    This metric evaluates whether observations with similar explanations
+    receive the same model prediction. Quantus computes the pairwise distances
+    between attribution vectors and considers two explanations similar when
+    their distance is less than or equal to ``threshold``.
 
-    The metric is based on the Sufficiency metric proposed by Dasgupta et al.
+    For each observation, the score is the proportion of other observations
+    with similar explanations that receive the same predicted class. A score
+    of ``0.0`` is returned when no other explanation satisfies the distance
+    threshold.
+
+    Higher scores indicate stronger agreement between similar explanations and
+    model predictions. Since explanations are compared within the evaluated
+    batch, the results depend on the selected observations.
+
+    The metric is based on the Sufficiency test proposed by Dasgupta et al.
     (2022) and implemented in Quantus.
     """
     NAME = 'Sufficiency'
@@ -25,9 +33,7 @@ class Sufficiency(BaseMetric):
     def __init__(
         self,
         context: MetricContext,
-        params: Mapping[str, Any] | None = None,
-        normalise_func: Callable[..., np.ndarray] | None = None,
-        normalise_func_kwargs: Dict[str, Any] | None = None
+        params: Mapping[str, Any] | None = None
     ):
         """
         Parameters
@@ -58,54 +64,59 @@ class Sufficiency(BaseMetric):
               metric. The default value is ``True``.
 
             If ``None``, an empty dictionary is used.
-        normalise_func : Callable[..., numpy.ndarray] or None, optional
-            Custom normalisation function passed to Quantus. The function must
-            accept the attribution array as its first argument and may accept
-            additional keyword arguments from ``normalise_func_kwargs``. If
-            ``None``, Quantus uses its default normalisation behaviour when
-            ``normalise=True``.
-        normalise_func_kwargs : Dict[str, Any] or None, optional
-            Keyword arguments passed to ``normalise_func`` when normalisation is
-            enabled. If ``None``, no additional keyword arguments are passed.
+
+        Notes
+        -----
+        The wrapper uses the default normalisation function provided by
+        Quantus. Scores depend on the observations evaluated in the same call,
+        since these observations define the explanation neighbourhoods.
         """
         super().__init__(context, params)
-        self.normalise_func = normalise_func
-        self.normalise_func_kwargs = normalise_func_kwargs
+        
 
     def run(self):
         """
         Compute the Sufficiency metric.
 
-        The method selects the observations defined in the metric context,
-        retrieves their input data, labels and attribution values, and passes them
-        to :class:`quantus.Sufficiency`. The model is set to evaluation mode before
-        computing the metric.
+        The method passes the selected input data, labels and attribution values
+        to :class:`quantus.Sufficiency`. Quantus compares the attribution
+        vectors, identifies observations with similar explanations and computes
+        the proportion that receive the same predicted class. Self-comparisons
+        are excluded.
+
+        If all attribution values are negative, their absolute values are used
+        when ``abs=True``; otherwise, the metric is skipped. The model is set to
+        evaluation mode before the computation.
 
         Returns
         -------
         List[float]
-            Sufficiency score for each evaluated observation. Higher values
-            indicate that observations with similar explanations more often share
-            the same predicted class.
+            Sufficiency score for each evaluated observation. Scores range from
+            ``0.0`` to ``1.0``. Higher values indicate that observations with
+            similar explanations more frequently receive the same predicted
+            class.
 
         Raises
         ------
         MetricSkipped
-            If all attribution values are negative, since the metric is skipped for
-            that attribution configuration.
+            If all attribution values are negative and ``abs`` is ``False``.
         """
         ctx = self.context
         p = self.params
-
-        if np.all(ctx.attributions < 0.0):
-            raise MetricSkipped(
-                f"{self.NAME} skipped: all attributions are negative."
-            )
 
         threshold = float(p.get("threshold", 0.6))
         distance_func = str(p.get("distance_func", "seuclidean"))
         abs_ = bool(p.get("abs", True))
         normalise = bool(p.get("normalise", True))
+
+        attributions = ctx.attributions
+        if np.all(attributions < 0.0):
+            if not abs_:
+                raise MetricSkipped(
+                    f"{self.NAME} skipped: all attributions are negative."
+                )
+            else:
+                attributions = np.abs(attributions)
 
         ctx.model.eval()
 
@@ -113,14 +124,12 @@ class Sufficiency(BaseMetric):
             threshold=threshold,
             distance_func=distance_func,
             abs=abs_,
-            normalise=normalise,
-            normalise_func=self.normalise_func,
-            normalise_func_kwargs=self.normalise_func_kwargs
+            normalise=normalise
         )(
             model=ctx.model,
             x_batch=ctx.X_test.loc[ctx.observations].to_numpy(copy=True),
             y_batch=ctx.y_test.loc[ctx.observations].to_numpy(copy=True),
-            a_batch=ctx.attributions
+            a_batch=attributions
         )
 
         return results

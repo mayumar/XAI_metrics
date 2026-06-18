@@ -1,15 +1,213 @@
 # XAI_metrics/runner/runner.py
 from pathlib import Path
 
-from xai_metrics.base import MetricContext, build_metrics_from_config, MetricSkipped
+from xai_metrics.base import MetricContext, build_metrics_from_config, MetricSkipped, ExplainerContext, build_explainers_from_config, METRIC_REGISTRY, EXPLAINER_REGISTRY
 from xai_metrics.metrics import autodiscover_metrics
 from xai_metrics.config import ConfigController
-from xai_metrics.reporting import build_reports, save_reports
+from xai_metrics.reporting import build_reports, save_reports, save_attributions
+from xai_metrics.explainers import autodiscover_explainers
 import xai_metrics.metrics as metrics_pkg
-import xai_metrics.base.registry as registry
+import xai_metrics.explainers as explainers_pkg
 
 from typing import Iterable, Any, Mapping, Dict, List
 import warnings
+
+
+def _resolve_explainer_selection(
+    selected_explainers: Iterable[str] | None,
+    configured_explainers: Iterable[str],
+    registered_explainers: Iterable[str]
+) -> List[str]:
+    configured = list(configured_explainers)
+    registered = set(registered_explainers)
+
+    configured_not_registered = [
+        name for name in configured
+        if name not in registered
+    ]
+
+    if configured_not_registered:
+        warnings.warn(
+            "Configured explainers not registered and will be skipped: "
+            f"{configured_not_registered}. "
+            f"Available: {sorted(registered)}",
+            UserWarning,
+            stacklevel=2,
+        )
+
+    valid_configured = [
+        name for name in configured
+        if name in registered
+    ]
+
+    if selected_explainers is None:
+        return valid_configured
+    
+    selected = list(selected_explainers)
+
+    selected_not_configured = [
+        name for name in selected
+        if name not in configured
+    ]
+
+    if selected_not_configured:
+        warnings.warn(
+            "Selected explainers not present in config and will be skipped: "
+            f"{selected_not_configured}. "
+            f"Configured: {configured}",
+            UserWarning,
+            stacklevel=2,
+        )
+
+    selected_not_registered = [
+        name for name in selected
+        if name not in registered
+    ]
+
+    if selected_not_registered:
+        warnings.warn(
+            "Selected explainers not registered and will be skipped: "
+            f"{selected_not_registered}. "
+            f"Available: {sorted(registered)}",
+            UserWarning,
+            stacklevel=2,
+        )
+
+    return [
+        name for name in configured
+        if name in selected and name in registered
+    ]
+
+
+def run_explanation(
+    context: ExplainerContext | None = None,
+    selected_explainers: Iterable[str] | None = None,
+    config: Mapping[str, Any] | str | Path = "config.yaml",
+    attribution_output_dir: str | Path | None = Path("results") / "attributions",
+    **runtime_kwargs: Any
+) -> Dict[str, Any]:
+    autodiscover_explainers(explainers_pkg)
+
+    config_controller = ConfigController(
+        config=config,
+        model_loader=runtime_kwargs.get("model_loader")
+    )
+
+    ctx_cfg = dict(config_controller.config.get("context") or {})
+
+    if not ctx_cfg:
+        raise ValueError("Config must include a 'context' section.")
+
+    if context is None:
+        context = config_controller.build_explainers_context(ctx_cfg)
+
+    explainers_config = config_controller.get_explainers_config()
+    configured_explainers = [
+        explainer['name']
+        for explainer in explainers_config
+    ]
+
+    explainer_names = _resolve_explainer_selection(
+        selected_explainers,
+        configured_explainers,
+        EXPLAINER_REGISTRY.keys()
+    )
+    allowed = set(explainer_names)
+
+    filtered_cfg = [
+        explainer
+        for explainer in explainers_config
+        if explainer.get("name") in allowed
+    ]
+
+    explainer_params_by_name = {
+        str(explainer_cfg['name']): dict(explainer_cfg.get("params") or {})
+        for explainer_cfg in filtered_cfg
+    }
+
+    metadata = {
+        "dataset_name": ctx_cfg.get("dataset_name"),
+        "model_name": ctx_cfg.get("model_name")
+    }
+
+    missing_metadata = [
+        key for key, value in metadata.items()
+        if not value
+    ]
+
+    if missing_metadata:
+        raise ValueError(
+            "Explanation metadata is missing required fields: "
+            f"{missing_metadata}. Required fields: ['dataset_name', 'model_name']."
+        )
+
+    if context.model is None:
+        raise ValueError("ExplainerContext must include a model.")
+
+    if context.X_batch is None:
+        raise ValueError("ExplainerContext must include X_batch.")
+
+    print("Explaining")
+
+    explainers = build_explainers_from_config(
+        filtered_cfg,
+        context
+    )
+
+    out = {
+        "metadata": metadata,
+        "attributions": {},
+        "explainer_params": {},
+        "skipped": {}
+    }
+
+    for explainer in explainers:
+        name = getattr(explainer, "NAME", explainer.__class__.__name__)
+
+        try:
+            out['attributions'][name] = explainer.explain(
+                model=context.model,
+                inputs=context.X_batch,
+                targets=context.y_batch,
+                device=context.device
+            )
+
+            out['explainer_params'][name] = explainer_params_by_name.get(name, {})
+
+        except Exception as exc:
+            out['skipped'][name] = str(exc)
+            print(str(exc))
+
+    context_outputs = [out]
+
+    attribution_paths = {}
+
+    if attribution_output_dir is not None:
+        attribution_context_outputs = []
+
+        for explainer_name, attributions in out['attributions'].items():
+            attribution_context_outputs.append(
+                {
+                    "metadata": {
+                        **metadata,
+                        "xai_method_name": explainer_name
+                    },
+                    "attributions": attributions,
+                    "observations": context.X_batch.index,
+                    "features": context.X_batch.columns
+                }
+            )
+
+        attribution_paths = save_attributions(
+            context_outputs=attribution_context_outputs,
+            output_dir=attribution_output_dir
+        )
+
+    return {
+        "contexts": context_outputs,
+        "attribution_paths": attribution_paths
+    }
+
 
 
 def _resolve_metric_selection(
@@ -48,7 +246,7 @@ def _resolve_metric_selection(
         If configured metrics are not registered, if selected metrics are not
         configured, or if selected metrics are not registered.
     """
-    configured = set(list(configured_metrics))
+    configured = list(configured_metrics)
     registered = set(registered_metrics)
 
     configured_not_registered = [
@@ -104,8 +302,8 @@ def _resolve_metric_selection(
         )
 
     return [
-        name for name in selected
-        if name in configured and name in registered
+        name for name in configured
+        if name in selected and name in registered
     ]
 
 
@@ -263,7 +461,7 @@ def run_evaluation(
     )
 
     if context is None:
-        context_list = config_controller.build_contexts()
+        context_list = config_controller.build_metric_contexts()
     else:
         context_list = [
             (context, _validate_context_metadata(metadata))
@@ -278,7 +476,7 @@ def run_evaluation(
     metric_names = _resolve_metric_selection(
         selected_metrics,
         configured_metrics,
-        registry.METRIC_REGISTRY.keys(),
+        METRIC_REGISTRY.keys(),
     )
     allowed = set(metric_names)
 

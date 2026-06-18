@@ -1,17 +1,20 @@
 context:
-  # dataset_name: "hydraulic"
-  # model_name: "IForest"
-  # xai_method_name: "LIME"
+  dataset_name: "hydraulic"
+  model_name: "IForest"
+  xai_method_name: "LIME"
 
-  # model_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/models/hydraulic/IForest/hydraulic_IForest_seed_0.pkl"
-  # X_test_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/data/hydraulic/X_test_train_norm.csv"
-  # y_test_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/data/hydraulic/y_test_train.csv"
-  # attributions_path: "/Users/i12alrum/Documents/Repo/XAI_metrics/prueba/results/attributions/hydraulic/IForest/LIME/hydraulic_IForest_lime_attributions.csv"
+  model_path: "examples/models/hydraulic/IForest/hydraulic_IForest_seed_0.pkl"
+  X_test_path: "examples/data/hydraulic/X_test.csv"
+  y_test_path: "examples/data/hydraulic/y_test.csv"
+  attributions_path: "prueba/results/attributions/hydraulic/IForest/LIME/hydraulic_IForest_lime_attributions.csv"
 
-  device: "cpu"
-  datasets_dir: "prueba/data"
-  models_dir: "prueba/results/models"
-  attributions_dir: "prueba/results/attributions"
+  X_background_path: "examples/data/hydraulic/X_train.csv"
+  y_background_path: "examples/data/hydraulic/y_train.csv"
+
+  # device: "cuda"
+  # datasets_dir: "prueba/data"
+  # models_dir: "prueba/results/models"
+  # attributions_dir: "prueba/results/attributions"
 
 metrics:
   - name: Complexity
@@ -57,26 +60,6 @@ metrics:
       abs: true
       normalise: true
       perturb_baseline: black
-
-  # - name: PGU
-  #   params:
-  #     Type: Local
-  #     k: 0.25
-  #     AUC: true
-  #     str: 0.1
-  #     n_samples: 100
-  #     seed: -1
-  #     n_jobs: -1
-
-  # - name: PGI
-  #   params:
-  #     Type: Local
-  #     k: 0.25
-  #     AUC: true
-  #     str: 0.1
-  #     n_samples: 100
-  #     seed: -1
-  #     n_jobs: -1
 
   - name: SensitivityN
     params:
@@ -140,22 +123,20 @@ metrics:
       normalise: false
       lower_bound: 0.2
 
-  # - name: MuFidelity
-  #   params:
-  #     Type: Global
-  #     one_hot_targets: true
-  #     num_classes: 2
-  #     batch_size: 64
-  #     grid_size: 7
-  #     nb_samples: 100
-  #     subset_percent: 0.2
 
-  # - name: Deletion
-  #   params:
-  #     Type: Global
-  #     one_hot_targets: true
-  #     num_classes: 2
-  #     batch_size: 64
-  #     grid_size: 7
-  #     nb_samples: 100
-  #     subset_percent: 0.2
+explainers:
+  - name: LIME
+    params:
+      mode: classification
+      random_state: 42
+      num_samples: 5000
+      labels: [1]
+      distance_metric: euclidean
+
+  - name: SHAP
+    params:
+      mode: classification
+      algorithm: auto
+      max_background_samples: 100
+      output_index: 1
+      random_state: 42

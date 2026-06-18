@@ -7,7 +7,7 @@ from itertools import product
 import pickle
 import joblib
 
-from xai_metrics.base import MetricContext
+from xai_metrics.base import MetricContext, ExplainerContext
 
 from typing import Mapping, Any, Callable, Dict, Tuple, List
 import warnings
@@ -264,7 +264,7 @@ class ConfigController:
         -------
         List[Dict[str, Any]]
             List of context configuration dictionaries. Each dictionary contains
-            metadata and paths required by :meth:`build_context`, namely
+            metadata and paths required by :meth:`build_metric_context`, namely
             ``dataset_name``, ``model_name``, ``xai_method_name``, ``model_path``,
             ``X_test_path``, ``y_test_path`` and ``attributions_path``. It may also
             contain ``device``.
@@ -376,9 +376,13 @@ class ConfigController:
             empty list is returned.
         """
         return self.config.get("metrics", [])
+    
+
+    def get_explainers_config(self) -> List:
+        return self.config.get("explainers", [])
 
     
-    def build_context(self, ctx_cfg: Mapping[str, Any] | None = None) -> Tuple[MetricContext, Dict[str, Any]]:
+    def build_metric_context(self, ctx_cfg: Mapping[str, Any] | None = None) -> Tuple[MetricContext, Dict[str, Any]]:
         """
         Build a metric evaluation context.
 
@@ -386,7 +390,7 @@ class ConfigController:
         labels and attribution file. The method loads these objects, validates
         their indexes, converts attribution values to a NumPy array, optionally
         moves the model to the configured device, and returns both the
-        :class:`~xai_metrics.base.MetricContext` and its identifying metadata.
+        :class:`MetricContext` and its identifying metadata.
 
         Parameters
         ----------
@@ -487,13 +491,13 @@ class ConfigController:
         return metric_context, metadata
     
     
-    def build_contexts(self) -> List[Tuple[MetricContext, Dict[str, Any]]]:
+    def build_metric_contexts(self) -> List[Tuple[MetricContext, Dict[str, Any]]]:
         """
         Build all metric evaluation contexts defined by the configuration.
 
         The method first obtains all context configurations through
         :meth:`_iter_context_configs` and then builds each corresponding
-        :class:`~xai_metrics.base.MetricContext`.
+        :class:`MetricContext`.
 
         Returns
         -------
@@ -501,6 +505,83 @@ class ConfigController:
             List of metric contexts together with their metadata.
         """
         return [
-            self.build_context(ctx_cfg)
+            self.build_metric_context(ctx_cfg)
             for ctx_cfg in self._iter_context_configs()
         ]
+
+
+    def build_explainers_context(
+        self,
+        ctx_cfg: Mapping[str, Any] | None = None
+    ) -> ExplainerContext:
+        ctx_cfg = dict(ctx_cfg or self.config.get("context") or {})
+
+        if not ctx_cfg:
+            raise ValueError("Config must include a 'context' section.")
+
+        required = ["X_background_path"]
+        missing = [key for key in required if key not in ctx_cfg]
+
+        if missing:
+            raise ValueError(f"Missing explainer context config fields: {missing}")
+        
+        model = self.model_loader(ctx_cfg["model_path"])
+            
+        X_background = pd.read_csv(ctx_cfg["X_background_path"], index_col=0)
+
+        y_background = None
+        if "y_background_path" in ctx_cfg:
+            y_background_df = pd.read_csv(ctx_cfg["y_background_path"], index_col=0)
+
+            if y_background_df.shape[1] > 1:
+                warnings.warn(
+                    "y_background contains more than one column. "
+                    f"Only the first column will be used: {y_background_df.columns[0]!r}. "
+                    f"Ignored columns: {list(y_background_df.columns[1:])}.",
+                    UserWarning,
+                    stacklevel=2,
+                )
+
+            y_background = y_background_df.iloc[:, 0]
+
+        
+        X_batch_path = ctx_cfg.get("X_batch_path", ctx_cfg.get("X_test_path"))
+        
+        X_batch = None
+        if X_batch_path is not None:
+            X_batch = pd.read_csv(X_batch_path, index_col=0)
+        
+        y_batch_path = ctx_cfg.get("y_batch_path", ctx_cfg.get("y_test_path"))
+
+        y_batch = None
+        if y_batch_path is not None:
+            y_batch_df = pd.read_csv(y_batch_path, index_col=0)
+
+            if y_batch_df.shape[1] > 1:
+                warnings.warn(
+                    "y_batch contains more than one column. "
+                    f"Only the first column will be used: {y_batch_df.columns[0]!r}. "
+                    f"Ignored columns: {list(y_batch_df.columns[1:])}.",
+                    UserWarning,
+                    stacklevel=2,
+                )
+
+            y_batch = y_batch_df.iloc[:, 0]
+
+            if X_batch is not None:
+                X_batch, y_batch = self._validate_X_y_indexes(X_batch, y_batch)
+        
+        device = ctx_cfg.get("device")
+        if device is not None:
+            device = str(device)
+            if device.startswith("cuda") and not torch.cuda.is_available():
+                raise RuntimeError(f"Device {device!r} requested but CUDA is not available.")
+
+        return ExplainerContext(
+            X_background=X_background,
+            y_background=y_background,
+            model=model,
+            X_batch=X_batch,
+            y_batch=y_batch,
+            device=device
+        )
