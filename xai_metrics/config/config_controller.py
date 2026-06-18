@@ -205,7 +205,7 @@ class ConfigController:
         return observations_typed_idx
     
 
-    def _validate_context_metadata(self, ctx_cfg: Mapping[str, Any]) -> Dict[str, Any]:
+    def _validate_metric_context_metadata(self, ctx_cfg: Mapping[str, Any]) -> Dict[str, Any]:
         """
         Validate and return the metadata required for a metric context.
 
@@ -246,7 +246,24 @@ class ConfigController:
         }
     
 
-    def _iter_context_configs(self) -> List[Dict[str, Any]]:
+    def _validate_explainer_context_metadata(self, ctx_cfg: Mapping[str, Any]) -> Dict[str, Any]:
+        required = ["dataset_name", "model_name"]
+        missing = [key for key in required if not ctx_cfg.get(key)]
+
+        if missing:
+            raise ValueError(
+                "Explainer context metadata is required when passing direct paths. "
+                f"Missing fields: {missing}. "
+                f"Required fields: {required}."
+            )
+        
+        return {
+            "dataset_name": ctx_cfg['dataset_name'],
+            "model_name": ctx_cfg['model_name']
+        }
+    
+
+    def _iter_metric_context_configs(self) -> List[Dict[str, Any]]:
         """
         Build the list of context configurations to evaluate.
 
@@ -281,7 +298,7 @@ class ConfigController:
             raise ValueError("Config must include a 'context' section.")
         
         if not all(key in ctx_cfg for key in ("datasets_dir", "models_dir", "attributions_dir")):
-            self._validate_context_metadata(ctx_cfg)
+            self._validate_metric_context_metadata(ctx_cfg)
             return [ctx_cfg]
         
         datasets_root = Path(ctx_cfg["datasets_dir"]).expanduser().resolve()
@@ -301,19 +318,30 @@ class ConfigController:
 
             X_files = sorted(
                 path for path in dataset_path.glob("*.csv")
-                if path.name.lower().startswith("x_test")
+                if path.name.lower().startswith("x_batch")
             )
+            test = False
+
+            if not X_files:
+                test = True
+                X_files = sorted(
+                    path for path in dataset_path.glob("*.csv")
+                    if path.name.lower().startswith("x_test")
+                )
 
             if not X_files:
                 continue
 
-            y_files = sorted(
-                path for path in dataset_path.glob("*.csv")
-                if path.name.lower().startswith("y_test")
-            )
-
-            if not y_files:
-                continue
+            if not test:
+                y_files = sorted(
+                    path for path in dataset_path.glob("*.csv")
+                    if path.name.lower().startswith("y_batch")
+                )
+            else:
+                y_files = sorted(
+                    path for path in dataset_path.glob("*.csv")
+                    if path.name.lower().startswith("y_test")
+                )
 
             for model_dir in sorted(path for path in models_dataset_root.iterdir() if path.is_dir()):
                 model_name = model_dir.name
@@ -362,6 +390,121 @@ class ConfigController:
                 "No MetricContext configs found from datasets_dir, models_dir and attributions_dir."
             )
 
+        return context_configs
+    
+
+    def _iter_explainer_context_configs(self) -> List[Dict[str, Any]]:
+        ctx_cfg = self.config.get("context")
+
+        if not ctx_cfg:
+            raise ValueError("Config must include a 'context' section.")
+        
+        if not all(key in ctx_cfg for key in ("datasets_dir", "models_dir")):
+            self._validate_metric_context_metadata(ctx_cfg)
+            return [ctx_cfg]
+        
+        datasets_root = Path(ctx_cfg['datasets_dir']).expanduser().resolve()
+        models_root = Path(ctx_cfg['models_dir']).expanduser().resolve()
+
+        context_configs = []
+
+        for dataset_path in sorted(path for path in datasets_root.iterdir() if path.is_dir()):
+            dataset_name = dataset_path.name
+            models_dataset_root = models_root / dataset_name
+
+            if not models_dataset_root.exists():
+                continue
+
+            X_background_files = sorted(
+                path for path in dataset_path.glob("*.csv")
+                if path.name.lower().startswith("x_background")
+            )
+            train = False
+
+            if not X_background_files:
+                train = True
+                X_background_files = sorted(
+                    path for path in dataset_path.glob("*.csv")
+                    if path.name.lower().startswith("x_train")
+                )
+
+            if not X_background_files:
+                continue
+
+            if not train:
+                y_background_files = sorted(
+                    path for path in dataset_path.glob("*.csv")
+                    if path.name.lower().startswith("y_background")
+                )
+            else:
+                y_background_files = sorted(
+                    path for path in dataset_path.glob("*.csv")
+                    if path.name.lower().startswith("y_train")
+                )
+
+            X_batch_files = sorted(
+                path for path in dataset_path.glob("*.csv")
+                if path.name.lower().startswith("x_batch")
+            )
+            test = False
+
+            if not X_batch_files:
+                test = True
+                X_batch_files = sorted(
+                    path for path in dataset_path.glob("*.csv")
+                    if path.name.lower().startswith("x_test")
+                )
+
+            if not X_batch_files:
+                continue
+
+            if not test:
+                y_batch_files = sorted(
+                    path for path in dataset_path.glob("*.csv")
+                    if path.name.lower().startswith("y_batch")
+                )
+            else:
+                y_batch_files = sorted(
+                    path for path in dataset_path.glob("*.csv")
+                    if path.name.lower().startswith("y_test")
+                )
+
+            for model_dir in sorted(path for path in models_dataset_root.iterdir() if path.is_dir()):
+                model_name = model_dir.name
+
+                model_files = sorted(
+                    path for path in model_dir.rglob("*")
+                    if path.is_file()
+                    and path.suffix.lower() in {".pkl", ".pickle", ".pt", ".pth", ".joblib"}
+                )
+
+                for model_path, X_background_path, X_batch_path in product(
+                    model_files,
+                    X_background_files,
+                    X_batch_files
+                ):
+                    base_config = {
+                        "dataset_name": dataset_name,
+                        "model_name": model_name,
+                        "model_path": str(model_path),
+                        "X_background_path": str(X_background_path),
+                        "X_batch_path": str(X_batch_path),
+                        "device": ctx_cfg.get("device"),
+                    }
+
+                    if y_background_files:
+                        base_config["y_background_path"] = str(y_background_files[0])
+
+                    if y_batch_files:
+                        base_config["y_batch_path"] = str(y_batch_files[0])
+
+                    context_configs.append(base_config)
+
+        if not context_configs:
+            raise ValueError(
+                "No ExplainerContext configs found from datasets_dir and models_dir."
+            )
+        
         return context_configs
         
         
@@ -486,34 +629,15 @@ class ConfigController:
             device=device
         )
 
-        metadata = self._validate_context_metadata(ctx_cfg)
+        metadata = self._validate_metric_context_metadata(ctx_cfg)
 
         return metric_context, metadata
-    
-    
-    def build_metric_contexts(self) -> List[Tuple[MetricContext, Dict[str, Any]]]:
-        """
-        Build all metric evaluation contexts defined by the configuration.
-
-        The method first obtains all context configurations through
-        :meth:`_iter_context_configs` and then builds each corresponding
-        :class:`MetricContext`.
-
-        Returns
-        -------
-        List[Tuple[MetricContext, Dict[str, Any]]]
-            List of metric contexts together with their metadata.
-        """
-        return [
-            self.build_metric_context(ctx_cfg)
-            for ctx_cfg in self._iter_context_configs()
-        ]
 
 
     def build_explainers_context(
         self,
         ctx_cfg: Mapping[str, Any] | None = None
-    ) -> ExplainerContext:
+    ) -> Tuple[ExplainerContext, Dict[str, Any]]:
         ctx_cfg = dict(ctx_cfg or self.config.get("context") or {})
 
         if not ctx_cfg:
@@ -577,7 +701,7 @@ class ConfigController:
             if device.startswith("cuda") and not torch.cuda.is_available():
                 raise RuntimeError(f"Device {device!r} requested but CUDA is not available.")
 
-        return ExplainerContext(
+        explainer_context = ExplainerContext(
             X_background=X_background,
             y_background=y_background,
             model=model,
@@ -585,3 +709,33 @@ class ConfigController:
             y_batch=y_batch,
             device=device
         )
+
+        metadata = self._validate_explainer_context_metadata(ctx_cfg)
+
+        return explainer_context, metadata
+    
+    
+    def build_metric_contexts(self) -> List[Tuple[MetricContext, Dict[str, Any]]]:
+        """
+        Build all metric evaluation contexts defined by the configuration.
+
+        The method first obtains all context configurations through
+        :meth:`_iter_metric_context_configs` and then builds each corresponding
+        :class:`MetricContext`.
+
+        Returns
+        -------
+        List[Tuple[MetricContext, Dict[str, Any]]]
+            List of metric contexts together with their metadata.
+        """
+        return [
+            self.build_metric_context(ctx_cfg)
+            for ctx_cfg in self._iter_metric_context_configs()
+        ]
+    
+
+    def build_explainers_contexts(self) -> List[Tuple[ExplainerContext, Dict[str, Any]]]:
+        return [
+            self.build_explainers_context(ctx_cfg)
+            for ctx_cfg in self._iter_explainer_context_configs()
+        ]

@@ -8,8 +8,9 @@ import torch.nn as nn
 from pathlib import Path
 import pickle
 import joblib
+import yaml
 
-from xai_metrics.runner import run_evaluation
+from xai_metrics.runner import run_evaluation, run_explanation
 
 from xai_methods.break_down import usar_breakdown, evaluar_breakdown, make_breakdown_explain_func
 from xai_methods.lime import usar_lime, evaluar_lime, make_lime_explain_func
@@ -132,19 +133,92 @@ def guardar_modelo(model, dataset_name, model_name, seed):
 
     print(f"Modelo guardado en: {output_path}")
 
+def generar_batch_hydraulic(model_names, n=10, random_state=0):
+    _, _, _, y_test, _, X_test_norm, _ = preprocess_dataset(
+        "hydraulic",
+        False,
+    )
+
+    posiciones_batch = []
+
+    for model_name in model_names:
+        model_path = (
+            Path(BASE_DIR)
+            / "prueba"
+            / "results"
+            / "models"
+            / "hydraulic"
+            / model_name
+            / f"hydraulic_{model_name}_seed_0.pkl"
+        )
+        model = load_model(model_path)
+
+        posiciones = seleccionar_observaciones(
+            model=model,
+            X_test=X_test_norm,
+            y_test=y_test,
+            n=n,
+            random_state=random_state,
+        )
+        posiciones_batch.extend(posiciones)
+        observaciones_modelo = X_test_norm.index[posiciones].tolist()
+        print(f"Observaciones seleccionadas ({model_name}): {observaciones_modelo}")
+
+    posiciones_batch = sorted(set(posiciones_batch))
+    observaciones = X_test_norm.index[posiciones_batch].tolist()
+    X_batch = X_test_norm.iloc[posiciones_batch]
+    y_batch = y_test.iloc[posiciones_batch].rename("target")
+
+    output_dir = Path(BASE_DIR) / "prueba" / "data" / "hydraulic"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    X_batch_path = output_dir / "X_batch.csv"
+    y_batch_path = output_dir / "y_batch.csv"
+
+    X_batch.to_csv(X_batch_path, index=True)
+    y_batch.to_csv(y_batch_path, index=True, header=True)
+
+    print(f"Observaciones totales seleccionadas: {observaciones}")
+    print(f"X_batch guardado en: {X_batch_path}")
+    print(f"y_batch guardado en: {y_batch_path}")
+
+    return X_batch, y_batch
+
 def main():
     parser = argparse.ArgumentParser(description="Ejecuta experimentos de XAI para PdM")
     parser.add_argument("-e", "--experiment", type=str, required=True,
-                        choices=["lime", "shap_local", "shap_global", "breakdown", "eval", "optuna", "train"],
+                        choices=["lime", "shap_local", "shap_global", "breakdown", "eval", "optuna", "train", "batch"],
                         help="Tipo de experimento a ejecutar")
-    parser.add_argument("-d", "--dataset", type=str, required=True, choices={'hydraulic', 'AHU21', 'ARAMIS20', 'PHM14', 'HSG18'},
+    parser.add_argument("-d", "--dataset", type=str, default='AHU21', choices={'hydraulic', 'AHU21', 'ARAMIS20', 'PHM14', 'HSG18'},
                         help="Nombre del dataset a usar")
+    parser.add_argument("-n", "--batch-n", type=int, default=10,
+                        help="Numero maximo de observaciones por grupo TP/FN/FP/TN")
+    parser.add_argument("--random-state", type=int, default=0,
+                        help="Semilla para seleccionar observaciones")
     
     args = parser.parse_args()
     dataset_name = args.dataset
     experiment_type = args.experiment
 
     if dataset_name == "hydraulic":
+
+        if experiment_type == "batch":
+            model_names = [
+                "IForest",
+                "ECOD",
+                "HBOS",
+                "MCD",
+                "AutoEncoder",
+                "VAE",
+            ]
+
+            generar_batch_hydraulic(
+                model_names=model_names,
+                n=args.batch_n,
+                random_state=args.random_state,
+            )
+
+            return 1
 
         if experiment_type == "eval":
 
@@ -302,6 +376,48 @@ def main():
         
         else:
 
+            if experiment_type == "batch":
+                models_path = Path(BASE_DIR) / "prueba" / "results" / "models" / dataset_name
+                posiciones_batch = []
+
+                for model_dir in models_path.iterdir():
+                    if model_dir.is_dir():
+                        for model_path in model_dir.iterdir():
+                            model_name = model_path.parent.name
+                            model = load_model(model_path)
+                            posiciones = seleccionar_observaciones(
+                                model=model,
+                                X_test=X_test,
+                                y_test=y_test,
+                                n=args.batch_n,
+                                random_state=args.random_state,
+                            )
+                            posiciones_batch.extend(posiciones)
+                            observaciones_modelo = X_test.index[posiciones].tolist()
+                            print(f"Observaciones seleccionadas ({model_name}): {observaciones_modelo}")
+
+                posiciones_batch = sorted(set(posiciones_batch))
+                observaciones = X_test.index[posiciones_batch].tolist()
+                X_batch = X_test.iloc[posiciones_batch]
+                y_batch = y_test.iloc[posiciones_batch]
+
+                if isinstance(y_batch, pd.DataFrame):
+                    y_batch = y_batch.iloc[:, 0].rename("target")
+                else:
+                    y_batch = y_batch.rename("target")
+
+                X_batch_path = input_path / "X_batch.csv"
+                y_batch_path = input_path / "y_batch.csv"
+
+                X_batch.to_csv(X_batch_path, index=True)
+                y_batch.to_csv(y_batch_path, index=True, header=True)
+
+                print(f"Observaciones totales seleccionadas: {observaciones}")
+                print(f"X_batch guardado en: {X_batch_path}")
+                print(f"y_batch guardado en: {y_batch_path}")
+
+                return 1
+
             if experiment_type == "eval":
                 # explain_funcs = {
                 #     "lime": make_lime_explain_func(X_train),
@@ -346,24 +462,32 @@ def main():
                             model=model,
                             X_test=X_test,
                             y_test=y_test,
-                            n=10,
-                            random_state=0,
+                            n=args.batch_n,
+                            random_state=args.random_state,
                         )
 
                         X_explicar = X_test.iloc[posiciones]
                         observaciones = X_test.index[posiciones].tolist()
 
-                        if experiment_type == "lime":
-                            explicaciones = usar_lime(model, X_train, X_explicar, observaciones)
+                        output_attributions = Path(BASE_DIR) / "prueba" / "results" / "attributions"
 
+                        if experiment_type == "lime":
+                            explicaciones = run_explanation(
+                                config="xai_metrics/config.yaml",
+                                selected_explainers=["LIME"],
+                                attribution_output_dir=output_attributions,
+                                model_loader=load_model
+                            )
                             print(explicaciones)
-                            guardar_atribuciones(explicaciones, observaciones, X_train.columns, dataset_name, model_name, "lime")
 
                         if experiment_type == "shap_local":
-                            explicaciones = usar_shap_local(model, X_train, X_explicar, observaciones)
-
+                            explicaciones = run_explanation(
+                                config="xai_metrics/config.yaml",
+                                selected_explainers=["SHAP"],
+                                attribution_output_dir=output_attributions,
+                                model_loader=load_model
+                            )
                             print(explicaciones)
-                            guardar_atribuciones(explicaciones, observaciones, X_train.columns, dataset_name, model_name, "shap_local")
 
             # metrics_df, model = model_function(X_train, y_train, X_val, y_val, X_test, y_test, metrics_df, True, 0)
 

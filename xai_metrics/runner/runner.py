@@ -1,7 +1,7 @@
 # XAI_metrics/runner/runner.py
 from pathlib import Path
 
-from xai_metrics.base import MetricContext, build_metrics_from_config, MetricSkipped, ExplainerContext, build_explainers_from_config, METRIC_REGISTRY, EXPLAINER_REGISTRY
+from xai_metrics.base import MetricContext, build_metrics_from_config, MetricSkipped, ExplainerContext, build_explainers_from_config, list_metrics, list_explainers, ExplainerSkipped
 from xai_metrics.metrics import autodiscover_metrics
 from xai_metrics.config import ConfigController
 from xai_metrics.reporting import build_reports, save_reports, save_attributions
@@ -99,7 +99,25 @@ def run_explanation(
         raise ValueError("Config must include a 'context' section.")
 
     if context is None:
-        context = config_controller.build_explainers_context(ctx_cfg)
+        context_list = config_controller.build_explainers_contexts()
+    else:
+        metadata = {
+            "dataset_name": ctx_cfg.get("dataset_name"),
+            "model_name": ctx_cfg.get("model_name")
+        }
+
+        missing_metadata = [
+            key for key, value in metadata.items()
+            if not value
+        ]
+
+        if missing_metadata:
+            raise ValueError(
+                "Explanation metadata is missing required fields: "
+                f"{missing_metadata}. Required fields: ['dataset_name', 'model_name']."
+            )
+
+        context_list = [(context, metadata)]
 
     explainers_config = config_controller.get_explainers_config()
     configured_explainers = [
@@ -110,7 +128,7 @@ def run_explanation(
     explainer_names = _resolve_explainer_selection(
         selected_explainers,
         configured_explainers,
-        EXPLAINER_REGISTRY.keys()
+        list_explainers()
     )
     allowed = set(explainer_names)
 
@@ -124,68 +142,61 @@ def run_explanation(
         str(explainer_cfg['name']): dict(explainer_cfg.get("params") or {})
         for explainer_cfg in filtered_cfg
     }
-
-    metadata = {
-        "dataset_name": ctx_cfg.get("dataset_name"),
-        "model_name": ctx_cfg.get("model_name")
-    }
-
-    missing_metadata = [
-        key for key, value in metadata.items()
-        if not value
-    ]
-
-    if missing_metadata:
-        raise ValueError(
-            "Explanation metadata is missing required fields: "
-            f"{missing_metadata}. Required fields: ['dataset_name', 'model_name']."
-        )
-
-    if context.model is None:
-        raise ValueError("ExplainerContext must include a model.")
-
-    if context.X_batch is None:
-        raise ValueError("ExplainerContext must include X_batch.")
-
-    print("Explaining")
-
-    explainers = build_explainers_from_config(
-        filtered_cfg,
-        context
-    )
-
-    out = {
-        "metadata": metadata,
-        "attributions": {},
-        "explainer_params": {},
-        "skipped": {}
-    }
-
-    for explainer in explainers:
-        name = getattr(explainer, "NAME", explainer.__class__.__name__)
-
-        try:
-            out['attributions'][name] = explainer.explain(
-                model=context.model,
-                inputs=context.X_batch,
-                targets=context.y_batch,
-                device=context.device
-            )
-
-            out['explainer_params'][name] = explainer_params_by_name.get(name, {})
-
-        except Exception as exc:
-            out['skipped'][name] = str(exc)
-            print(str(exc))
-
-    context_outputs = [out]
-
+    
+    context_outputs = []
+    attribution_context_outputs = []
     attribution_paths = {}
 
-    if attribution_output_dir is not None:
-        attribution_context_outputs = []
+    for ctx, metadata in context_list:
+        if ctx.model is None:
+            raise ValueError("ExplainerContext must include a model.")
 
-        for explainer_name, attributions in out['attributions'].items():
+        if ctx.X_batch is None:
+            raise ValueError("ExplainerContext must include X_batch.")
+
+        print(
+            f"\n{'=' * 60}\n"
+            "Running XAI explanations\n"
+            f"  Dataset : {metadata['dataset_name']}\n"
+            f"  Model   : {metadata['model_name']}\n"
+            f"{'=' * 60}"
+        )
+
+        explainers = build_explainers_from_config(
+            filtered_cfg,
+            ctx
+        )
+
+        out = {
+            "metadata": metadata,
+            "attributions": {},
+            "explainer_params": {},
+            "skipped": {}
+        }
+
+        for explainer in explainers:
+            name = getattr(explainer, "NAME", explainer.__class__.__name__)
+
+            print(f"  [explainer] Running {name}...")
+
+            try:
+                out['attributions'][name] = explainer.explain(
+                    model=ctx.model,
+                    inputs=ctx.X_batch,
+                    targets=ctx.y_batch,
+                    device=ctx.device
+                )
+
+                out['explainer_params'][name] = explainer_params_by_name.get(name, {})
+                print(f"  [explainer] Finished {name}")
+
+            except ExplainerSkipped as exc:
+                out['skipped'][name] = str(exc)
+                print(f"  [explainer] Skipped {name}: {exc}")
+
+        context_outputs.append(out)
+
+        for explainer_name, attributions in out["attributions"].items():
             attribution_context_outputs.append(
                 {
                     "metadata": {
@@ -193,15 +204,16 @@ def run_explanation(
                         "xai_method_name": explainer_name
                     },
                     "attributions": attributions,
-                    "observations": context.X_batch.index,
-                    "features": context.X_batch.columns
+                    "observations": ctx.X_batch.index,
+                    "features": ctx.X_batch.columns
                 }
             )
 
-        attribution_paths = save_attributions(
-            context_outputs=attribution_context_outputs,
-            output_dir=attribution_output_dir
-        )
+        if attribution_output_dir is not None:
+            attribution_paths = save_attributions(
+                context_outputs=attribution_context_outputs,
+                output_dir=attribution_output_dir
+            )
 
     return {
         "contexts": context_outputs,
@@ -476,7 +488,7 @@ def run_evaluation(
     metric_names = _resolve_metric_selection(
         selected_metrics,
         configured_metrics,
-        METRIC_REGISTRY.keys(),
+        list_metrics(),
     )
     allowed = set(metric_names)
 
@@ -571,12 +583,15 @@ def run_evaluation(
         for metric in metrics:
             name = getattr(metric, "NAME", metric.__class__.__name__)
 
+            print(f"  [metric] Running {name}...")
+
             try:
                 out['results'][name] = metric.run()
                 out['metric_params'][name] = metric_params_by_name.get(name, {})
+                print(f"  [metric] Finished {name}")
             except MetricSkipped as exc:
                 out['skipped'][name] = str(exc)
-                print(str(exc))
+                print(f"  [metric] Skipped {name}: {exc}")
 
         context_outputs.append(out)
     

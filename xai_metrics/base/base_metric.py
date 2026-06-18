@@ -1,4 +1,4 @@
-# XAI_metrics/base/base_metric.py
+# xai_metrics/base/base_metric.py
 from dataclasses import dataclass
 from typing import Any, Mapping
 import numpy as np

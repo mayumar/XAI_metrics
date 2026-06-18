@@ -9,6 +9,31 @@ from xai_metrics.base.types import ExplainFunc
 
 @dataclass(frozen=True)
 class ExplainerContext:
+    """
+    Shared context used by explainer implementations.
+
+    This dataclass stores the background data required by explanation methods
+    and, optionally, the model, current batch, target values and device used
+    during explanation generation.
+
+    Attributes
+    ----------
+    X_background : pandas.DataFrame
+        Background or reference input data used by the explainer.
+    y_background : pandas.Series or None, optional
+        Labels or targets associated with ``X_background``. This is only
+        required by explainers that need background target values.
+    model : Any or None, optional
+        Model associated with the explainer context. This can be used by
+        explainers that store the model in the context instead of receiving it
+        only at call time.
+    X_batch : pandas.DataFrame or None, optional
+        Current batch of observations to be explained.
+    y_batch : pandas.Series or None, optional
+        Labels or targets associated with ``X_batch``.
+    device : str or None, optional
+        Device used for model execution, such as ``"cpu"`` or ``"cuda"``.
+    """
     X_background: pd.DataFrame
     y_background: pd.Series | None = None
     model: Any | None = None
@@ -17,14 +42,27 @@ class ExplainerContext:
     device: str | None = None
 
 
+class ExplainerSkipped(Exception):
+    """
+    Exception raised when an explainer cannot generate attributions.
+
+    This exception should be used when an explainer is not applicable to the
+    current context, model, data, targets, or configuration.
+    """
+
+
 class BaseExplainer:
     """
     Base class for explanation methods.
 
-    Subclasses must implement :meth:`explain`, which generates attribution
-    values for a batch of inputs. Instances are callable and can also expose
-    their explanation method as an :class:`ExplainFunc` compatible with metrics
-    that need to recompute explanations.
+    Explainer classes should inherit from this class, define their own
+    ``NAME`` and implement :meth:`explain`, which generates attribution values
+    for a batch of inputs.
+
+    Instances are callable, so calling an explainer is equivalent to calling
+    :meth:`explain`. They can also expose their explanation method through
+    :meth:`as_explain_func`, which returns a metric-compatible function for
+    metrics that need to recompute explanations on perturbed inputs.
     """
     NAME: str = "explainer"
 
@@ -36,10 +74,13 @@ class BaseExplainer:
         """
         Parameters
         ----------
+        context : ExplainerContext
+            Shared context containing the background data and optional model,
+            batch, labels and device information used by the explainer.
         params : Mapping[str, Any] or None, optional
-            Configuration parameters used by the explanation method. A copy of
-            the mapping is stored in :attr:`params`. If ``None``, an empty
-            dictionary is used.
+            Explainer-specific configuration parameters. A copy of the mapping
+            is stored in :attr:`params`. If ``None``, an empty dictionary is
+            used.
         """
         self.context = context
         self.params = dict(params or {})
