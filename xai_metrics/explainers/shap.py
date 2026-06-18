@@ -5,11 +5,12 @@ import numpy as np
 import pandas as pd
 from torch import Tensor
 
-from xai_metrics.base import BaseExplainer
+from xai_metrics.base import register_explainer, BaseExplainer
 from xai_metrics.base.base_explainer import ExplainerContext
 
 from typing import Any, Mapping
 
+@register_explainer
 class SHAPExplainer(BaseExplainer):
     NAME = "SHAP"
 
