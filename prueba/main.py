@@ -33,6 +33,21 @@ from models import (
 )
 from optimizacion_hiperparametros import optimizar_modelo, entrenar_modelo_optimizado
 
+import random
+
+
+def fijar_semillas(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+    torch.use_deterministic_algorithms(True, warn_only=True)
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+
 
 def seleccionar_observaciones(
     model,
@@ -201,6 +216,9 @@ def main():
                         help="Semilla para seleccionar observaciones")
     
     args = parser.parse_args()
+
+    seed = args.random_state
+    fijar_semillas(seed)
     dataset_name = args.dataset
     experiment_type = args.experiment
 
@@ -457,14 +475,14 @@ def main():
                         "X": (Path(BASE_DIR) / "prueba/datasets/ARAMIS20/X_train.csv"),
                         "y": (Path(BASE_DIR) / "prueba/datasets/ARAMIS20/y_train.csv"),
                     },
-                    "PHM14": {
-                        "X": (Path(BASE_DIR) / "prueba/datasets/PHM14/X_train.csv"),
-                        "y": (Path(BASE_DIR) / "prueba/datasets/PHM14/y_train.csv"),
-                    },
-                    "MetroPT3": {
-                        "X": (Path(BASE_DIR) / "prueba/datasets/MetroPT3/X_train.csv"),
-                        "y": (Path(BASE_DIR) / "prueba/datasets/MetroPT3/y_train.csv"),
-                    },
+                    # "PHM14": {
+                    #     "X": (Path(BASE_DIR) / "prueba/datasets/PHM14/X_train.csv"),
+                    #     "y": (Path(BASE_DIR) / "prueba/datasets/PHM14/y_train.csv"),
+                    # },
+                    # "MetroPT3": {
+                    #     "X": (Path(BASE_DIR) / "prueba/datasets/MetroPT3/X_train.csv"),
+                    #     "y": (Path(BASE_DIR) / "prueba/datasets/MetroPT3/y_train.csv"),
+                    # },
                 }
 
                 explain_funcs = {}

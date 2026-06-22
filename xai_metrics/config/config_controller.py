@@ -625,6 +625,7 @@ class ConfigController:
             first column is used.
         """
         ctx_cfg = dict(ctx_cfg or self.config.get("context") or {})
+        print(ctx_cfg)
 
         if not ctx_cfg:
             raise ValueError("Config must include a 'context' section.")

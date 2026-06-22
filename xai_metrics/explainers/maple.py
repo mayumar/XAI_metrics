@@ -38,7 +38,8 @@ class _MAPLEModel:
         max_features: float | int | str | None = 0.5,
         min_samples_leaf: int = 10,
         regularization: float = 0.001,
-        random_state: int | None = 42
+        random_state: int | None = 42,
+        n_jobs: int | None = None
     ):
         """
         Parameters
@@ -89,7 +90,8 @@ class _MAPLEModel:
                 n_estimators=n_estimators,
                 min_samples_leaf=min_samples_leaf,
                 max_features=max_features, # type: ignore
-                random_state=random_state
+                random_state=random_state,
+                n_jobs=n_jobs
             )
         elif fe_type == "gbrt":
             self.ensemble = GradientBoostingRegressor(
@@ -542,7 +544,8 @@ class MAPLEExplainer(BaseExplainer):
             max_features=self.params.get("max_features", 0.5),
             min_samples_leaf=int(self.params.get("min_samples_leaf", 10)),
             regularization=float(self.params.get("regularization", 0.001)),
-            random_state=self.params.get("random_state", 42)
+            random_state=self.params.get("random_state", 42),
+            n_jobs=self.params.get("n_jobs")
         )
     
     def _get_explainer(self, model: Any) -> _MAPLEModel:
