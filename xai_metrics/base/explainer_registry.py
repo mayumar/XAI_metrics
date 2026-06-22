@@ -7,10 +7,10 @@ EXPLAINER_REGISTRY = {}
 
 def register_explainer(cls: Type[BaseExplainer]) -> Type[BaseExplainer]:
     """
-    Register an explainer class.
+    Register an explainer class in the global explainer registry.
 
-    The class is registered using its ``NAME`` attribute. If the class does not
-    define ``NAME``, its class name is used instead.
+    The explainer is registered using its ``NAME`` attribute. If the class does
+    not define ``NAME``, the class name is used instead.
 
     Parameters
     ----------
@@ -20,13 +20,21 @@ def register_explainer(cls: Type[BaseExplainer]) -> Type[BaseExplainer]:
     Returns
     -------
     Type[BaseExplainer]
-        The registered class. This allows the function to be used as a
-        decorator.
+        The same explainer class passed as input. This allows the function to
+        be used as a decorator.
 
     Raises
     ------
     ValueError
-        If another explainer has already been registered with the same name.
+        If another explainer with the same name is already registered.
+
+    Examples
+    --------
+    >>> @register_explainer
+    ... class MyExplainer(BaseExplainer):
+    ...     NAME = "my_explainer"
+    ...     def explain(self, model, inputs, targets=None, **kwargs):
+    ...         return inputs
     """
     name = getattr(cls, "NAME", cls.__name__)
 
@@ -39,12 +47,13 @@ def register_explainer(cls: Type[BaseExplainer]) -> Type[BaseExplainer]:
 
 def list_explainers() -> List[str]:
     """
-    Return the names of all registered explainers.
+    Return the names of the registered explainers.
 
     Returns
     -------
     List[str]
-        Sorted list with the names of the registered explainers.
+        Sorted list containing the names of all explainers currently registered
+        in ``EXPLAINER_REGISTRY``.
     """
     return sorted(EXPLAINER_REGISTRY.keys())
 
@@ -54,31 +63,33 @@ def build_explainers_from_config(
     context: ExplainerContext
 ) -> List[BaseExplainer]:
     """
-    Build explainer instances from configuration entries.
+    Build explainer instances from a configuration list.
 
-    Each configuration entry must contain the explainer ``name`` and may
-    optionally contain a ``params`` mapping. The name is used to retrieve the
-    corresponding explainer class from the registry.
+    Each explainer configuration must contain a ``name`` field matching a
+    registered explainer. It may also contain a ``params`` field with
+    explainer-specific parameters.
 
     Parameters
     ----------
     explainers_cfg : List[Mapping[str, Any]]
-        List of explainer configuration entries.
+        List of explainer configuration dictionaries. Each dictionary must
+        contain the explainer ``name`` and may contain ``params``.
     context : ExplainerContext
-        Shared context passed to each explainer instance.
+        Shared explainer context passed to every explainer instance.
 
     Returns
     -------
     List[BaseExplainer]
-        Instantiated explainers.
+        List of instantiated explainer objects.
 
     Raises
     ------
-    KeyError
-        If an explainer configuration entry does not contain ``name``.
     ValueError
-        If the requested explainer name is not registered.
-    """    
+        If an explainer name from ``explainers_cfg`` is not registered.
+    KeyError
+        If an explainer configuration does not contain the required ``name``
+        field.
+    """
     explainers = []
         
     for explainer_cfg in explainers_cfg:

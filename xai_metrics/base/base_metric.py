@@ -14,7 +14,7 @@ class MetricContext:
     attribution values, and optional extra information required by metric
     classes.
 
-    Attributes
+    Parameters
     ----------
     model : torch.nn.Module
         Model evaluated by the metrics.

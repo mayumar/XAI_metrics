@@ -10,8 +10,8 @@
         "normalise": false,
         "lower_bound": 0.2
       },
-      "lime": 1.1334431927871744,
-      "shap_local": 1.970868031294496
+      "LIME": 1.1344030294574146,
+      "SHAP": 16.04480553421037
     },
     {
       "dataset_name": "AHU21",
@@ -21,8 +21,8 @@
         "abs": false,
         "normalise": true
       },
-      "lime": 0.0,
-      "shap_local": 0.0
+      "LIME": 0.0,
+      "SHAP": 0.0
     },
     {
       "dataset_name": "AHU21",
@@ -31,8 +31,8 @@
       "metric_params": {
         "normalise": true
       },
-      "lime": 2.320955625575119,
-      "shap_local": 2.0405971830600933
+      "LIME": 2.3228173617067718,
+      "SHAP": 2.2029865063337186
     },
     {
       "dataset_name": "AHU21",
@@ -42,8 +42,8 @@
         "abs": true,
         "normalise": true
       },
-      "lime": 0.6153846153688363,
-      "shap_local": 0.6153846153688363
+      "LIME": 0.8190476190188357,
+      "SHAP": 0.8190476190188357
     },
     {
       "dataset_name": "AHU21",
@@ -52,8 +52,8 @@
       "metric_params": {
         "base_strategy": "mean"
       },
-      "lime": 0.2823027692212639,
-      "shap_local": 0.20884527371068992
+      "LIME": -0.059755264956119346,
+      "SHAP": 0.006114240466681472
     },
     {
       "dataset_name": "AHU21",
@@ -65,8 +65,8 @@
         "normalise": true,
         "perturb_baseline": "mean"
       },
-      "lime": -0.03310796502624409,
-      "shap_local": -0.032024732220661975
+      "LIME": 0.035493747783066715,
+      "SHAP": 0.010452985860753935
     },
     {
       "dataset_name": "AHU21",
@@ -79,8 +79,8 @@
         "perturb_mean": 0.0,
         "perturb_std": 0.1
       },
-      "lime": 8.656527761864185,
-      "shap_local": 1.4448046157041314
+      "LIME": 8.370147088304643,
+      "SHAP": 1.9507502375171664
     },
     {
       "dataset_name": "AHU21",
@@ -92,8 +92,8 @@
         "normalise": false,
         "lower_bound": 0.2
       },
-      "lime": 1.8221188009691336,
-      "shap_local": 4.652477824487326
+      "LIME": 1.8563902556012697,
+      "SHAP": 32.540457800585266
     },
     {
       "dataset_name": "AHU21",
@@ -105,8 +105,8 @@
         "normalise": true,
         "perturb_baseline": "black"
       },
-      "lime": 1.0,
-      "shap_local": 1.0
+      "LIME": 1.0,
+      "SHAP": 1.0
     },
     {
       "dataset_name": "AHU21",
@@ -120,8 +120,8 @@
         "normalise": true,
         "perturb_baseline": "mean"
       },
-      "lime": 0.29988873965621166,
-      "shap_local": 0.018809656454336982
+      "LIME": 0.3238445378151261,
+      "SHAP": 0.0812324929971989
     },
     {
       "dataset_name": "AHU21",
@@ -130,8 +130,8 @@
       "metric_params": {
         "base_strategy": "mean"
       },
-      "lime": 0.0,
-      "shap_local": 0.0
+      "LIME": 0.0,
+      "SHAP": 0.0
     },
     {
       "dataset_name": "AHU21",
@@ -144,8 +144,8 @@
         "normalise": true,
         "perturb_baseline": "black"
       },
-      "lime": 6.7,
-      "shap_local": 6.7
+      "LIME": 5.571428571428571,
+      "SHAP": 5.571428571428571
     },
     {
       "dataset_name": "AHU21",
@@ -156,8 +156,8 @@
         "abs": false,
         "normalise": false
       },
-      "lime": 0.00037971382437864776,
-      "shap_local": 0.0007514337395595611
+      "LIME": 0.00020934045394393005,
+      "SHAP": 0.0073456271816728595
     },
     {
       "dataset_name": "AHU21",
@@ -168,8 +168,8 @@
         "abs": false,
         "normalise": false
       },
-      "lime": 11126.629576126928,
-      "shap_local": 5854.596448649242
+      "LIME": 3387.7775206862225,
+      "SHAP": 57416.404224697864
     },
     {
       "dataset_name": "AHU21",
@@ -182,8 +182,8 @@
         "normalise": true,
         "perturb_baseline": "uniform"
       },
-      "lime": -0.00979382634183798,
-      "shap_local": 0.05393092544312464
+      "LIME": -0.18636678414494925,
+      "SHAP": 0.07254854963307306
     },
     {
       "dataset_name": "AHU21",
@@ -192,8 +192,8 @@
       "metric_params": {
         "normalise": true
       },
-      "lime": 0.5447521106703819,
-      "shap_local": 0.597829223917851
+      "LIME": 0.543850524627359,
+      "SHAP": 0.5375451167849074
     },
     {
       "dataset_name": "AHU21",
@@ -205,8 +205,8 @@
         "abs": true,
         "normalise": true
       },
-      "lime": 0.661672937100502,
-      "shap_local": 0.6068862712530504
+      "LIME": 0.7911418173827507,
+      "SHAP": 0.8265092132112071
     },
     {
       "dataset_name": "AHU21",
@@ -218,8 +218,8 @@
         "normalise": false,
         "lower_bound": 0.2
       },
-      "lime": 1.2205772175119622,
-      "shap_local": null
+      "LIME": 1.1874158724616761,
+      "SHAP": null
     },
     {
       "dataset_name": "AHU21",
@@ -229,8 +229,8 @@
         "abs": false,
         "normalise": true
       },
-      "lime": 0.0,
-      "shap_local": null
+      "LIME": 0.0,
+      "SHAP": 0.0
     },
     {
       "dataset_name": "AHU21",
@@ -239,8 +239,8 @@
       "metric_params": {
         "normalise": true
       },
-      "lime": 2.6790922430405857,
-      "shap_local": null
+      "LIME": 2.6723478521519453,
+      "SHAP": 2.498215119382698
     },
     {
       "dataset_name": "AHU21",
@@ -250,8 +250,8 @@
         "abs": true,
         "normalise": true
       },
-      "lime": 0.5692307692161737,
-      "shap_local": null
+      "LIME": 0.5295238095090913,
+      "SHAP": 0.5295238095090913
     },
     {
       "dataset_name": "AHU21",
@@ -260,8 +260,8 @@
       "metric_params": {
         "base_strategy": "mean"
       },
-      "lime": -0.38489213264650524,
-      "shap_local": null
+      "LIME": -0.12476786163929095,
+      "SHAP": -0.07154611762130525
     },
     {
       "dataset_name": "AHU21",
@@ -273,8 +273,8 @@
         "normalise": true,
         "perturb_baseline": "mean"
       },
-      "lime": -0.04179703055098859,
-      "shap_local": null
+      "LIME": -0.04696535865930895,
+      "SHAP": 0.01786731782517433
     },
     {
       "dataset_name": "AHU21",
@@ -287,8 +287,8 @@
         "perturb_mean": 0.0,
         "perturb_std": 0.1
       },
-      "lime": 9.542367096369665,
-      "shap_local": null
+      "LIME": 9.173765699936235,
+      "SHAP": null
     },
     {
       "dataset_name": "AHU21",
@@ -300,8 +300,8 @@
         "normalise": false,
         "lower_bound": 0.2
       },
-      "lime": 1.7017695191271447,
-      "shap_local": null
+      "LIME": 1.6577875450318698,
+      "SHAP": null
     },
     {
       "dataset_name": "AHU21",
@@ -313,8 +313,8 @@
         "normalise": true,
         "perturb_baseline": "black"
       },
-      "lime": 1.0,
-      "shap_local": null
+      "LIME": 1.0,
+      "SHAP": 1.0
     },
     {
       "dataset_name": "AHU21",
@@ -328,8 +328,8 @@
         "normalise": true,
         "perturb_baseline": "mean"
       },
-      "lime": 0.44066584027911276,
-      "shap_local": null
+      "LIME": 0.27302541301744104,
+      "SHAP": -0.40080433430646023
     },
     {
       "dataset_name": "AHU21",
@@ -338,8 +338,8 @@
       "metric_params": {
         "base_strategy": "mean"
       },
-      "lime": 0.0,
-      "shap_local": null
+      "LIME": 0.0,
+      "SHAP": 0.0
     },
     {
       "dataset_name": "AHU21",
@@ -352,8 +352,8 @@
         "normalise": true,
         "perturb_baseline": "black"
       },
-      "lime": 7.775,
-      "shap_local": null
+      "LIME": 5.685714285714286,
+      "SHAP": 5.685714285714286
     },
     {
       "dataset_name": "AHU21",
@@ -364,8 +364,8 @@
         "abs": false,
         "normalise": false
       },
-      "lime": 0.0003547719433089423,
-      "shap_local": null
+      "LIME": 0.00013364138439629883,
+      "SHAP": null
     },
     {
       "dataset_name": "AHU21",
@@ -376,8 +376,8 @@
         "abs": false,
         "normalise": false
       },
-      "lime": 35.93570110451234,
-      "shap_local": null
+      "LIME": 19.715258565704424,
+      "SHAP": null
     },
     {
       "dataset_name": "AHU21",
@@ -390,8 +390,8 @@
         "normalise": true,
         "perturb_baseline": "uniform"
       },
-      "lime": 0.06406384984394867,
-      "shap_local": null
+      "LIME": -0.17222116403890456,
+      "SHAP": 0.3133318381929198
     },
     {
       "dataset_name": "AHU21",
@@ -400,8 +400,8 @@
       "metric_params": {
         "normalise": true
       },
-      "lime": 0.3027308955120701,
-      "shap_local": null
+      "LIME": 0.31010876683968974,
+      "SHAP": 0.42760799340806877
     },
     {
       "dataset_name": "AHU21",
@@ -413,8 +413,8 @@
         "abs": true,
         "normalise": true
       },
-      "lime": 0.6009861763430229,
-      "shap_local": null
+      "LIME": 0.5721504958508291,
+      "SHAP": 0.6083927500306584
     }
   ]
 }

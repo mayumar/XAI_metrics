@@ -11,6 +11,10 @@ import joblib
 import yaml
 
 from xai_metrics.runner import run_evaluation, run_explanation
+from xai_metrics.base import ExplainerContext, build_explainers_from_config
+import xai_metrics.explainers as explainers_pkg
+from xai_metrics.explainers import autodiscover_explainers
+from xai_metrics.config import ConfigController
 
 from xai_methods.break_down import usar_breakdown, evaluar_breakdown, make_breakdown_explain_func
 from xai_methods.lime import usar_lime, evaluar_lime, make_lime_explain_func
@@ -187,9 +191,9 @@ def generar_batch_hydraulic(model_names, n=10, random_state=0):
 def main():
     parser = argparse.ArgumentParser(description="Ejecuta experimentos de XAI para PdM")
     parser.add_argument("-e", "--experiment", type=str, required=True,
-                        choices=["lime", "shap_local", "shap_global", "breakdown", "eval", "optuna", "train", "batch"],
+                        choices=["lime", "shap", "breakdown", "maple", "eval", "optuna", "train", "batch"],
                         help="Tipo de experimento a ejecutar")
-    parser.add_argument("-d", "--dataset", type=str, default='AHU21', choices={'hydraulic', 'AHU21', 'ARAMIS20', 'PHM14', 'HSG18'},
+    parser.add_argument("-d", "--dataset", type=str, default='AHU21', choices={'hydraulic', 'AHU21', 'ARAMIS20', 'PHM14', 'HSG18', 'MetroPT3'},
                         help="Nombre del dataset a usar")
     parser.add_argument("-n", "--batch-n", type=int, default=10,
                         help="Numero maximo de observaciones por grupo TP/FN/FP/TN")
@@ -304,7 +308,12 @@ def main():
 
     else:
 
-        input_path = Path(BASE_DIR) / "prueba/data" / dataset_name
+        input_path = Path(BASE_DIR) / "prueba"
+        if experiment_type == "optuna":
+            input_path = input_path / "data" / dataset_name
+        else:
+            input_path = input_path / "datasets" / dataset_name
+            
         X_train = pd.read_csv(input_path / "X_train.csv", index_col=0)
         y_train = pd.read_csv(input_path / "y_train.csv", index_col=0)
         X_val = pd.read_csv(input_path / "X_val.csv", index_col=0)
@@ -425,24 +434,79 @@ def main():
                 #     "breakdown": make_breakdown_explain_func(X_train),
                 # }
 
-                input_path_aramis = Path(BASE_DIR) / "prueba/data" / "ARAMIS20"
-                input_path_ahu = Path(BASE_DIR) / "prueba/data" / "AHU21"
-                X_train_aramis = pd.read_csv(input_path_aramis / "X_train.csv", index_col=0)
-                X_train_ahu = pd.read_csv(input_path_ahu / "X_train.csv", index_col=0)
+                # input_path_aramis = Path(BASE_DIR) / "prueba/datasets" / "ARAMIS20"
+                # input_path_ahu = Path(BASE_DIR) / "prueba/datasets" / "AHU21"
+                # X_train_aramis = pd.read_csv(input_path_aramis / "X_train.csv", index_col=0)
+                # X_train_ahu = pd.read_csv(input_path_ahu / "X_train.csv", index_col=0)
 
-                explain_funcs = {
-                    "ARAMIS20": {
-                        "lime": make_lime_explain_func(X_train_aramis),
-                        "shap": make_shap_local_explain_func(X_train_aramis),
-                    },
+                autodiscover_explainers(explainers_pkg)
+
+                CONFIG_PATH = "xai_metrics/config.yaml"
+
+                config_controller = ConfigController(
+                    config=CONFIG_PATH,
+                    model_loader=load_model,
+                )
+
+                background_paths = {
                     "AHU21": {
-                        "lime": make_lime_explain_func(X_train_ahu),
-                        "shap": make_shap_local_explain_func(X_train_ahu),
+                        "X": (Path(BASE_DIR) / "prueba/datasets/AHU21/X_train.csv"),
+                        "y": (Path(BASE_DIR) / "prueba/datasets/AHU21/y_train.csv"),
+                    },
+                    "ARAMIS20": {
+                        "X": (Path(BASE_DIR) / "prueba/datasets/ARAMIS20/X_train.csv"),
+                        "y": (Path(BASE_DIR) / "prueba/datasets/ARAMIS20/y_train.csv"),
+                    },
+                    "PHM14": {
+                        "X": (Path(BASE_DIR) / "prueba/datasets/PHM14/X_train.csv"),
+                        "y": (Path(BASE_DIR) / "prueba/datasets/PHM14/y_train.csv"),
+                    },
+                    "MetroPT3": {
+                        "X": (Path(BASE_DIR) / "prueba/datasets/MetroPT3/X_train.csv"),
+                        "y": (Path(BASE_DIR) / "prueba/datasets/MetroPT3/y_train.csv"),
                     },
                 }
 
+                explain_funcs = {}
+
+                for current_dataset, paths in background_paths.items():
+                    X_background = pd.read_csv(
+                        paths["X"],
+                        index_col=0,
+                    )
+
+                    y_background = pd.read_csv(
+                        paths["y"],
+                        index_col=0,
+                    ).iloc[:, 0]
+
+                    explainer_context = ExplainerContext(
+                        X_background=X_background,
+                        y_background=y_background,
+                    )
+
+                    explainers = build_explainers_from_config(
+                        config_controller.get_explainers_config(),
+                        explainer_context,
+                    )
+
+                    explain_funcs[current_dataset] = {
+                        explainer.NAME: explainer.as_explain_func()
+                        for explainer in explainers
+                    }
+                # explain_funcs = {
+                #     "ARAMIS20": {
+                #         "lime": make_lime_explain_func(X_train_aramis),
+                #         "shap": make_shap_local_explain_func(X_train_aramis),
+                #     },
+                #     "AHU21": {
+                #         "lime": make_lime_explain_func(X_train_ahu),
+                #         "shap": make_shap_local_explain_func(X_train_ahu),
+                #     },
+                # }
+
                 results = run_evaluation(
-                    config="xai_metrics/config.yaml",
+                    config=CONFIG_PATH,
                     model_loader=load_model,
                     explain_funcs=explain_funcs,
                     # report_output_dir=None # Comentar si se quiere guardar los reportes
@@ -451,43 +515,61 @@ def main():
                 print(results)
                 return 1
 
-            models_path = Path(BASE_DIR) / "prueba" / "results" / "models" / dataset_name
+            # models_path = Path(BASE_DIR) / "prueba" / "results" / "models" / dataset_name
 
-            for model_dir in models_path.iterdir():
-                if model_dir.is_dir():
-                    for model_path in model_dir.iterdir():
-                        model_name = model_path.parent.name
-                        model = load_model(model_path)
-                        posiciones = seleccionar_observaciones(
-                            model=model,
-                            X_test=X_test,
-                            y_test=y_test,
-                            n=args.batch_n,
-                            random_state=args.random_state,
-                        )
+            # for model_dir in models_path.iterdir():
+            #     if model_dir.is_dir():
+            #         for model_path in model_dir.iterdir():
+            #             model_name = model_path.parent.name
+            #             model = load_model(model_path)
+            #             posiciones = seleccionar_observaciones(
+            #                 model=model,
+            #                 X_test=X_test,
+            #                 y_test=y_test,
+            #                 n=args.batch_n,
+            #                 random_state=args.random_state,
+            #             )
 
-                        X_explicar = X_test.iloc[posiciones]
-                        observaciones = X_test.index[posiciones].tolist()
+            #             X_explicar = X_test.iloc[posiciones]
+            #             observaciones = X_test.index[posiciones].tolist()
 
-                        output_attributions = Path(BASE_DIR) / "prueba" / "results" / "attributions"
+            output_attributions = Path(BASE_DIR) / "prueba" / "results" / "attributions_new"
 
-                        if experiment_type == "lime":
-                            explicaciones = run_explanation(
-                                config="xai_metrics/config.yaml",
-                                selected_explainers=["LIME"],
-                                attribution_output_dir=output_attributions,
-                                model_loader=load_model
-                            )
-                            print(explicaciones)
+            if experiment_type == "lime":
+                explicaciones = run_explanation(
+                    config="xai_metrics/config.yaml",
+                    selected_explainers=["LIME"],
+                    attribution_output_dir=output_attributions,
+                    model_loader=load_model
+                )
+                print(explicaciones)
 
-                        if experiment_type == "shap_local":
-                            explicaciones = run_explanation(
-                                config="xai_metrics/config.yaml",
-                                selected_explainers=["SHAP"],
-                                attribution_output_dir=output_attributions,
-                                model_loader=load_model
-                            )
-                            print(explicaciones)
+            if experiment_type == "shap_local":
+                explicaciones = run_explanation(
+                    config="xai_metrics/config.yaml",
+                    selected_explainers=["SHAP"],
+                    attribution_output_dir=output_attributions,
+                    model_loader=load_model
+                )
+                print(explicaciones)
+
+            if experiment_type == "breakdown":
+                explicaciones = run_explanation(
+                    config="xai_metrics/config.yaml",
+                    selected_explainers=["BreakDown"],
+                    attribution_output_dir=output_attributions,
+                    model_loader=load_model
+                )
+                print(explicaciones)
+
+            if experiment_type == "maple":
+                explicaciones = run_explanation(
+                    config="xai_metrics/config.yaml",
+                    selected_explainers=["MAPLE"],
+                    attribution_output_dir=output_attributions,
+                    model_loader=load_model
+                )
+                print(explicaciones)
 
             # metrics_df, model = model_function(X_train, y_train, X_val, y_val, X_test, y_test, metrics_df, True, 0)
 

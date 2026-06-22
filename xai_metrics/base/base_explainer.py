@@ -16,7 +16,7 @@ class ExplainerContext:
     and, optionally, the model, current batch, target values and device used
     during explanation generation.
 
-    Attributes
+    Parameters
     ----------
     X_background : pandas.DataFrame
         Background or reference input data used by the explainer.

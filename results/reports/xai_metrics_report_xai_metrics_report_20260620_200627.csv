@@ -1,0 +1,13 @@
+dataset_name,model_name,metric,metric_params,LIME
+AHU21,AutoEncoder,Completeness,"{""abs"": false, ""normalise"": true}",0.0
+AHU21,AutoEncoder,Complexity,"{""normalise"": true}",2.3228173617067718
+AHU21,AutoEncoder,Consistency,"{""abs"": true, ""normalise"": true}",0.8190476190188357
+AHU21,AutoEncoder,Faithfulness,"{""base_strategy"": ""mean""}",-0.059755264956119346
+AHU21,AutoEncoder,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",0.035493747783066715
+AHU21,AutoEncoder,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0
+AHU21,AutoEncoder,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.3238445378151261
+AHU21,AutoEncoder,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0
+AHU21,AutoEncoder,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",5.571428571428571
+AHU21,AutoEncoder,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.21395464679525697
+AHU21,AutoEncoder,Sparseness,"{""normalise"": true}",0.543850524627359
+AHU21,AutoEncoder,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.7911418173827507

@@ -1,3 +1,4 @@
+# xai_metrics/config/config_controller.py
 from pathlib import Path
 import torch
 import yaml
@@ -17,9 +18,9 @@ def default_model_loader(model_path: str | Path) -> Any:
     Load a model from disk.
 
     Files with ``.pkl`` or ``.pickle`` extensions are loaded with
-    :mod:`pickle`. Files with ``.joblib`` or ``.jl`` extensions are loaded
-    with :mod:`joblib`. Any other file extension is loaded with
-    :func:`torch.load` using ``weights_only=False``.
+    :mod:`pickle`. Files with ``.joblib`` or ``.jl`` extensions are loaded with
+    :mod:`joblib`. Any other file extension is loaded with :func:`torch.load`
+    using ``weights_only=False``.
 
     Parameters
     ----------
@@ -47,11 +48,15 @@ def default_model_loader(model_path: str | Path) -> Any:
 
 class ConfigController:
     """
-    Controller for loading configuration files and building metric contexts.
+    Controller for loading configuration files and building contexts.
 
-    The controller can load a configuration from a dictionary-like object or
-    from a YAML file. It supports both direct context definitions and automatic
-    discovery of contexts from dataset, model and attribution directories.
+    The controller can load configuration data from a mapping or from a YAML
+    file. It supports direct context definitions and automatic discovery from
+    dataset, model and attribution directories.
+
+    Metric contexts include models, test data, labels and precomputed
+    attributions. Explainer contexts include models, background data and,
+    optionally, batches to explain.
     """
     def __init__(
         self,
@@ -62,12 +67,13 @@ class ConfigController:
         Parameters
         ----------
         config : Mapping[str, Any], str or pathlib.Path, default="config.yaml"
-            Configuration source. If a mapping is provided, it is copied directly.
-            If a path is provided, the YAML file is loaded. The default value loads
-            the ``config.yaml`` file located next to this module.
-        model_loader : Callable or None, optional
-            Function used to load models from disk. The function must accept a
-            model path as input and return the loaded model object. If ``None``,
+            Configuration source. If a mapping is provided, it is copied
+            directly. If a path is provided, the YAML file is loaded. The
+            default value loads the ``config.yaml`` file located next to this
+            module.
+        model_loader : Callable[[str or pathlib.Path], Any] or None, optional
+            Function used to load models from disk. The function must receive a
+            model path and return the loaded model object. If ``None``,
             :func:`default_model_loader` is used.
         """
         self.config = self._load_config(config)
@@ -76,20 +82,20 @@ class ConfigController:
 
     def _load_config(self, config: Mapping[str, Any] | str | Path) -> Dict:
         """
-        Load a configuration from a mapping or YAML file.
+        Load configuration data from a mapping or YAML file.
 
         Parameters
         ----------
         config : Mapping[str, Any], str or pathlib.Path
             Configuration mapping or path to a YAML configuration file. If the
-            value is ``"config.yaml"``, the file is loaded from the directory that
-            contains this module.
+            value is ``"config.yaml"``, the file is loaded from the directory
+            containing this module.
 
         Returns
         -------
         Dict
-            Loaded configuration dictionary. If the YAML file is empty, an empty
-            dictionary is returned.
+            Loaded configuration dictionary. If the YAML file is empty, an
+            empty dictionary is returned.
         """
         if not isinstance(config, Mapping) and config == "config.yaml":
             config_path = Path(__file__).resolve().parent / config
@@ -110,22 +116,22 @@ class ConfigController:
         y_test: pd.Series
     ) -> Tuple[pd.DataFrame, pd.Series]:
         """
-        Validate and align the indexes of ``X_test`` and ``y_test``.
+        Validate and align feature and target indexes.
 
-        Both objects must contain exactly the same indexes. The returned
-        ``y_test`` is reordered to match the index order of ``X_test``.
+        Both objects must contain exactly the same indexes. The returned target
+        series is reordered to match the index order of the feature dataframe.
 
         Parameters
         ----------
         X_test : pandas.DataFrame
-            Test input data.
+            Input data.
         y_test : pandas.Series
-            Test labels.
+            Labels or targets associated with ``X_test``.
 
         Returns
         -------
         Tuple[pandas.DataFrame, pandas.Series]
-            ``X_test`` and ``y_test`` aligned using the index order of
+            Input data and target values aligned using the index order of
             ``X_test``.
 
         Raises
@@ -154,18 +160,18 @@ class ConfigController:
         X_test_index: pd.Index
     ) -> List:
         """
-        Validate that attribution observations exist in ``X_test``.
+        Validate that attribution observations exist in the input data.
 
-        If the observation identifiers do not initially match the index values
-        of ``X_test``, the method tries to convert them to the same dtype as
-        ``X_test_index`` before validating them.
+        If the observation identifiers do not initially match the input index,
+        the method tries to convert them to the same dtype as ``X_test_index``
+        before validating them.
 
         Parameters
         ----------
         observations : List
             Observation identifiers obtained from the attribution file index.
         X_test_index : pandas.Index
-            Index of the test input data.
+            Index of the input data.
 
         Returns
         -------
@@ -177,7 +183,7 @@ class ConfigController:
         ------
         ValueError
             If the observations cannot be converted to the dtype of
-            ``X_test_index`` or if any observation is missing from ``X_test``.
+            ``X_test_index`` or if any observation is missing.
         """
         observations_index = pd.Index(observations)
 
@@ -207,12 +213,10 @@ class ConfigController:
 
     def _validate_metric_context_metadata(self, ctx_cfg: Mapping[str, Any]) -> Dict[str, Any]:
         """
-        Validate and return the metadata required for a metric context.
+        Validate and return metadata required for a metric context.
 
-        The required metadata fields are ``dataset_name``, ``model_name`` and
-        ``xai_method_name``. These values are used to identify the context when
-        running metrics over one or more datasets, models and explanation
-        methods.
+        Metric contexts must be identified by dataset, model and explanation
+        method names. These fields are used to organise metric results.
 
         Parameters
         ----------
@@ -222,7 +226,8 @@ class ConfigController:
         Returns
         -------
         Dict[str, Any]
-            Dictionary containing the validated metadata fields.
+            Dictionary containing ``dataset_name``, ``model_name`` and
+            ``xai_method_name``.
 
         Raises
         ------
@@ -247,6 +252,28 @@ class ConfigController:
     
 
     def _validate_explainer_context_metadata(self, ctx_cfg: Mapping[str, Any]) -> Dict[str, Any]:
+        """
+        Validate and return metadata required for an explainer context.
+
+        Explainer contexts must be identified by dataset and model names. These
+        fields are used to associate generated explanations with the
+        corresponding data and model.
+
+        Parameters
+        ----------
+        ctx_cfg : Mapping[str, Any]
+            Context configuration dictionary.
+
+        Returns
+        -------
+        Dict[str, Any]
+            Dictionary containing ``dataset_name`` and ``model_name``.
+
+        Raises
+        ------
+        ValueError
+            If any required metadata field is missing or empty.
+        """
         required = ["dataset_name", "model_name"]
         missing = [key for key in required if not ctx_cfg.get(key)]
 
@@ -265,31 +292,27 @@ class ConfigController:
 
     def _iter_metric_context_configs(self) -> List[Dict[str, Any]]:
         """
-        Build the list of context configurations to evaluate.
+        Build metric context configurations from the loaded configuration.
 
         If the ``context`` section contains direct paths, a single context
-        configuration is returned. If it contains ``datasets_dir``, ``models_dir``
-        and ``attributions_dir``, the method searches those directories and creates
-        one configuration for each valid combination of dataset, model, test data
-        and attribution file.
+        configuration is returned. If it contains ``datasets_dir``,
+        ``models_dir`` and ``attributions_dir``, the method searches those
+        directories and creates one configuration for each valid combination of
+        dataset, model, input data, labels and attribution file.
 
-        When automatic discovery is used, the optional ``device`` field from the
-        root ``context`` section is copied into each generated context
-        configuration.
+        The generated configurations always use the keys expected by
+        :meth:`build_metric_context`, even when the discovered files are named
+        as batches rather than test sets.
 
         Returns
         -------
         List[Dict[str, Any]]
-            List of context configuration dictionaries. Each dictionary contains
-            metadata and paths required by :meth:`build_metric_context`, namely
-            ``dataset_name``, ``model_name``, ``xai_method_name``, ``model_path``,
-            ``X_test_path``, ``y_test_path`` and ``attributions_path``. It may also
-            contain ``device``.
+            List of metric context configuration dictionaries.
 
         Raises
         ------
         ValueError
-            If the ``context`` section is missing or if no valid context
+            If the ``context`` section is missing or no valid metric context
             configurations can be found.
         """
         ctx_cfg = self.config.get("context")
@@ -394,6 +417,32 @@ class ConfigController:
     
 
     def _iter_explainer_context_configs(self) -> List[Dict[str, Any]]:
+        """
+        Build explainer context configurations from the loaded configuration.
+
+        If the ``context`` section contains direct paths, a single context
+        configuration is returned. If it contains ``datasets_dir`` and
+        ``models_dir``, the method searches those directories and creates one
+        configuration for each valid combination of dataset, model, background
+        data and batch data.
+
+        Background data are discovered from files starting with
+        ``x_background`` or, if none are found, ``x_train``. Batch data are
+        discovered from files starting with ``x_batch`` or, if none are found,
+        ``x_test``. Target files are added when matching ``y_background``,
+        ``y_train``, ``y_batch`` or ``y_test`` files are available.
+
+        Returns
+        -------
+        List[Dict[str, Any]]
+            List of explainer context configuration dictionaries.
+
+        Raises
+        ------
+        ValueError
+            If the ``context`` section is missing or no valid explainer context
+            configurations can be found.
+        """
         ctx_cfg = self.config.get("context")
 
         if not ctx_cfg:
@@ -515,13 +564,22 @@ class ConfigController:
         Returns
         -------
         List
-            List of metric configurations. If the section is not defined, an
-            empty list is returned.
+            List of metric configuration dictionaries. If the section is not
+            defined, an empty list is returned.
         """
         return self.config.get("metrics", [])
     
 
     def get_explainers_config(self) -> List:
+        """
+        Return the explainers configuration section.
+
+        Returns
+        -------
+        List
+            List of explainer configuration dictionaries. If the section is not
+            defined, an empty list is returned.
+        """
         return self.config.get("explainers", [])
 
     
@@ -529,33 +587,32 @@ class ConfigController:
         """
         Build a metric evaluation context.
 
-        The context configuration must contain paths to the model, test data, test
+        The context configuration must contain paths to the model, input data,
         labels and attribution file. The method loads these objects, validates
-        their indexes, converts attribution values to a NumPy array, optionally
-        moves the model to the configured device, and returns both the
-        :class:`MetricContext` and its identifying metadata.
+        indexes, converts attribution values to a NumPy array, optionally moves
+        the model to the configured device and returns both the
+        :class:`MetricContext` and its metadata.
 
         Parameters
         ----------
         ctx_cfg : Mapping[str, Any] or None, optional
-            Context configuration to use. If ``None``, the ``context`` section of
-            the loaded configuration is used. The configuration must contain
+            Context configuration to use. If ``None``, the ``context`` section
+            of the loaded configuration is used. The configuration must contain
             ``model_path``, ``X_test_path``, ``y_test_path`` and
-            ``attributions_path``. It must also contain the metadata fields
-            ``dataset_name``, ``model_name`` and ``xai_method_name``. It may
-            optionally contain ``device``.
+            ``attributions_path``. It must also contain ``dataset_name``,
+            ``model_name`` and ``xai_method_name``. It may optionally contain
+            ``device``.
 
         Returns
         -------
         Tuple[MetricContext, Dict[str, Any]]
-            Metric context and metadata dictionary. The metadata contains
-            ``dataset_name``, ``model_name`` and ``xai_method_name``.
+            Metric context and metadata dictionary.
 
         Raises
         ------
         ValueError
             If the ``context`` section is missing, required paths are missing,
-            metadata is incomplete, or indexes are inconsistent.
+            metadata are incomplete or indexes are inconsistent.
         TypeError
             If the loaded model is not an instance of ``torch.nn.Module``.
         RuntimeError
@@ -638,6 +695,44 @@ class ConfigController:
         self,
         ctx_cfg: Mapping[str, Any] | None = None
     ) -> Tuple[ExplainerContext, Dict[str, Any]]:
+        """
+        Build an explainer context.
+
+        The context configuration must contain a model path and background
+        input data. It may also contain background labels, a batch of inputs to
+        explain, batch labels and a device. The method loads these objects,
+        validates batch indexes when labels are available and returns both the
+        :class:`ExplainerContext` and its metadata.
+
+        Parameters
+        ----------
+        ctx_cfg : Mapping[str, Any] or None, optional
+            Context configuration to use. If ``None``, the ``context`` section
+            of the loaded configuration is used. The configuration must contain
+            ``model_path`` and ``X_background_path``. It must also contain
+            ``dataset_name`` and ``model_name``. It may optionally contain
+            ``y_background_path``, ``X_batch_path``, ``X_test_path``,
+            ``y_batch_path``, ``y_test_path`` and ``device``.
+
+        Returns
+        -------
+        Tuple[ExplainerContext, Dict[str, Any]]
+            Explainer context and metadata dictionary.
+
+        Raises
+        ------
+        ValueError
+            If the ``context`` section is missing, required fields are missing,
+            metadata are incomplete or batch indexes are inconsistent.
+        RuntimeError
+            If a CUDA device is requested but CUDA is not available.
+
+        Warns
+        -----
+        UserWarning
+            If a target file contains more than one column. In that case, only
+            the first column is used.
+        """
         ctx_cfg = dict(ctx_cfg or self.config.get("context") or {})
 
         if not ctx_cfg:
@@ -648,8 +743,6 @@ class ConfigController:
 
         if missing:
             raise ValueError(f"Missing explainer context config fields: {missing}")
-        
-        model = self.model_loader(ctx_cfg["model_path"])
             
         X_background = pd.read_csv(ctx_cfg["X_background_path"], index_col=0)
 
@@ -667,7 +760,10 @@ class ConfigController:
                 )
 
             y_background = y_background_df.iloc[:, 0]
-
+        
+        model = None
+        if "model_path" in ctx_cfg:
+            model = self.model_loader(ctx_cfg["model_path"])
         
         X_batch_path = ctx_cfg.get("X_batch_path", ctx_cfg.get("X_test_path"))
         
@@ -719,7 +815,7 @@ class ConfigController:
         """
         Build all metric evaluation contexts defined by the configuration.
 
-        The method first obtains all context configurations through
+        The method first obtains all metric context configurations through
         :meth:`_iter_metric_context_configs` and then builds each corresponding
         :class:`MetricContext`.
 
@@ -735,6 +831,18 @@ class ConfigController:
     
 
     def build_explainers_contexts(self) -> List[Tuple[ExplainerContext, Dict[str, Any]]]:
+        """
+        Build all explainer contexts defined by the configuration.
+
+        The method first obtains all explainer context configurations through
+        :meth:`_iter_explainer_context_configs` and then builds each
+        corresponding :class:`ExplainerContext`.
+
+        Returns
+        -------
+        List[Tuple[ExplainerContext, Dict[str, Any]]]
+            List of explainer contexts together with their metadata.
+        """
         return [
             self.build_explainers_context(ctx_cfg)
             for ctx_cfg in self._iter_explainer_context_configs()

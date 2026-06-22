@@ -1,9 +1,9 @@
-# XAI_metrics/metrics/autodiscover.py
+# xai_metrics/metrics/autodiscover.py
 import pkgutil
 import importlib
 from types import ModuleType
 
-def autodiscover_metrics(package: ModuleType) -> None:
+def autodiscover_metrics(package: ModuleType):
     """
     Import all submodules of a metrics package.
 
@@ -16,10 +16,6 @@ def autodiscover_metrics(package: ModuleType) -> None:
     package : ModuleType
         Imported package whose submodules should be discovered. The package
         must expose a ``__path__`` attribute.
-
-    Returns
-    -------
-    None
 
     Raises
     ------

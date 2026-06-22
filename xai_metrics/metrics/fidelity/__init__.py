@@ -1,1 +1,1 @@
-# XAI_metrics/metrics/fidelity/__init__.py
+# xai_metrics/metrics/fidelity/__init__.py

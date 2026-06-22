@@ -1,37 +1,40 @@
-# XAI_metrics/metrics/fidelity/completeness/completeness_metric.py
+# xai_metrics/metrics/fidelity/completeness/completeness_metric.py
 import quantus
 import numpy as np
 
 from xai_metrics.base import BaseMetric, MetricContext, register_metric, MetricSkipped
 
-from typing import Mapping, Any, Callable, Dict
+from typing import Mapping, Any
 
 @register_metric
 class Completeness(BaseMetric):
     """
     Quantus Completeness metric.
 
-    This metric evaluates whether the total attribution assigned to an input is
-    consistent with the difference between the model output at the original
-    input and the model output at a baseline input. This property is also known
-    as summation to delta or conservation.
+    This metric evaluates whether the sum of the attribution values matches the
+    difference between the model output for the original input and the model
+    output for a baseline input. This property is also known as Summation to
+    Delta or Conservation.
 
-    The metric is based on the Completeness property from Sundararajan et al.
-    (2017), the Summation to Delta property from Shrikumar et al. (2017), and
-    the Conservation property discussed by Montavon et al. (2018), as
-    implemented in Quantus.
+    The metric returns one boolean value per observation. A value of ``True``
+    indicates that the attribution sum satisfies the completeness condition for
+    the selected model output.
+
+    Higher scores are better when the boolean results are aggregated, since a
+    larger proportion of ``True`` values indicates stronger agreement with the
+    completeness axiom.
+
+    The metric is based on the Completeness property proposed by Sundararajan
+    et al. (2017), the Summation to Delta property proposed by Shrikumar et al.
+    (2017), and the Conservation property discussed by Montavon et al. (2018),
+    as implemented in Quantus.
     """
     NAME = 'Completeness'
 
     def __init__(
         self,
         context: MetricContext,
-        params: Mapping[str, Any] | None = None,
-        normalise_func: Callable[..., np.ndarray] | None = None,
-        normalise_func_kwargs: Dict[str, Any] | None = None,
-        output_func: Callable[..., np.ndarray] | None = None,
-        perturb_func: Callable[..., np.ndarray] | None = None,
-        perturb_func_kwargs: Dict[str, Any] | None = None
+        params: Mapping[str, Any] | None = None
     ):
         """
         Parameters
@@ -57,86 +60,75 @@ class Completeness(BaseMetric):
               ``"uniform"``. The default value is ``"black"``.
 
             If ``None``, an empty dictionary is used.
-        normalise_func : Callable[..., numpy.ndarray] or None, optional
-            Custom normalisation function passed to Quantus. The function must
-            accept the attribution array as its first argument and may accept
-            additional keyword arguments from ``normalise_func_kwargs``. If
-            ``None``, Quantus uses its default normalisation behaviour when
-            ``normalise=True``.
-        normalise_func_kwargs : Dict[str, Any] or None, optional
-            Keyword arguments passed to ``normalise_func`` when normalisation is
-            enabled. If ``None``, no additional keyword arguments are passed.
-        output_func : Callable[..., numpy.ndarray] or None, optional
-            Function applied to the difference between the model output at the
-            original input and the model output at the baseline input before
-            comparing it with the attribution sum. If ``None``, Quantus uses its
-            default identity function.
-        perturb_func : Callable[..., numpy.ndarray] or None, optional
-            Perturbation function passed to Quantus. The function must be
-            compatible with Quantus perturbation functions, accepting at least an
-            input array and feature indices, and returning the perturbed array. If
-            ``None``, Quantus uses its default perturbation function.
-        perturb_func_kwargs : Dict[str, Any] or None, optional
-            Keyword arguments passed to ``perturb_func``. If ``None``, no
-            additional keyword arguments are passed.
+
+        Notes
+        -----
+        The wrapper uses the default functions provided by Quantus. The default
+        perturbation function replaces all features by the configured baseline,
+        and the default output transformation is the identity function.
+
+        Quantus computes this metric using logits by default, not softmax
+        probabilities.
         """
         super().__init__(context, params)
-        self.normalise_func = normalise_func
-        self.normalise_func_kwargs = normalise_func_kwargs
-        self.output_func = output_func
-        self.perturb_func = perturb_func
-        self.perturb_func_kwargs = perturb_func_kwargs
+
 
     def run(self):
         """
         Compute the Completeness metric.
 
-        The method selects the observations defined in the metric context,
-        retrieves their input data, labels and attribution values, and passes them
-        to :class:`quantus.Completeness`. The model is set to evaluation mode before
-        computing the metric.
+        The method selects the observations defined in the metric context and
+        passes their input data, labels and attribution values to
+        :class:`quantus.Completeness`. Quantus replaces the input features by a
+        baseline, computes the difference between the model output at the
+        original input and at the baseline input, and compares this difference
+        with the sum of the attribution values.
+
+        If all attribution values are negative, their treatment depends on the
+        ``abs`` parameter. Their absolute values are used when ``abs=True``;
+        otherwise, the metric is skipped.
+
+        The model is set to evaluation mode before the metric is computed.
 
         Returns
         -------
         List[bool]
-            Completeness result for each evaluated observation. ``True`` indicates
-            that the sum of the attribution values matches the transformed
-            difference between the model output at the input and the model output
-            at the baseline input.
+            Completeness result for each evaluated observation. ``True``
+            indicates that the sum of the attribution values matches the output
+            difference between the original input and the baseline input.
 
         Raises
         ------
         MetricSkipped
-            If all attribution values are negative, since the metric is skipped for
-            that attribution configuration.
+            If all attribution values are negative and ``abs`` is ``False``.
         """
         ctx = self.context
         p = self.params
 
-        if np.all(ctx.attributions < 0.0):
-            raise MetricSkipped(
-                f"{self.NAME} skipped: all attributions are negative."
-            )
-
         abs_ = bool(p.get("abs", False))
         normalise = bool(p.get("normalise", True))
         perturb_baseline = str(p.get("perturb_baseline", "black"))
+
+        attributions = ctx.attributions
+        if np.all(attributions < 0.0):
+            if not abs_:
+                raise MetricSkipped(
+                    f"{self.NAME} skipped: all attributions are negative."
+                )
+            else:
+                attributions = np.abs(attributions)
 
         ctx.model.eval()
 
         results = quantus.Completeness(
             abs=abs_,
             normalise=normalise,
-            normalise_func=self.normalise_func,
-            normalise_func_kwargs=self.normalise_func_kwargs,
-            perturb_baseline=perturb_baseline,
-            perturb_func=self.perturb_func,
-            perturb_func_kwargs=self.perturb_func_kwargs
+            perturb_baseline=perturb_baseline
         )(
             model=ctx.model,
             x_batch=ctx.X_test.loc[ctx.observations].to_numpy(copy=True),
             y_batch=ctx.y_test.loc[ctx.observations].to_numpy(copy=True),
-            a_batch=ctx.attributions
+            a_batch=attributions
         )
 
         return results
