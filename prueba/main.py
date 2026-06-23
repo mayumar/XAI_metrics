@@ -551,7 +551,7 @@ def main():
             #             X_explicar = X_test.iloc[posiciones]
             #             observaciones = X_test.index[posiciones].tolist()
 
-            output_attributions = Path(BASE_DIR) / "prueba" / "results" / "attributions_new"
+            output_attributions = Path(BASE_DIR) / "prueba" / "results" / "attributions_new_new"
 
             if experiment_type == "lime":
                 explicaciones = run_explanation(
@@ -562,7 +562,7 @@ def main():
                 )
                 print(explicaciones)
 
-            if experiment_type == "shap_local":
+            if experiment_type == "shap":
                 explicaciones = run_explanation(
                     config="xai_metrics/config.yaml",
                     selected_explainers=["SHAP"],

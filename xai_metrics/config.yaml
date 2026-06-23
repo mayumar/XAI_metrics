@@ -14,7 +14,7 @@ context:
   device: "cpu"
   datasets_dir: "prueba/datasets"
   models_dir: "prueba/results/models"
-  attributions_dir: "prueba/results/attributions_new"
+  attributions_dir: "prueba/results/attributions_new_new"
 
 metrics:
   - name: Complexity
