@@ -152,6 +152,23 @@ class ConfigController:
         y_test = y_test.loc[X_test.index]
 
         return X_test, y_test
+
+
+    def _normalise_class_labels(self, labels: pd.Series) -> pd.Series:
+        """Return integer-valued class labels with an integer dtype.
+
+        CSV files containing labels such as ``0.0`` and ``1.0`` are commonly
+        inferred as floating point by pandas. Quantus uses these values as
+        class-column indexes, so integer-valued numeric labels must be exposed
+        as integers. Non-numeric or genuinely continuous targets are left
+        unchanged.
+        """
+        numeric_labels = pd.to_numeric(labels, errors="coerce")
+
+        if numeric_labels.notna().all() and (numeric_labels % 1 == 0).all():
+            return numeric_labels.astype("int64")
+
+        return labels
     
 
     def _validate_observations(
@@ -669,6 +686,7 @@ class ConfigController:
         y_test = y_test_df.iloc[:, 0]
 
         X_test, y_test = self._validate_X_y_indexes(X_test, y_test)
+        y_test = self._normalise_class_labels(y_test)
 
         attributions_df = pd.read_csv(ctx_cfg['attributions_path'], index_col=0)
 
@@ -760,6 +778,7 @@ class ConfigController:
                 )
 
             y_background = y_background_df.iloc[:, 0]
+            y_background = self._normalise_class_labels(y_background)
         
         model = None
         if "model_path" in ctx_cfg:
@@ -787,6 +806,7 @@ class ConfigController:
                 )
 
             y_batch = y_batch_df.iloc[:, 0]
+            y_batch = self._normalise_class_labels(y_batch)
 
             if X_batch is not None:
                 X_batch, y_batch = self._validate_X_y_indexes(X_batch, y_batch)

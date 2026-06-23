@@ -62,6 +62,17 @@ def test_validate_x_y_indexes_rejects_mismatched_indexes():
         controller._validate_X_y_indexes(X_test, y_test)
 
 
+def test_normalise_class_labels_converts_integer_valued_floats():
+    controller = ConfigController(config={})
+
+    labels = controller._normalise_class_labels(
+        pd.Series([0.0, 1.0, 0.0], index=[10, 11, 12])
+    )
+
+    assert labels.dtype == np.dtype("int64")
+    assert labels.tolist() == [0, 1, 0]
+
+
 def test_validate_observations_casts_to_x_test_index_dtype():
     controller = ConfigController(config={})
 
@@ -84,7 +95,7 @@ def test_build_context_loads_model_data_labels_and_attributions(tmp_path):
     ).to_csv(X_test_path)
 
     pd.DataFrame(
-        {"target": [0, 1]},
+        {"target": [0.0, 1.0]},
         index=[10, 11],
     ).to_csv(y_test_path)
 
@@ -117,6 +128,7 @@ def test_build_context_loads_model_data_labels_and_attributions(tmp_path):
     assert isinstance(context.model, nn.Identity)
     assert context.X_test.shape == (2, 2)
     assert context.y_test.tolist() == [0, 1]
+    assert context.y_test.dtype == np.dtype("int64")
     assert context.observations == [10, 11]
     assert np.array_equal(
         context.attributions,

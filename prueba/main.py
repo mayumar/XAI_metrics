@@ -9,6 +9,7 @@ from pathlib import Path
 import pickle
 import joblib
 import yaml
+from sklearn.model_selection import StratifiedShuffleSplit
 
 from xai_metrics.runner import run_evaluation, run_explanation
 from xai_metrics.base import ExplainerContext, build_explainers_from_config
@@ -203,15 +204,89 @@ def generar_batch_hydraulic(model_names, n=10, random_state=0):
 
     return X_batch, y_batch
 
+
+def seleccionar_background(X_train, y_train, n=2000, random_state=42):
+    if n <= 0:
+        raise ValueError("n debe ser mayor que cero")
+
+    if isinstance(y_train, pd.DataFrame):
+        if y_train.shape[1] != 1:
+            raise ValueError("y_train debe tener exactamente una columna")
+        y_train = y_train.iloc[:, 0]
+    else:
+        y_train = pd.Series(y_train)
+
+    y_train = y_train.reindex(X_train.index)
+    if y_train.isna().any():
+        raise ValueError("Los indices de X_train e y_train no coinciden")
+
+    n = min(n, len(X_train))
+    if n == len(X_train):
+        X_background = X_train.copy().sort_index()
+        y_background = y_train.loc[X_background.index]
+        return X_background, y_background
+
+    splitter = StratifiedShuffleSplit(
+        n_splits=1,
+        train_size=n,
+        random_state=random_state,
+    )
+
+    posiciones, _ = next(splitter.split(X_train, y_train))
+    indices = X_train.index[posiciones]
+
+    X_background = X_train.loc[indices].sort_index()
+    y_background = y_train.loc[X_background.index]
+
+    return X_background, y_background
+
+
+def generar_background(
+    X_train,
+    y_train,
+    output_dir,
+    n=2000,
+    random_state=42,
+):
+    X_background, y_background = seleccionar_background(
+        X_train=X_train,
+        y_train=y_train,
+        n=n,
+        random_state=random_state,
+    )
+
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    X_background_path = output_dir / "X_background.csv"
+    y_background_path = output_dir / "y_background.csv"
+
+    X_background.to_csv(X_background_path, index=True)
+    y_background.rename("target").to_csv(
+        y_background_path,
+        index=True,
+        header=True,
+    )
+
+    print(f"Observaciones seleccionadas: {len(X_background)}")
+    print(f"Distribucion de clases: {y_background.value_counts().to_dict()}")
+    print(f"X_background guardado en: {X_background_path}")
+    print(f"y_background guardado en: {y_background_path}")
+
+    return X_background, y_background
+
+
 def main():
     parser = argparse.ArgumentParser(description="Ejecuta experimentos de XAI para PdM")
     parser.add_argument("-e", "--experiment", type=str, required=True,
-                        choices=["lime", "shap", "breakdown", "maple", "eval", "optuna", "train", "batch"],
+                        choices=["lime", "shap", "breakdown", "maple", "eval", "optuna", "train", "batch", "background"],
                         help="Tipo de experimento a ejecutar")
     parser.add_argument("-d", "--dataset", type=str, default='AHU21', choices={'hydraulic', 'AHU21', 'ARAMIS20', 'PHM14', 'HSG18', 'MetroPT3'},
                         help="Nombre del dataset a usar")
     parser.add_argument("-n", "--batch-n", type=int, default=10,
                         help="Numero maximo de observaciones por grupo TP/FN/FP/TN")
+    parser.add_argument("--background-n", type=int, default=2000,
+                        help="Numero de observaciones del background")
     parser.add_argument("--random-state", type=int, default=0,
                         help="Semilla para seleccionar observaciones")
     
@@ -223,6 +298,22 @@ def main():
     experiment_type = args.experiment
 
     if dataset_name == "hydraulic":
+
+        if experiment_type == "background":
+            X_train, y_train, _, _, X_train_norm, _, _ = preprocess_dataset(
+                dataset_name,
+                False,
+            )
+
+            generar_background(
+                X_train=X_train_norm,
+                y_train=y_train,
+                output_dir=Path(BASE_DIR) / "prueba" / "data" / dataset_name,
+                n=args.background_n,
+                random_state=args.random_state,
+            )
+
+            return 1
 
         if experiment_type == "batch":
             model_names = [
@@ -334,6 +425,18 @@ def main():
             
         X_train = pd.read_csv(input_path / "X_train.csv", index_col=0)
         y_train = pd.read_csv(input_path / "y_train.csv", index_col=0)
+
+        if experiment_type == "background":
+            generar_background(
+                X_train=X_train,
+                y_train=y_train,
+                output_dir=input_path,
+                n=args.background_n,
+                random_state=args.random_state,
+            )
+
+            return 1
+
         X_val = pd.read_csv(input_path / "X_val.csv", index_col=0)
         y_val = pd.read_csv(input_path / "y_val.csv", index_col=0)
         X_test = pd.read_csv(input_path / "X_test.csv", index_col=0)
