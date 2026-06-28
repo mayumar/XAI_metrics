@@ -62,8 +62,8 @@ ARAMIS20,IForest,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normal
 ARAMIS20,IForest,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.14234693877551022,0.2535714285714286,-0.04234693877551022
 ARAMIS20,IForest,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.02857142857142857,0.02857142857142857
 ARAMIS20,IForest,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0,1.0
-ARAMIS20,IForest,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",14.956909932190786,5.173760317921759,
-ARAMIS20,IForest,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",575.1943503699327,37.218891376990065,
+ARAMIS20,IForest,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",14.956909932190786,5.173760317921759,7.2226496686894714
+ARAMIS20,IForest,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",575.1943503699327,37.218891376990065,65.70897368741954
 ARAMIS20,IForest,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.33670374097211897,0.16298043022488246,-0.37741386126970833
 ARAMIS20,IForest,Sparseness,"{""normalise"": true}",0.3178784898226626,0.5283252435229718,0.3907609316379633
 ARAMIS20,IForest,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.8577234349354066,0.8285035573363465,0.8425202923696724

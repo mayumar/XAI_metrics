@@ -1,0 +1,31 @@
+dataset_name,model_name,metric,metric_params,LIME,MAPLE,SHAP
+AHU21,MCD,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.0740116825546042,57.28739688485797,2.6712282568946755
+AHU21,MCD,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0,0.0
+AHU21,MCD,Complexity,"{""normalise"": true}",0.9395757626448412,1.4293420245626174,0.9075848219513001
+AHU21,MCD,Consistency,"{""abs"": true, ""normalise"": true}",0.9437641723048381,0.9440233235434837,0.9437641723048381
+AHU21,MCD,Faithfulness,"{""base_strategy"": ""mean""}",-0.7328268437386447,0.24094139894052846,-0.36065216169026204
+AHU21,MCD,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",0.016190761291829236,0.09733729985901222,0.008678401946587384
+AHU21,MCD,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",8.084966393168148,1.9770473379434954,0.5559809407791912
+AHU21,MCD,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.9012237260640539,167.42645887139025,10.17452451778118
+AHU21,MCD,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0,1.0
+AHU21,MCD,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.32563137951012217,0.2882436568863493,0.6628261800026611
+AHU21,MCD,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0,0.0
+AHU21,MCD,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",6.314285714285714,4.714285714285714,6.057142857142857
+AHU21,MCD,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",0.01794729850481233,2.7082461791140733,0.011505207034841737
+AHU21,MCD,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",2049395.413731811,2351155221.5257897,1475979.2330201631
+AHU21,MCD,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.13799478644213345,0.07396641704130169,-0.09184419267354094
+AHU21,MCD,Sparseness,"{""normalise"": true}",0.8622216179050302,0.7778950373675324,0.8704787624558907
+AHU21,MCD,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.8478839154833481,0.9189791149066991,0.8869508448540706
+AHU21,VAE,Completeness,"{""abs"": false, ""normalise"": true}",0.0,,
+AHU21,VAE,Complexity,"{""normalise"": true}",2.4189020969092776,,
+AHU21,VAE,Consistency,"{""abs"": true, ""normalise"": true}",0.9999999999683445,,
+AHU21,VAE,Faithfulness,"{""base_strategy"": ""mean""}",-0.48156406891171155,,
+AHU21,VAE,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.012255315271506048,,
+AHU21,VAE,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",8.445635303375258,,
+AHU21,VAE,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",0.5285714285714286,,
+AHU21,VAE,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.2689425770308123,,
+AHU21,VAE,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,,
+AHU21,VAE,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",4.4714285714285715,,
+AHU21,VAE,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",0.16046262129376654,,
+AHU21,VAE,Sparseness,"{""normalise"": true}",0.493754315195239,,
+AHU21,VAE,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.9428571428571428,,

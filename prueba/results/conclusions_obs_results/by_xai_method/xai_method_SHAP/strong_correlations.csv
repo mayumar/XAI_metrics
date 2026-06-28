@@ -1,0 +1,4 @@
+metric_1,metric_2,spearman_corr,abs_corr
+AvgSensitivity,MaxSensitivity,0.948408382903477,0.948408382903477
+NonSensitivity,RelativeInputStability,-0.6708570728538946,0.6708570728538946
+Complexity,Sparseness,-0.6526674497228977,0.6526674497228977
