@@ -1,0 +1,904 @@
+{
+  "report": [
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 0.7915752361339763,
+      "MAPLE": 1.1553178558131985,
+      "SHAP": 0.970782561388148
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 1.7020198726817155,
+      "MAPLE": 1.573731939866256,
+      "SHAP": 1.6041230319606365
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.796462585014006,
+      "MAPLE": 0.796462585014006,
+      "SHAP": 0.796462585014006
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.03821576808599015,
+      "MAPLE": -0.03877831117302583,
+      "SHAP": -0.011662017012220043
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.03280143463722471,
+      "MAPLE": 0.031170186190418857,
+      "SHAP": 0.020261996143587827
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 7.1012948764790895,
+      "MAPLE": 5.886918779758606,
+      "SHAP": 3.6591546174697522
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.5491947671783202,
+      "MAPLE": 2.8860533616467334,
+      "SHAP": 1.8026753719927644
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "MAPLE": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.15429517679974933,
+      "MAPLE": 0.14955645413169605,
+      "SHAP": 0.0692630315404107
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.014285714285714285,
+      "MAPLE": 0.014285714285714285,
+      "SHAP": 0.014285714285714285
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.2714285714285714,
+      "MAPLE": 1.2571428571428571,
+      "SHAP": 1.2571428571428571
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 3016.6809561423856,
+      "MAPLE": 558.6727735216808,
+      "SHAP": 18.711523950549623
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 296210.0735533656,
+      "MAPLE": 52631.90802860444,
+      "SHAP": 67275.73280518336
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": 0.18913561380620192,
+      "MAPLE": 0.11663885628671919,
+      "SHAP": 0.28574784889520105
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.3602333078958151,
+      "MAPLE": 0.4431330925288586,
+      "SHAP": 0.4216047075478432
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.7639281818773882,
+      "MAPLE": 0.8301460452005934,
+      "SHAP": 0.826091028237966
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 0.8364147429965222,
+      "MAPLE": 0.8995731109954277,
+      "SHAP": 1.1817704129615951
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 1.903127949259819,
+      "MAPLE": 1.2546819144604042,
+      "SHAP": 1.7054768726797562
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.7907482993008632,
+      "MAPLE": 0.7907482993008632,
+      "SHAP": 0.7907482993008632
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": -0.3067854933457358,
+      "MAPLE": 0.1276082710335955,
+      "SHAP": -0.5198316500921135
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.05062599098136974,
+      "MAPLE": 0.029864680400580823,
+      "SHAP": -0.044621942411801244
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 12.25157761995004,
+      "MAPLE": 4.946832536690162,
+      "SHAP": 7.272730479536858
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.5048456342745515,
+      "MAPLE": 2.471809059552577,
+      "SHAP": 2.017005328188814
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "MAPLE": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.29540816326530617,
+      "MAPLE": 0.2108193662707608,
+      "SHAP": 0.3086734693877552
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.08571428571428572,
+      "MAPLE": 0.07142857142857142,
+      "SHAP": 0.1
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 0.7571428571428571,
+      "MAPLE": 1.6428571428571428,
+      "SHAP": 0.7571428571428571
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 3.0314568863840035,
+      "MAPLE": 11.025730855744717,
+      "SHAP": 7.167963589594521
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 860.5386478773354,
+      "MAPLE": 8183.0328033133155,
+      "SHAP": 3083.9411968231734
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": -0.06319507664261469,
+      "MAPLE": 0.04115152118803869,
+      "SHAP": 0.04818730949896485
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.15849984208002946,
+      "MAPLE": 0.5923604512917988,
+      "SHAP": 0.3510303876449419
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "ECOD",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.8021361504776293,
+      "MAPLE": 0.0,
+      "SHAP": 0.8261290926721521
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 0.6676700234893208,
+      "MAPLE": 0.7597547804483857,
+      "SHAP": 1.0683139908105737
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 1.61903700994041,
+      "MAPLE": 1.411131819541805,
+      "SHAP": 1.5633912097267764
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.48417233558690875,
+      "MAPLE": 0.48417233558690875,
+      "SHAP": 0.48417233558690875
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": -0.034388492675041175,
+      "MAPLE": 0.13487777864799658,
+      "SHAP": 0.02224664232370602
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.06469235579989913,
+      "MAPLE": -0.0011857170120255088,
+      "SHAP": -0.0005744908201645019
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 8.996424347965668,
+      "MAPLE": 5.1346788374440315,
+      "SHAP": 4.937844235498115
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.3778215332200494,
+      "MAPLE": 1.7301474641060146,
+      "SHAP": 1.8700847428908638
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "MAPLE": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.27388262799867374,
+      "MAPLE": 0.1637801275297036,
+      "SHAP": 0.29740742366123923
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.11428571428571428,
+      "MAPLE": 0.02857142857142857,
+      "SHAP": 0.08571428571428572
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.1285714285714286,
+      "MAPLE": 1.1285714285714286,
+      "SHAP": 1.1285714285714286
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 3.485355275752745,
+      "MAPLE": 18.350542658984363,
+      "SHAP": 10.517538768206332
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 918.2308357292419,
+      "MAPLE": 5813.151332090282,
+      "SHAP": 2849.869992386216
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": -0.0318264200225917,
+      "MAPLE": -0.13571192032865756,
+      "SHAP": -0.014175704186919616
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.4260530998239725,
+      "MAPLE": 0.5311012611788837,
+      "SHAP": 0.4525800951964782
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "HBOS",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.6045402472381097,
+      "MAPLE": 0.47910883630490375,
+      "SHAP": 0.5849904932767352
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 0.7623368914135941,
+      "MAPLE": 0.7758527978114671,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 1.7482048529255778,
+      "MAPLE": 1.3949942612308706,
+      "SHAP": 1.64823830280855
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.8421768707191487,
+      "MAPLE": 0.8421768707191487,
+      "SHAP": 0.8421768707191487
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.13157592005453103,
+      "MAPLE": -0.09418770477451537,
+      "SHAP": -0.02391670056972517
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.14585218058722202,
+      "MAPLE": -0.13015805912961037,
+      "SHAP": -0.029104107979502754
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 9.898243436333404,
+      "MAPLE": 4.54627390038502,
+      "SHAP": 3.6726748501672057
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.4325858935726516,
+      "MAPLE": 1.757044129904843,
+      "SHAP": 2.6311139768107883
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "MAPLE": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.14234693877551022,
+      "MAPLE": 0.2535714285714286,
+      "SHAP": -0.04234693877551022
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.02857142857142857,
+      "SHAP": 0.02857142857142857
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "MAPLE": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 14.956909932190786,
+      "MAPLE": 5.173760317921759,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 575.1943503699327,
+      "MAPLE": 37.218891376990065,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": -0.33670374097211897,
+      "MAPLE": 0.16298043022488246,
+      "SHAP": -0.37741386126970833
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.3178784898226626,
+      "MAPLE": 0.5283252435229718,
+      "SHAP": 0.3907609316379633
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "IForest",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.8577234349354066,
+      "MAPLE": 0.8285035573363465,
+      "SHAP": 0.8425202923696724
+    }
+  ]
+}

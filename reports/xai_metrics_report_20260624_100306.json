@@ -1,0 +1,1354 @@
+{
+  "report": [
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.0221498552144754,
+      "MAPLE": 0.9303545406789395,
+      "SHAP": 1.1222299736867112
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.9868398197861372,
+      "MAPLE": 1.9426103501379997,
+      "SHAP": 1.2971157908980302
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.8234610917336905,
+      "MAPLE": 0.8234610917336905,
+      "SHAP": 0.8234610917336905
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": -0.3153695317099509,
+      "MAPLE": -0.020036393907282214,
+      "SHAP": -0.3766007909371546
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.13920412396790813,
+      "MAPLE": 0.2141420823833646,
+      "SHAP": -0.17829726159158477
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 10.427928155488715,
+      "MAPLE": 6.107797458012842,
+      "SHAP": 1.3897121796232574
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.7311920141115114,
+      "MAPLE": 1.3711284437244422,
+      "SHAP": 2.309532216466979
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "MAPLE": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.20247984364137678,
+      "MAPLE": 0.36516546216827306,
+      "SHAP": 0.0017669620345950143
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.023809523809523808,
+      "MAPLE": 0.0,
+      "SHAP": 0.023809523809523808
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 4.904761904761905,
+      "MAPLE": 2.119047619047619,
+      "SHAP": 3.5238095238095237
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 4.942376971549916,
+      "MAPLE": 17.924364475816894,
+      "SHAP": 1.6133951065863488
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 24547163.010361318,
+      "MAPLE": 4882909.438011742,
+      "SHAP": 21244843.268201966
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": -0.028335278721434813,
+      "MAPLE": 0.1737614941136856,
+      "SHAP": -0.7317724891446498
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.7760061343443349,
+      "MAPLE": 0.44381897279562843,
+      "SHAP": 0.6534374123261272
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "AutoEncoder",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.8303731934960669,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.7080053220957787,
+      "MAPLE": 1.0532082778496448,
+      "SHAP": 0.5987122441155921
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 1.579265055918807,
+      "MAPLE": 1.8129478693274457,
+      "SHAP": 1.8959238808920276
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.544715447141186,
+      "MAPLE": 0.544715447141186,
+      "SHAP": 0.544715447141186
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": -0.2320037705100442,
+      "MAPLE": -0.011669600545284578,
+      "SHAP": 0.058217068363417945
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.12581026988280186,
+      "MAPLE": 0.05544964977078715,
+      "SHAP": 0.1425411291225699
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 8.64729570381049,
+      "MAPLE": 4.252171957007282,
+      "SHAP": 4.955452920070579
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 2.1372674101308746,
+      "MAPLE": 2.9035125011467207,
+      "SHAP": 0.8099279392892038
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "MAPLE": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.05970177742661182,
+      "MAPLE": 0.09382057150507678,
+      "SHAP": -0.524547280223256
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.2619047619047619,
+      "MAPLE": 0.23809523809523808,
+      "SHAP": 0.2857142857142857
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 4.0476190476190474,
+      "MAPLE": 1.0238095238095237,
+      "SHAP": 1.7142857142857142
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 6087.7965360098615,
+      "MAPLE": 4.452837740543144,
+      "SHAP": 275.17302388860554
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 296631.11642436835,
+      "MAPLE": 184211.48051974984,
+      "SHAP": 11083.876665906617
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": -0.35323516898591173,
+      "MAPLE": -0.01728054526217737,
+      "SHAP": -0.493013718989503
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.5944507220948365,
+      "MAPLE": 0.48795518546813127,
+      "SHAP": 0.4539760362321068
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "ECOD",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.5388954299668586,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.280903594443601,
+      "MAPLE": 0.9276533590873777,
+      "SHAP": 2.780936081967301
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 1.5867652154740843,
+      "MAPLE": 1.71191102112849,
+      "SHAP": 1.7267383817786754
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.6039488966170931,
+      "MAPLE": 0.6039488966170931,
+      "SHAP": 0.6039488966170931
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": -0.1654914297246203,
+      "MAPLE": 0.00743188719483349,
+      "SHAP": -0.05715985821928195
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.11434073094402585,
+      "MAPLE": 0.04388745079662304,
+      "SHAP": 0.014083432930592669
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 12.065457091025058,
+      "MAPLE": 4.01055218137173,
+      "SHAP": 12.866829480760012
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.9711882124579274,
+      "MAPLE": 1.9284733642206564,
+      "SHAP": 3.308630849648661
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "MAPLE": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.37096353181376607,
+      "MAPLE": -0.0952928376514417,
+      "SHAP": -0.6812231069441308
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.2619047619047619,
+      "MAPLE": 0.30952380952380953,
+      "SHAP": 0.2619047619047619
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 6.357142857142857,
+      "MAPLE": 3.7857142857142856,
+      "SHAP": 4.976190476190476
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 1692.857405637498,
+      "MAPLE": 0.16331829943084744,
+      "SHAP": 10723.428919164728
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 143886.20470247034,
+      "MAPLE": 289.5191229664049,
+      "SHAP": 761926.1526404056
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": -0.42542647971116326,
+      "MAPLE": 0.07928313790486495,
+      "SHAP": -0.5338897399378867
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.5922246333387561,
+      "MAPLE": 0.5423838282183411,
+      "SHAP": 0.5494322731506383
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "HBOS",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.5916814973040095,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.2119494729095623,
+      "MAPLE": 1.0015367139956024,
+      "SHAP": 1.7624035549489594
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 1.496824789426903,
+      "MAPLE": 1.8049019697583386,
+      "SHAP": 1.487454304914912
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.49825783970910176,
+      "MAPLE": 0.49825783970910176,
+      "SHAP": 0.49825783970910176
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.0981467943559762,
+      "MAPLE": 0.005251802134590894,
+      "SHAP": 0.35664886025888015
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.17296925770267937,
+      "MAPLE": 0.2631487167394949,
+      "SHAP": -0.28972426092272335
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 11.596272019049618,
+      "MAPLE": 4.542508567379561,
+      "SHAP": 3.4092373880459337
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.8927679924168839,
+      "MAPLE": 2.508808232925623,
+      "SHAP": 2.4231783292221833
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "MAPLE": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.4427757757275401,
+      "MAPLE": 0.3345488941911765,
+      "SHAP": 0.288010569804907
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.23809523809523808,
+      "MAPLE": 0.3333333333333333,
+      "SHAP": 0.2619047619047619
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 4.404761904761905,
+      "MAPLE": 1.119047619047619,
+      "SHAP": 3.119047619047619
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 2919.8902839965726,
+      "MAPLE": 5.045085053579466,
+      "SHAP": 0.12695996362360068
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 219869418.77244258,
+      "MAPLE": 788090.514062628,
+      "SHAP": 4611.668655417039
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": -0.3270689362747921,
+      "MAPLE": -0.138098995014933,
+      "SHAP": -0.7413352027037791
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.6315810976981484,
+      "MAPLE": 0.505602858546078,
+      "SHAP": 0.5956216866005868
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "IForest",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.4880822298601805,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 2.1429395425637465,
+      "MAPLE": 11726.655530701293,
+      "SHAP": 0.9037288022137082
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.8083485872048257,
+      "MAPLE": -1.0000889005818412e-12,
+      "SHAP": 0.1764781101491518
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.9999999999756097,
+      "MAPLE": 0.9999999999756097,
+      "SHAP": 0.9999999999756097
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": -0.20911925331979203,
+      "MAPLE": 0.0416877794766755,
+      "SHAP": -0.1643547271225715
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.6349976196129635,
+      "MAPLE": 0.23809320819352978,
+      "SHAP": -0.42967429845182653
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 7.38544765748077,
+      "MAPLE": 3.270051919583396,
+      "SHAP": 3.847457550241626
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 4.01687967202145,
+      "MAPLE": 16590.08059933602,
+      "SHAP": 2.650829484489538
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "MAPLE": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.4523674124078757,
+      "MAPLE": 0.5269284763800571,
+      "SHAP": 0.5389872677602768
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 5.285714285714286,
+      "MAPLE": 3.6666666666666665,
+      "SHAP": 6.380952380952381
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 306.93579639474353,
+      "MAPLE": 0.6253282353474992,
+      "SHAP": 0.7028792533857948
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 23195324.930535775,
+      "MAPLE": 20199454.934101768,
+      "SHAP": 46262.842726879935
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": -0.09550072595445663,
+      "MAPLE": -0.25122914088460296,
+      "SHAP": -0.9636732517092921
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.8069127238643935,
+      "MAPLE": 0.8863324406451332,
+      "SHAP": 0.8874989025887194
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "MCD",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.0183275521273383,
+      "MAPLE": 1.0101700427297935,
+      "SHAP": 0.7451839353469074
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.9878831284527575,
+      "MAPLE": 1.7972083620512005,
+      "SHAP": 1.357262817385661
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.907084785111442,
+      "MAPLE": 0.907084785111442,
+      "SHAP": 0.907084785111442
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": -0.27261563773670644,
+      "MAPLE": 0.008502124865365532,
+      "SHAP": -0.46656154685508866
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.09090061400216351,
+      "MAPLE": 0.15347575509486283,
+      "SHAP": -0.31520850999678457
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 10.444861419628237,
+      "MAPLE": 4.340750605104799,
+      "SHAP": 1.3347378128776397
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.7370067886294338,
+      "MAPLE": 1.2659538733873372,
+      "SHAP": 1.4763633574030097
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.2539930979795506,
+      "MAPLE": 0.4038392122842752,
+      "SHAP": 0.2520730248420203
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 4.0,
+      "MAPLE": 1.0714285714285714,
+      "SHAP": 1.6904761904761905
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 410.1661397458743,
+      "MAPLE": 11.567828821322149,
+      "SHAP": 337.99032970107237
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 163898403.10605702,
+      "MAPLE": 20938120482.042557,
+      "SHAP": 24656686.196627274
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": 0.009218189820416072,
+      "MAPLE": -0.06824820960755257,
+      "SHAP": -0.8055397362093843
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.776397778246747,
+      "MAPLE": 0.5168829552731287,
+      "SHAP": 0.6422838424428178
+    },
+    {
+      "dataset_name": "MetroPT3",
+      "model_name": "VAE",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.8971310045771452,
+      "SHAP": 0.0
+    }
+  ]
+}
