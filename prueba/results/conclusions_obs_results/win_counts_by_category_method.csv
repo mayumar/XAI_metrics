@@ -1,0 +1,16 @@
+category,xai_method,n_best
+Complexity,MAPLE,20
+Complexity,LIME,12
+Complexity,SHAP,4
+Faithfulness,MAPLE,88
+Faithfulness,LIME,67
+Faithfulness,SHAP,66
+Fidelity,MAPLE,32
+Fidelity,LIME,29
+Fidelity,SHAP,27
+Robustness,SHAP,27
+Robustness,MAPLE,24
+Robustness,LIME,18
+Sensitivity,MAPLE,8
+Sensitivity,LIME,5
+Sensitivity,SHAP,4
