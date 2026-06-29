@@ -23,7 +23,7 @@ AHU21,ECOD,Consistency,"{""abs"": true, ""normalise"": true}",0.5390476190327498
 AHU21,ECOD,Faithfulness,"{""base_strategy"": ""mean""}",-0.24454929936217976,0.09745596658643918,-0.12552700504901962
 AHU21,ECOD,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.05933474451283237,0.004963555528924143,0.03084070045247808
 AHU21,ECOD,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",8.920034297247236,2.1057414002820445,7.80287513869393
-AHU21,ECOD,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.6386087101428273,2.100509503124509,
+AHU21,ECOD,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.6386087101428273,2.100509503124509,2.760592815662772
 AHU21,ECOD,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0,1.0
 AHU21,ECOD,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.24922969187675073,0.24028803920712255,-0.4315126050420168
 AHU21,ECOD,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0,0.0

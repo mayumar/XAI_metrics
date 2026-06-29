@@ -16,16 +16,20 @@ AHU21,MCD,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_s
 AHU21,MCD,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.13799478644213345,0.07396641704130169,-0.09184419267354094
 AHU21,MCD,Sparseness,"{""normalise"": true}",0.8622216179050302,0.7778950373675324,0.8704787624558907
 AHU21,MCD,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.8478839154833481,0.9189791149066991,0.8869508448540706
-AHU21,VAE,Completeness,"{""abs"": false, ""normalise"": true}",0.0,,
-AHU21,VAE,Complexity,"{""normalise"": true}",2.4189020969092776,,
-AHU21,VAE,Consistency,"{""abs"": true, ""normalise"": true}",0.9999999999683445,,
-AHU21,VAE,Faithfulness,"{""base_strategy"": ""mean""}",-0.48156406891171155,,
-AHU21,VAE,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.012255315271506048,,
-AHU21,VAE,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",8.445635303375258,,
-AHU21,VAE,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",0.5285714285714286,,
-AHU21,VAE,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.2689425770308123,,
-AHU21,VAE,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,,
-AHU21,VAE,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",4.4714285714285715,,
-AHU21,VAE,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",0.16046262129376654,,
-AHU21,VAE,Sparseness,"{""normalise"": true}",0.493754315195239,,
-AHU21,VAE,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.9428571428571428,,
+AHU21,VAE,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.1238881534684586,0.9485214010461522,
+AHU21,VAE,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0,0.0
+AHU21,VAE,Complexity,"{""normalise"": true}",2.4189020969092776,1.73882278656859,2.164525171587435
+AHU21,VAE,Consistency,"{""abs"": true, ""normalise"": true}",0.9999999999683445,0.999999999951985,0.9999999999683445
+AHU21,VAE,Faithfulness,"{""base_strategy"": ""mean""}",-0.48156406891171155,-0.004865452757052288,-0.6226348768294815
+AHU21,VAE,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.012255315271506048,-0.015621393180842309,-0.02904995276853754
+AHU21,VAE,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",8.445635303375258,3.1353928135199394,2.1383925577490692
+AHU21,VAE,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.7959644138984874,1.9270230772510752,2.993561517242152
+AHU21,VAE,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",0.5285714285714286,0.5285714285714286,0.5571428571428572
+AHU21,VAE,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.2689425770308123,0.14231112907548496,0.07293417366946779
+AHU21,VAE,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0,0.0
+AHU21,VAE,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",4.4714285714285715,4.228571428571429,4.642857142857143
+AHU21,VAE,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",0.00015893848110508954,0.04753856855819916,
+AHU21,VAE,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",4921.298623387539,1729690.793094832,
+AHU21,VAE,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",0.16046262129376654,-0.2991402478604606,-0.08411458404004088
+AHU21,VAE,Sparseness,"{""normalise"": true}",0.493754315195239,0.7004440036541978,0.5707695743459611
+AHU21,VAE,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.9428571428571428,0.0,0.9285714285714286

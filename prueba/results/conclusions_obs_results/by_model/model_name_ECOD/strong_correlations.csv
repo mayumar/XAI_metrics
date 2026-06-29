@@ -1,5 +1,5 @@
-metric_1,metric_2,spearman_corr,abs_corr
-AvgSensitivity,MaxSensitivity,0.7166692536001491,0.7166692536001491
-RelativeInputStability,RelativeOutputStability,0.6903707349081365,0.6903707349081365
-Sparseness,Sufficiency,-0.6586390946158107,0.6586390946158107
-Complexity,RelativeInputStability,-0.6233789820605289,0.6233789820605289
+metric_1,metric_2,spearman_corr,p_value,n,abs_corr,significant_0.05
+AvgSensitivity,MaxSensitivity,0.7166692536001491,3.326461928291819e-76,476,0.7166692536001491,True
+RelativeInputStability,RelativeOutputStability,0.6903707349081365,2.731199084024809e-19,127,0.6903707349081365,True
+Sparseness,Sufficiency,-0.6586390946158107,3.3183810404680027e-69,546,0.6586390946158107,True
+Complexity,RelativeInputStability,-0.6233789820605289,4.987905114606125e-15,127,0.6233789820605289,True

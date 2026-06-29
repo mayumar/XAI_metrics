@@ -377,7 +377,7 @@
         "normalise": false
       },
       "LIME": 19.499059017124665,
-      "SHAP": null
+      "SHAP": 2466.9883869996106
     },
     {
       "dataset_name": "AHU21",
