@@ -1,3 +1,3 @@
 metric_1,metric_2,spearman_corr,p_value,n,abs_corr,significant_0.05
-AvgSensitivity,MaxSensitivity,0.9459043454878494,0.0,812,0.9459043454878494,True
-NonSensitivity,RelativeInputStability,-0.7104511742118559,9.089489234938099e-66,420,0.7104511742118559,True
+AvgSensitivity,MaxSensitivity,0.9398690815288969,0.0,882,0.9398690815288969,True
+NonSensitivity,RelativeInputStability,-0.6584590176729834,1.2543331903182652e-58,461,0.6584590176729834,True

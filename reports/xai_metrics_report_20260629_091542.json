@@ -1,0 +1,400 @@
+{
+  "report": [
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.0634469551971761,
+      "MAPLE": 0.9302952989761651,
+      "SHAP": 2.018871013998748
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 2.504810637374132,
+      "MAPLE": 2.4523519075315057,
+      "SHAP": 2.385537067352115
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.5004988661988945,
+      "MAPLE": 0.5948051947388328,
+      "SHAP": 0.5004988661988945
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": -0.1574287717423484,
+      "MAPLE": 0.09680181076325851,
+      "SHAP": -0.1713763721431385
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.011151711462579405,
+      "MAPLE": -0.025296410701621395,
+      "SHAP": -0.020679936553781756
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 9.847357128665394,
+      "MAPLE": 3.176905828825136,
+      "SHAP": 5.010439769089129
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.581648955105148,
+      "MAPLE": 1.929596662964989,
+      "SHAP": 2.919363532016818
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "MAPLE": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.020629537008819355,
+      "MAPLE": -0.012798687660259232,
+      "SHAP": -0.4312883420993431
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.0,
+      "MAPLE": 0.1,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 7.714285714285714,
+      "MAPLE": 7.0285714285714285,
+      "SHAP": 6.714285714285714
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 0.0001847804650987548,
+      "MAPLE": 0.1817596804375412,
+      "SHAP": 1.050647660559151
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 2666567.093474097,
+      "MAPLE": 6538293499.276709,
+      "SHAP": 543017.1688048039
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": -0.2887971153692137,
+      "MAPLE": -0.1730624246806371,
+      "SHAP": 0.03252582888762943
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.4265561974429779,
+      "MAPLE": 0.44939556173887574,
+      "SHAP": 0.48921738110509033
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "HBOS",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.4705394866563834,
+      "MAPLE": 0.5852362874816563,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "MAPLE": null,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 2.513381084136182,
+      "MAPLE": null,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.5551927437479947,
+      "MAPLE": null,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": -0.09891799880940304,
+      "MAPLE": null,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.009049438088865715,
+      "MAPLE": null,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 9.785667837235634,
+      "MAPLE": null,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "MAPLE": null,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.21775210084033617,
+      "MAPLE": null,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.0,
+      "MAPLE": null,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 5.571428571428571,
+      "MAPLE": null,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": -0.22990197331291046,
+      "MAPLE": null,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.4199497674297289,
+      "MAPLE": null,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.5241832646169765,
+      "MAPLE": null,
+      "SHAP": null
+    }
+  ]
+}
