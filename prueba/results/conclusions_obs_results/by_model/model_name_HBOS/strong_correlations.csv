@@ -1,0 +1,4 @@
+metric_1,metric_2,spearman_corr,abs_corr
+AvgSensitivity,MaxSensitivity,0.8802952174270656,0.8802952174270656
+AvgSensitivity,LocalLipschitzEstimate,0.6408043504394095,0.6408043504394095
+Complexity,Sparseness,-0.6018140229459256,0.6018140229459256

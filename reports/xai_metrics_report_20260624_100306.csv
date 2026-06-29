@@ -1,0 +1,103 @@
+dataset_name,model_name,metric,metric_params,LIME,MAPLE,SHAP
+MetroPT3,AutoEncoder,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.0221498552144754,0.9303545406789395,1.1222299736867112
+MetroPT3,AutoEncoder,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0,0.0
+MetroPT3,AutoEncoder,Complexity,"{""normalise"": true}",0.9868398197861372,1.9426103501379997,1.2971157908980302
+MetroPT3,AutoEncoder,Consistency,"{""abs"": true, ""normalise"": true}",0.8234610917336905,0.8234610917336905,0.8234610917336905
+MetroPT3,AutoEncoder,Faithfulness,"{""base_strategy"": ""mean""}",-0.3153695317099509,-0.020036393907282214,-0.3766007909371546
+MetroPT3,AutoEncoder,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.13920412396790813,0.2141420823833646,-0.17829726159158477
+MetroPT3,AutoEncoder,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",10.427928155488715,6.107797458012842,1.3897121796232574
+MetroPT3,AutoEncoder,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.7311920141115114,1.3711284437244422,2.309532216466979
+MetroPT3,AutoEncoder,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0,1.0
+MetroPT3,AutoEncoder,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.20247984364137678,0.36516546216827306,0.0017669620345950143
+MetroPT3,AutoEncoder,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.023809523809523808,0.0,0.023809523809523808
+MetroPT3,AutoEncoder,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",4.904761904761905,2.119047619047619,3.5238095238095237
+MetroPT3,AutoEncoder,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",4.942376971549916,17.924364475816894,1.6133951065863488
+MetroPT3,AutoEncoder,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",24547163.010361318,4882909.438011742,21244843.268201966
+MetroPT3,AutoEncoder,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.028335278721434813,0.1737614941136856,-0.7317724891446498
+MetroPT3,AutoEncoder,Sparseness,"{""normalise"": true}",0.7760061343443349,0.44381897279562843,0.6534374123261272
+MetroPT3,AutoEncoder,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.0,0.8303731934960669,0.0
+MetroPT3,ECOD,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.7080053220957787,1.0532082778496448,0.5987122441155921
+MetroPT3,ECOD,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0,0.0
+MetroPT3,ECOD,Complexity,"{""normalise"": true}",1.579265055918807,1.8129478693274457,1.8959238808920276
+MetroPT3,ECOD,Consistency,"{""abs"": true, ""normalise"": true}",0.544715447141186,0.544715447141186,0.544715447141186
+MetroPT3,ECOD,Faithfulness,"{""base_strategy"": ""mean""}",-0.2320037705100442,-0.011669600545284578,0.058217068363417945
+MetroPT3,ECOD,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.12581026988280186,0.05544964977078715,0.1425411291225699
+MetroPT3,ECOD,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",8.64729570381049,4.252171957007282,4.955452920070579
+MetroPT3,ECOD,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",2.1372674101308746,2.9035125011467207,0.8099279392892038
+MetroPT3,ECOD,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0,1.0
+MetroPT3,ECOD,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",-0.05970177742661182,0.09382057150507678,-0.524547280223256
+MetroPT3,ECOD,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.2619047619047619,0.23809523809523808,0.2857142857142857
+MetroPT3,ECOD,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",4.0476190476190474,1.0238095238095237,1.7142857142857142
+MetroPT3,ECOD,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",6087.7965360098615,4.452837740543144,275.17302388860554
+MetroPT3,ECOD,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",296631.11642436835,184211.48051974984,11083.876665906617
+MetroPT3,ECOD,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.35323516898591173,-0.01728054526217737,-0.493013718989503
+MetroPT3,ECOD,Sparseness,"{""normalise"": true}",0.5944507220948365,0.48795518546813127,0.4539760362321068
+MetroPT3,ECOD,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.0,0.5388954299668586,0.0
+MetroPT3,HBOS,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.280903594443601,0.9276533590873777,2.780936081967301
+MetroPT3,HBOS,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0,0.0
+MetroPT3,HBOS,Complexity,"{""normalise"": true}",1.5867652154740843,1.71191102112849,1.7267383817786754
+MetroPT3,HBOS,Consistency,"{""abs"": true, ""normalise"": true}",0.6039488966170931,0.6039488966170931,0.6039488966170931
+MetroPT3,HBOS,Faithfulness,"{""base_strategy"": ""mean""}",-0.1654914297246203,0.00743188719483349,-0.05715985821928195
+MetroPT3,HBOS,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.11434073094402585,0.04388745079662304,0.014083432930592669
+MetroPT3,HBOS,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",12.065457091025058,4.01055218137173,12.866829480760012
+MetroPT3,HBOS,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.9711882124579274,1.9284733642206564,3.308630849648661
+MetroPT3,HBOS,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0,1.0
+MetroPT3,HBOS,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",-0.37096353181376607,-0.0952928376514417,-0.6812231069441308
+MetroPT3,HBOS,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.2619047619047619,0.30952380952380953,0.2619047619047619
+MetroPT3,HBOS,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",6.357142857142857,3.7857142857142856,4.976190476190476
+MetroPT3,HBOS,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",1692.857405637498,0.16331829943084744,10723.428919164728
+MetroPT3,HBOS,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",143886.20470247034,289.5191229664049,761926.1526404056
+MetroPT3,HBOS,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.42542647971116326,0.07928313790486495,-0.5338897399378867
+MetroPT3,HBOS,Sparseness,"{""normalise"": true}",0.5922246333387561,0.5423838282183411,0.5494322731506383
+MetroPT3,HBOS,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.0,0.5916814973040095,0.0
+MetroPT3,IForest,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.2119494729095623,1.0015367139956024,1.7624035549489594
+MetroPT3,IForest,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0,0.0
+MetroPT3,IForest,Complexity,"{""normalise"": true}",1.496824789426903,1.8049019697583386,1.487454304914912
+MetroPT3,IForest,Consistency,"{""abs"": true, ""normalise"": true}",0.49825783970910176,0.49825783970910176,0.49825783970910176
+MetroPT3,IForest,Faithfulness,"{""base_strategy"": ""mean""}",0.0981467943559762,0.005251802134590894,0.35664886025888015
+MetroPT3,IForest,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.17296925770267937,0.2631487167394949,-0.28972426092272335
+MetroPT3,IForest,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",11.596272019049618,4.542508567379561,3.4092373880459337
+MetroPT3,IForest,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.8927679924168839,2.508808232925623,2.4231783292221833
+MetroPT3,IForest,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0,1.0
+MetroPT3,IForest,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.4427757757275401,0.3345488941911765,0.288010569804907
+MetroPT3,IForest,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.23809523809523808,0.3333333333333333,0.2619047619047619
+MetroPT3,IForest,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",4.404761904761905,1.119047619047619,3.119047619047619
+MetroPT3,IForest,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",2919.8902839965726,5.045085053579466,0.12695996362360068
+MetroPT3,IForest,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",219869418.77244258,788090.514062628,4611.668655417039
+MetroPT3,IForest,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.3270689362747921,-0.138098995014933,-0.7413352027037791
+MetroPT3,IForest,Sparseness,"{""normalise"": true}",0.6315810976981484,0.505602858546078,0.5956216866005868
+MetroPT3,IForest,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.0,0.4880822298601805,0.0
+MetroPT3,MCD,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",2.1429395425637465,11726.655530701293,0.9037288022137082
+MetroPT3,MCD,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0,0.0
+MetroPT3,MCD,Complexity,"{""normalise"": true}",0.8083485872048257,-1.0000889005818412e-12,0.1764781101491518
+MetroPT3,MCD,Consistency,"{""abs"": true, ""normalise"": true}",0.9999999999756097,0.9999999999756097,0.9999999999756097
+MetroPT3,MCD,Faithfulness,"{""base_strategy"": ""mean""}",-0.20911925331979203,0.0416877794766755,-0.1643547271225715
+MetroPT3,MCD,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.6349976196129635,0.23809320819352978,-0.42967429845182653
+MetroPT3,MCD,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",7.38544765748077,3.270051919583396,3.847457550241626
+MetroPT3,MCD,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",4.01687967202145,16590.08059933602,2.650829484489538
+MetroPT3,MCD,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0,1.0
+MetroPT3,MCD,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.4523674124078757,0.5269284763800571,0.5389872677602768
+MetroPT3,MCD,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0,0.0
+MetroPT3,MCD,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",5.285714285714286,3.6666666666666665,6.380952380952381
+MetroPT3,MCD,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",306.93579639474353,0.6253282353474992,0.7028792533857948
+MetroPT3,MCD,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",23195324.930535775,20199454.934101768,46262.842726879935
+MetroPT3,MCD,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.09550072595445663,-0.25122914088460296,-0.9636732517092921
+MetroPT3,MCD,Sparseness,"{""normalise"": true}",0.8069127238643935,0.8863324406451332,0.8874989025887194
+MetroPT3,MCD,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.0,0.0,0.0
+MetroPT3,VAE,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.0183275521273383,1.0101700427297935,0.7451839353469074
+MetroPT3,VAE,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0,0.0
+MetroPT3,VAE,Complexity,"{""normalise"": true}",0.9878831284527575,1.7972083620512005,1.357262817385661
+MetroPT3,VAE,Consistency,"{""abs"": true, ""normalise"": true}",0.907084785111442,0.907084785111442,0.907084785111442
+MetroPT3,VAE,Faithfulness,"{""base_strategy"": ""mean""}",-0.27261563773670644,0.008502124865365532,-0.46656154685508866
+MetroPT3,VAE,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.09090061400216351,0.15347575509486283,-0.31520850999678457
+MetroPT3,VAE,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",10.444861419628237,4.340750605104799,1.3347378128776397
+MetroPT3,VAE,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.7370067886294338,1.2659538733873372,1.4763633574030097
+MetroPT3,VAE,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",0.0,0.0,0.0
+MetroPT3,VAE,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.2539930979795506,0.4038392122842752,0.2520730248420203
+MetroPT3,VAE,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0,0.0
+MetroPT3,VAE,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",4.0,1.0714285714285714,1.6904761904761905
+MetroPT3,VAE,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",410.1661397458743,11.567828821322149,337.99032970107237
+MetroPT3,VAE,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",163898403.10605702,20938120482.042557,24656686.196627274
+MetroPT3,VAE,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",0.009218189820416072,-0.06824820960755257,-0.8055397362093843
+MetroPT3,VAE,Sparseness,"{""normalise"": true}",0.776397778246747,0.5168829552731287,0.6422838424428178
+MetroPT3,VAE,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.0,0.8971310045771452,0.0
