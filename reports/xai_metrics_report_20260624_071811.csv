@@ -84,7 +84,7 @@ ARAMIS20,MCD,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""n
 ARAMIS20,MCD,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.017891656871491204,0.03895901474925238,0.27075761027917106
 ARAMIS20,MCD,Sparseness,"{""normalise"": true}",0.46927993817766306,0.5134152582047313,0.4603069202204645
 ARAMIS20,MCD,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.8663589004255412,0.8872196135457671,0.9126435777695465
-ARAMIS20,VAE,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",0.8267220181815315,1.4657481784423234,
+ARAMIS20,VAE,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",0.8267220181815315,1.4657481784423234,2.3370382651333186
 ARAMIS20,VAE,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0,0.0
 ARAMIS20,VAE,Complexity,"{""normalise"": true}",1.6118835272320193,1.5431304865783537,1.589529369681764
 ARAMIS20,VAE,Consistency,"{""abs"": true, ""normalise"": true}",0.8662131518979058,0.8662131518979058,0.8662131518979058

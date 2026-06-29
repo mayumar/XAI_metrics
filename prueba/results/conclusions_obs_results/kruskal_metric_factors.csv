@@ -22,14 +22,14 @@ MaxSensitivity,model_name,153.684,0.0,True
 Consistency,dataset_name,135.38,0.0,True
 Faithfulness,model_name,120.039,0.0,True
 Sparseness,xai_method,108.218,0.0,True
-AvgSensitivity,dataset_name,85.374,0.0,True
 LocalLipschitzEstimate,dataset_name,79.972,0.0,True
 MaxSensitivity,xai_method,78.406,0.0,True
-AvgSensitivity,model_name,69.376,0.0,True
+AvgSensitivity,xai_method,71.744,0.0,True
+AvgSensitivity,dataset_name,63.086,0.0,True
 MaxSensitivity,dataset_name,54.259,0.0,True
 NonSensitivity,xai_method,53.772,0.0,True
 Sufficiency,xai_method,53.284,0.0,True
-AvgSensitivity,xai_method,52.482,0.0,True
+AvgSensitivity,model_name,61.472,0.0,True
 Complexity,xai_method,37.636,0.0,True
 MonotonicityCorrelation,xai_method,32.354,0.0,True
 RelativeInputStability,model_name,40.103,0.0,True

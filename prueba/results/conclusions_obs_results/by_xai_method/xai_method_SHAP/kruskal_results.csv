@@ -18,10 +18,10 @@ Faithfulness,model_name,102.33775911394225,1.6989417665187896e-20,True
 RelativeInputStability,model_name,86.4788438413218,3.685685095468549e-17,True
 NonSensitivity,model_name,85.9794248275278,4.691148094676681e-17,True
 RelativeOutputStability,model_name,79.98721113582906,8.443682860833035e-16,True
-AvgSensitivity,model_name,76.22487472604007,5.163217965536374e-15,True
-AvgSensitivity,dataset_name,58.9222496537659,1.6039693199363065e-13,True
+AvgSensitivity,dataset_name,60.84711382792875,6.126565943212724e-14,True
 LocalLipschitzEstimate,dataset_name,54.92531114754456,1.1833691028894529e-12,True
 MonotonicityMetric,dataset_name,45.17019722800978,1.5538757844053435e-10,True
+AvgSensitivity,model_name,50.2098344936644,1.2553253611167814e-09,True
 Consistency,dataset_name,39.05129474828836,3.312219348700012e-09,True
 MonotonicityMetric,model_name,47.500903458959286,4.49066633137199e-09,True
 MonotonicityCorrelation,dataset_name,37.88254850441356,5.941677998073814e-09,True
