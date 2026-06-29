@@ -288,7 +288,7 @@
         "perturb_std": 0.1
       },
       "LIME": 8.847586218184569,
-      "SHAP": null
+      "SHAP": 8.03438466119215
     },
     {
       "dataset_name": "AHU21",
@@ -301,7 +301,7 @@
         "lower_bound": 0.2
       },
       "LIME": 1.6373773291775664,
-      "SHAP": null
+      "SHAP": 2.751721786988921
     },
     {
       "dataset_name": "AHU21",
@@ -365,7 +365,7 @@
         "normalise": false
       },
       "LIME": 0.0001223074585224663,
-      "SHAP": null
+      "SHAP": 0.010633433280749015
     },
     {
       "dataset_name": "AHU21",

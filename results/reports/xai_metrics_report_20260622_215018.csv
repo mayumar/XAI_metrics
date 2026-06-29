@@ -22,13 +22,13 @@ AHU21,ECOD,Complexity,"{""normalise"": true}",2.6723478521519453,2.4982151193826
 AHU21,ECOD,Consistency,"{""abs"": true, ""normalise"": true}",0.5295238095090913,0.5295238095090913
 AHU21,ECOD,Faithfulness,"{""base_strategy"": ""mean""}",-0.12476786163929095,-0.07154611762130525
 AHU21,ECOD,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.04696535865930895,0.01786731782517433
-AHU21,ECOD,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",8.847586218184569,
-AHU21,ECOD,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.6373773291775664,
+AHU21,ECOD,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",8.847586218184569,8.03438466119215
+AHU21,ECOD,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.6373773291775664,2.751721786988921
 AHU21,ECOD,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0
 AHU21,ECOD,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.27302541301744104,-0.40080433430646023
 AHU21,ECOD,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0
 AHU21,ECOD,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",5.685714285714286,5.685714285714286
-AHU21,ECOD,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",0.0001223074585224663,
+AHU21,ECOD,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",0.0001223074585224663,0.010633433280749015
 AHU21,ECOD,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",19.499059017124665,
 AHU21,ECOD,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",0.0012379089705953777,0.36060954375853094
 AHU21,ECOD,Sparseness,"{""normalise"": true}",0.31010876683968974,0.42760799340806877
