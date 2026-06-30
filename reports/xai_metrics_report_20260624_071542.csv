@@ -28,7 +28,7 @@ AHU21,ECOD,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"":
 AHU21,ECOD,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.24922969187675073,0.24028803920712255,-0.4315126050420168
 AHU21,ECOD,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0,0.0
 AHU21,ECOD,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",5.7,4.6571428571428575,5.7
-AHU21,ECOD,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",0.0003352801693394625,0.00013214217607686646,
+AHU21,ECOD,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",0.0003352801693394625,0.00013214217607686646,0.0009724496084221116
 AHU21,ECOD,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",51.99468574381933,29.033082405134575,
 AHU21,ECOD,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.18084255071024474,0.018716244643646584,0.25001593793244625
 AHU21,ECOD,Sparseness,"{""normalise"": true}",0.30822253848654657,0.634111126640893,0.456604365845284

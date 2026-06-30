@@ -228,14 +228,28 @@
     {
       "dataset_name": "AHU21",
       "model_name": "IForest",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.1307006053731876,
+      "MAPLE": 0.8610098687733505,
+      "SHAP": 1.155942796801912
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
       "metric": "Completeness",
       "metric_params": {
         "abs": false,
         "normalise": true
       },
       "LIME": 0.0,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 0.0,
+      "SHAP": 0.0
     },
     {
       "dataset_name": "AHU21",
@@ -245,8 +259,8 @@
         "normalise": true
       },
       "LIME": 2.513381084136182,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 1.704332209615659,
+      "SHAP": 2.3658384913303183
     },
     {
       "dataset_name": "AHU21",
@@ -257,8 +271,8 @@
         "normalise": true
       },
       "LIME": 0.5551927437479947,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 0.5551927437479947,
+      "SHAP": 0.5551927437479947
     },
     {
       "dataset_name": "AHU21",
@@ -268,8 +282,8 @@
         "base_strategy": "mean"
       },
       "LIME": -0.09891799880940304,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 0.04199073334687606,
+      "SHAP": -0.03594865804995755
     },
     {
       "dataset_name": "AHU21",
@@ -282,8 +296,8 @@
         "perturb_baseline": "mean"
       },
       "LIME": -0.009049438088865715,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 0.008410167815620009,
+      "SHAP": -0.0013765852405864302
     },
     {
       "dataset_name": "AHU21",
@@ -297,8 +311,22 @@
         "perturb_std": 0.1
       },
       "LIME": 9.785667837235634,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 2.2371061000683357,
+      "SHAP": 2.4055579563749374
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.754869935114839,
+      "MAPLE": 2.3749958393274424,
+      "SHAP": 1.5218979635464578
     },
     {
       "dataset_name": "AHU21",
@@ -311,8 +339,8 @@
         "perturb_baseline": "black"
       },
       "LIME": 1.0,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 1.0,
+      "SHAP": 1.0
     },
     {
       "dataset_name": "AHU21",
@@ -327,8 +355,8 @@
         "perturb_baseline": "mean"
       },
       "LIME": 0.21775210084033617,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 0.2756266384173355,
+      "SHAP": -0.13781512605042012
     },
     {
       "dataset_name": "AHU21",
@@ -338,8 +366,8 @@
         "base_strategy": "mean"
       },
       "LIME": 0.0,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 0.0,
+      "SHAP": 0.0
     },
     {
       "dataset_name": "AHU21",
@@ -353,8 +381,34 @@
         "perturb_baseline": "black"
       },
       "LIME": 5.571428571428571,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 7.214285714285714,
+      "SHAP": 5.585714285714285
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 0.00016943369641424515,
+      "MAPLE": 6.483566785068952e-05,
+      "SHAP": 0.0010663255620061928
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "IForest",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 6636.147934902693,
+      "MAPLE": 12454.821330462773,
+      "SHAP": 158349.70945452605
     },
     {
       "dataset_name": "AHU21",
@@ -368,8 +422,8 @@
         "perturb_baseline": "uniform"
       },
       "LIME": -0.22990197331291046,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 0.02300276063296163,
+      "SHAP": 0.01780259653956323
     },
     {
       "dataset_name": "AHU21",
@@ -379,8 +433,8 @@
         "normalise": true
       },
       "LIME": 0.4199497674297289,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 0.7299855076890785,
+      "SHAP": 0.5076797589496547
     },
     {
       "dataset_name": "AHU21",
@@ -393,8 +447,8 @@
         "normalise": true
       },
       "LIME": 0.5241832646169765,
-      "MAPLE": null,
-      "SHAP": null
+      "MAPLE": 0.0,
+      "SHAP": 0.6534929363711655
     }
   ]
 }

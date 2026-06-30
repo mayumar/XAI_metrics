@@ -1,4 +1,4 @@
 xai_method,n_best
-MAPLE,172
-LIME,131
-SHAP,128
+MAPLE,185
+SHAP,135
+LIME,124

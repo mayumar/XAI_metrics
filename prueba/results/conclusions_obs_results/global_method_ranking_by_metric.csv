@@ -1,17 +1,17 @@
 metric,category,direction,interpretation,LIME,MAPLE,SHAP,best_method
-Complexity,Complexity,lower,explicaciones menos complejas,1.7094803248647679,1.5811884674637997,1.6898502566942475,MAPLE
-Sparseness,Complexity,higher,atribuciones más concentradas,0.4658118847406706,0.5524454632134466,0.49738202255622266,MAPLE
-Consistency,Faithfulness,lower,mayor consistencia,0.9024390243682332,0.9047619047475436,0.9047619047475436,LIME
-Faithfulness,Faithfulness,higher,mayor fidelidad,-0.1930856504897848,0.02494291533951615,-0.3263581045884648,MAPLE
-FaithfulnessEstimate,Faithfulness,higher,mayor estimación de fidelidad,-0.09544317483889275,0.0257560753940387,-0.06634155810807205,MAPLE
+Complexity,Complexity,lower,explicaciones menos complejas,1.7094803248647679,1.5996216885000205,1.717776998479839,MAPLE
+Sparseness,Complexity,higher,atribuciones más concentradas,0.4658118847406706,0.5593012001467859,0.4978601447169495,MAPLE
+Consistency,Faithfulness,lower,mayor consistencia,0.9024390243682332,0.9047619047475436,0.9024390243682332,LIME
+Faithfulness,Faithfulness,higher,mayor fidelidad,-0.1930856504897848,0.0256967513694988,-0.28654356305600154,MAPLE
+FaithfulnessEstimate,Faithfulness,higher,mayor estimación de fidelidad,-0.09544317483889275,0.02789919379837405,-0.0717145227518508,MAPLE
 Monotonicity,Faithfulness,higher,mayor monotonicidad,1.0,1.0,1.0,LIME
-MonotonicityCorrelation,Faithfulness,higher,mayor correlación monotónica,0.2312297288314915,0.25,0.08422005472427116,MAPLE
+MonotonicityCorrelation,Faithfulness,higher,mayor correlación monotónica,0.2312297288314915,0.25113124477737825,0.06774853039259954,MAPLE
 MonotonicityMetric,Faithfulness,higher,mayor cumplimiento de monotonicidad,0.0,0.0,0.0,LIME
-Sufficiency,Faithfulness,higher,mayor suficiencia,0.7222222222222222,0.5753787878787879,0.8,SHAP
+Sufficiency,Faithfulness,higher,mayor suficiencia,0.7222222222222222,0.5199843260188088,0.7936623125302371,SHAP
 Completeness,Fidelity,higher,más completo,0.0,0.0,0.0,LIME
 NonSensitivity,Fidelity,lower,menor sensibilidad a características irrelevantes,4.0,2.0,3.0,MAPLE
-LocalLipschitzEstimate,Robustness,lower,mayor estabilidad local,8.879472409566379,3.4361074984113302,3.37488538296914,SHAP
-MaxSensitivity,Robustness,lower,menor sensibilidad máxima,1.7563521614522453,1.7154033223246739,2.20513198788617,MAPLE
-RelativeInputStability,Robustness,lower,mayor estabilidad frente a cambios en la entrada,0.3479275525028278,0.46114278925502367,0.3492849863686483,LIME
-RelativeOutputStability,Robustness,lower,mayor estabilidad relativa en la salida,9212.052229460152,3929.174375995819,10878.103167229896,MAPLE
-AvgSensitivity,Sensitivity,lower,menor sensibilidad media,1.05271731491534,0.8204761128802546,1.0643850133766728,MAPLE
+LocalLipschitzEstimate,Robustness,lower,mayor estabilidad local,8.879472409566379,3.2852715995696427,3.1694212494650618,SHAP
+MaxSensitivity,Robustness,lower,menor sensibilidad máxima,1.7645176989964404,1.7326602692219057,2.1334093175527187,MAPLE
+RelativeInputStability,Robustness,lower,mayor estabilidad frente a cambios en la entrada,0.2522385959073279,0.36695851587760975,0.1800827144330216,SHAP
+RelativeOutputStability,Robustness,lower,mayor estabilidad relativa en la salida,6232.770302124852,3275.428704534937,10302.97481106207,MAPLE
+AvgSensitivity,Sensitivity,lower,menor sensibilidad media,1.0605711022120685,0.8204761128802546,1.0728664743340048,MAPLE
