@@ -1,4 +1,4 @@
 metric_1,metric_2,spearman_corr,p_value,n,abs_corr,significant_0.05
 Complexity,Sparseness,-0.9967850518269724,0.0,1120,0.9967850518269724,True
-AvgSensitivity,MaxSensitivity,0.847834914532015,1.0678411600095069e-271,980,0.847834914532015,True
+AvgSensitivity,MaxSensitivity,0.847834914532015,1.0678411600095073e-271,980,0.847834914532015,True
 RelativeInputStability,RelativeOutputStability,0.7501616641951138,4.1684258890308823e-122,670,0.7501616641951138,True

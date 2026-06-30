@@ -16,7 +16,7 @@ AHU21,AutoEncoder,RelativeOutputStability,"{""abs"": false, ""normalise"": false
 AHU21,AutoEncoder,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.3432191327629581,0.3745891852597126
 AHU21,AutoEncoder,Sparseness,"{""normalise"": true}",0.543850524627359,0.5375451167849074
 AHU21,AutoEncoder,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.7911418173827507,0.8265092132112071
-AHU21,ECOD,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.1856760188992888,
+AHU21,ECOD,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.1856760188992888,2.339155484500355
 AHU21,ECOD,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0
 AHU21,ECOD,Complexity,"{""normalise"": true}",2.6723478521519453,2.498215119382698
 AHU21,ECOD,Consistency,"{""abs"": true, ""normalise"": true}",0.5295238095090913,0.5295238095090913
@@ -33,3 +33,37 @@ AHU21,ECOD,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_
 AHU21,ECOD,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",0.0012379089705953777,0.36060954375853094
 AHU21,ECOD,Sparseness,"{""normalise"": true}",0.31010876683968974,0.42760799340806877
 AHU21,ECOD,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.5721504958508291,0.6083927500306584
+AHU21,HBOS,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.067164188984404,1.9004488083724493
+AHU21,HBOS,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0
+AHU21,HBOS,Complexity,"{""normalise"": true}",2.503054103415621,2.421156878667044
+AHU21,HBOS,Consistency,"{""abs"": true, ""normalise"": true}",0.5063945578087783,0.5063945578087783
+AHU21,HBOS,Faithfulness,"{""base_strategy"": ""mean""}",-0.1701974700389079,-0.1711713181790011
+AHU21,HBOS,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",0.011439040181989352,-0.00499914177683539
+AHU21,HBOS,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",9.864342929980033,5.078264809171111
+AHU21,HBOS,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.585906720644417,2.7416321981049196
+AHU21,HBOS,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0
+AHU21,HBOS,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.030450230502771233,-0.3922951074991578
+AHU21,HBOS,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0
+AHU21,HBOS,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",7.728571428571429,6.728571428571429
+AHU21,HBOS,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",0.0001874898477631153,1.0431946107034202
+AHU21,HBOS,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",975437.0566066867,547692.0484132757
+AHU21,HBOS,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.08688715837499339,-0.01524865783322902
+AHU21,HBOS,Sparseness,"{""normalise"": true}",0.42726369066710806,0.4711252749240494
+AHU21,HBOS,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.5119131279163148,0.0
+AHU21,IForest,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.1403348284088293,
+AHU21,IForest,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0
+AHU21,IForest,Complexity,"{""normalise"": true}",2.507784197274217,2.3920667549538015
+AHU21,IForest,Consistency,"{""abs"": true, ""normalise"": true}",0.5447619047458926,0.5447619047458926
+AHU21,IForest,Faithfulness,"{""base_strategy"": ""mean""}",-0.08952570919970927,-0.048221855887880166
+AHU21,IForest,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.014039634664209556,-0.0076350259891701635
+AHU21,IForest,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",9.665602745283108,2.5721028434882096
+AHU21,IForest,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.772008062155319,
+AHU21,IForest,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0
+AHU21,IForest,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.18890056022408963,-0.1197478991596639
+AHU21,IForest,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0
+AHU21,IForest,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",5.614285714285714,5.614285714285714
+AHU21,IForest,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",0.00021073148142643255,
+AHU21,IForest,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",4102.099918306201,
+AHU21,IForest,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.30965097985828405,0.07365617683160997
+AHU21,IForest,Sparseness,"{""normalise"": true}",0.42295329682738875,0.48973550318525827
+AHU21,IForest,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.5551512009897573,0.6005783296194613
