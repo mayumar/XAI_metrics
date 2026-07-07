@@ -635,7 +635,7 @@
         "lower_bound": 0.2
       },
       "LIME": 1.1403348284088293,
-      "SHAP": null
+      "SHAP": 1.1646879312065077
     },
     {
       "dataset_name": "AHU21",
@@ -717,7 +717,7 @@
         "lower_bound": 0.2
       },
       "LIME": 1.772008062155319,
-      "SHAP": null
+      "SHAP": 1.5240738539797343
     },
     {
       "dataset_name": "AHU21",
@@ -781,7 +781,7 @@
         "normalise": false
       },
       "LIME": 0.00021073148142643255,
-      "SHAP": null
+      "SHAP": 0.0014097549660110815
     },
     {
       "dataset_name": "AHU21",
@@ -793,7 +793,7 @@
         "normalise": false
       },
       "LIME": 4102.099918306201,
-      "SHAP": null
+      "SHAP": 7154.837153043886
     },
     {
       "dataset_name": "AHU21",
@@ -831,6 +831,453 @@
       },
       "LIME": 0.5551512009897573,
       "SHAP": 0.6005783296194613
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.0491981047052907,
+      "SHAP": 2.0487975164904606
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.939421344699782,
+      "SHAP": 0.8750195881715682
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.9437641723048381,
+      "SHAP": 0.9437641723048381
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": -0.7310813651527558,
+      "SHAP": -0.8380365007017914
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.016183971873205766,
+      "SHAP": -0.008664975357570558
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 8.0369773687184,
+      "SHAP": 0.6039239481538966
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.8865272519597616,
+      "SHAP": 7.537527177432047
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.31322362278464083,
+      "SHAP": 0.6614859896801061
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 6.328571428571428,
+      "SHAP": 6.585714285714285
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 0.015275771498385599,
+      "SHAP": 0.002899897798647312
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 3775603.1888634353,
+      "SHAP": 322232.51380338526
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": -0.10961257477260483,
+      "SHAP": -0.39283175843846907
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.8614582780733663,
+      "SHAP": 0.8769607659310142
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "MCD",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.9025102219361444,
+      "SHAP": 0.8427801934661286
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "AvgSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.1304323849621218,
+      "SHAP": 1.2404897313053331
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "Completeness",
+      "metric_params": {
+        "abs": false,
+        "normalise": true
+      },
+      "LIME": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 2.413829809831612,
+      "SHAP": 2.1771490957389075
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.9999999999683445,
+      "SHAP": 0.9999999999683445
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "Faithfulness",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": -0.47696184036099815,
+      "SHAP": -0.6290262959496916
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "FaithfulnessEstimate",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": -0.014131619148188085,
+      "SHAP": -0.025447739441412157
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "LocalLipschitzEstimate",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": true,
+        "perturb_mean": 0.0,
+        "perturb_std": 0.1
+      },
+      "LIME": 8.385616076270038,
+      "SHAP": 2.1071984567592263
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "MaxSensitivity",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false,
+        "lower_bound": 0.2
+      },
+      "LIME": 1.7992168237205983,
+      "SHAP": 3.097886310811916
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "Monotonicity",
+      "metric_params": {
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 1.0,
+      "SHAP": 1.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "MonotonicityCorrelation",
+      "metric_params": {
+        "eps": "1e-5",
+        "nr_samples": 100,
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "mean"
+      },
+      "LIME": 0.2032913165266107,
+      "SHAP": 0.09226190476190477
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "MonotonicityMetric",
+      "metric_params": {
+        "base_strategy": "mean"
+      },
+      "LIME": 0.0,
+      "SHAP": 0.0
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "NonSensitivity",
+      "metric_params": {
+        "eps": "1e-5",
+        "features_in_step": 1,
+        "abs": true,
+        "normalise": true,
+        "perturb_baseline": "black"
+      },
+      "LIME": 4.571428571428571,
+      "SHAP": 4.514285714285714
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "RelativeInputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 0.00016413310600736625,
+      "SHAP": 0.0015349040902471816
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "RelativeOutputStability",
+      "metric_params": {
+        "nr_samples": 100,
+        "abs": false,
+        "normalise": false
+      },
+      "LIME": 3365.3890044255686,
+      "SHAP": 5149.225742284629
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "SensitivityN",
+      "metric_params": {
+        "n_max_percentage": 1.0,
+        "features_in_step": 1,
+        "abs": false,
+        "normalise": true,
+        "perturb_baseline": "uniform"
+      },
+      "LIME": -0.24637186972914513,
+      "SHAP": 0.008064129297129366
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.49650033909486035,
+      "SHAP": 0.5527211920972759
+    },
+    {
+      "dataset_name": "AHU21",
+      "model_name": "VAE",
+      "metric": "Sufficiency",
+      "metric_params": {
+        "threshold": 0.6,
+        "distance_func": "seuclidean",
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.9142857142857143,
+      "SHAP": 0.9285714285714286
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "Complexity",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 1.6953319363439068,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "Consistency",
+      "metric_params": {
+        "abs": true,
+        "normalise": true
+      },
+      "LIME": 0.764895330090401,
+      "SHAP": null
+    },
+    {
+      "dataset_name": "ARAMIS20",
+      "model_name": "AutoEncoder",
+      "metric": "Sparseness",
+      "metric_params": {
+        "normalise": true
+      },
+      "LIME": 0.3693178845506043,
+      "SHAP": null
     }
   ]
 }

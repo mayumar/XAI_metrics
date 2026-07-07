@@ -50,20 +50,57 @@ AHU21,HBOS,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_
 AHU21,HBOS,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.08688715837499339,-0.01524865783322902
 AHU21,HBOS,Sparseness,"{""normalise"": true}",0.42726369066710806,0.4711252749240494
 AHU21,HBOS,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.5119131279163148,0.0
-AHU21,IForest,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.1403348284088293,
+AHU21,IForest,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.1403348284088293,1.1646879312065077
 AHU21,IForest,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0
 AHU21,IForest,Complexity,"{""normalise"": true}",2.507784197274217,2.3920667549538015
 AHU21,IForest,Consistency,"{""abs"": true, ""normalise"": true}",0.5447619047458926,0.5447619047458926
 AHU21,IForest,Faithfulness,"{""base_strategy"": ""mean""}",-0.08952570919970927,-0.048221855887880166
 AHU21,IForest,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.014039634664209556,-0.0076350259891701635
 AHU21,IForest,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",9.665602745283108,2.5721028434882096
-AHU21,IForest,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.772008062155319,
+AHU21,IForest,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.772008062155319,1.5240738539797343
 AHU21,IForest,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0
 AHU21,IForest,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.18890056022408963,-0.1197478991596639
 AHU21,IForest,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0
 AHU21,IForest,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",5.614285714285714,5.614285714285714
-AHU21,IForest,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",0.00021073148142643255,
-AHU21,IForest,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",4102.099918306201,
+AHU21,IForest,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",0.00021073148142643255,0.0014097549660110815
+AHU21,IForest,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",4102.099918306201,7154.837153043886
 AHU21,IForest,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.30965097985828405,0.07365617683160997
 AHU21,IForest,Sparseness,"{""normalise"": true}",0.42295329682738875,0.48973550318525827
 AHU21,IForest,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.5551512009897573,0.6005783296194613
+AHU21,MCD,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.0491981047052907,2.0487975164904606
+AHU21,MCD,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0
+AHU21,MCD,Complexity,"{""normalise"": true}",0.939421344699782,0.8750195881715682
+AHU21,MCD,Consistency,"{""abs"": true, ""normalise"": true}",0.9437641723048381,0.9437641723048381
+AHU21,MCD,Faithfulness,"{""base_strategy"": ""mean""}",-0.7310813651527558,-0.8380365007017914
+AHU21,MCD,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",0.016183971873205766,-0.008664975357570558
+AHU21,MCD,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",8.0369773687184,0.6039239481538966
+AHU21,MCD,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.8865272519597616,7.537527177432047
+AHU21,MCD,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0
+AHU21,MCD,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.31322362278464083,0.6614859896801061
+AHU21,MCD,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0
+AHU21,MCD,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",6.328571428571428,6.585714285714285
+AHU21,MCD,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",0.015275771498385599,0.002899897798647312
+AHU21,MCD,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",3775603.1888634353,322232.51380338526
+AHU21,MCD,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.10961257477260483,-0.39283175843846907
+AHU21,MCD,Sparseness,"{""normalise"": true}",0.8614582780733663,0.8769607659310142
+AHU21,MCD,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.9025102219361444,0.8427801934661286
+AHU21,VAE,AvgSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.1304323849621218,1.2404897313053331
+AHU21,VAE,Completeness,"{""abs"": false, ""normalise"": true}",0.0,0.0
+AHU21,VAE,Complexity,"{""normalise"": true}",2.413829809831612,2.1771490957389075
+AHU21,VAE,Consistency,"{""abs"": true, ""normalise"": true}",0.9999999999683445,0.9999999999683445
+AHU21,VAE,Faithfulness,"{""base_strategy"": ""mean""}",-0.47696184036099815,-0.6290262959496916
+AHU21,VAE,FaithfulnessEstimate,"{""abs"": false, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""mean""}",-0.014131619148188085,-0.025447739441412157
+AHU21,VAE,LocalLipschitzEstimate,"{""abs"": false, ""normalise"": true, ""nr_samples"": 100, ""perturb_mean"": 0.0, ""perturb_std"": 0.1}",8.385616076270038,2.1071984567592263
+AHU21,VAE,MaxSensitivity,"{""abs"": false, ""lower_bound"": 0.2, ""normalise"": false, ""nr_samples"": 100}",1.7992168237205983,3.097886310811916
+AHU21,VAE,Monotonicity,"{""abs"": true, ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",1.0,1.0
+AHU21,VAE,MonotonicityCorrelation,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""nr_samples"": 100, ""perturb_baseline"": ""mean""}",0.2032913165266107,0.09226190476190477
+AHU21,VAE,MonotonicityMetric,"{""base_strategy"": ""mean""}",0.0,0.0
+AHU21,VAE,NonSensitivity,"{""abs"": true, ""eps"": ""1e-5"", ""features_in_step"": 1, ""normalise"": true, ""perturb_baseline"": ""black""}",4.571428571428571,4.514285714285714
+AHU21,VAE,RelativeInputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",0.00016413310600736625,0.0015349040902471816
+AHU21,VAE,RelativeOutputStability,"{""abs"": false, ""normalise"": false, ""nr_samples"": 100}",3365.3890044255686,5149.225742284629
+AHU21,VAE,SensitivityN,"{""abs"": false, ""features_in_step"": 1, ""n_max_percentage"": 1.0, ""normalise"": true, ""perturb_baseline"": ""uniform""}",-0.24637186972914513,0.008064129297129366
+AHU21,VAE,Sparseness,"{""normalise"": true}",0.49650033909486035,0.5527211920972759
+AHU21,VAE,Sufficiency,"{""abs"": true, ""distance_func"": ""seuclidean"", ""normalise"": true, ""threshold"": 0.6}",0.9142857142857143,0.9285714285714286
+ARAMIS20,AutoEncoder,Complexity,"{""normalise"": true}",1.6953319363439068,
+ARAMIS20,AutoEncoder,Consistency,"{""abs"": true, ""normalise"": true}",0.764895330090401,
+ARAMIS20,AutoEncoder,Sparseness,"{""normalise"": true}",0.3693178845506043,
