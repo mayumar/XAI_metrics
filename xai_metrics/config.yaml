@@ -25,6 +25,55 @@ metrics:
     params:
       normalise: true
 
+  - name: MuFidelity
+    params:
+      n_masks: 200
+      subset_probability: 0.5
+      baseline_mode: mean
+      abs: false
+      normalise: false
+      random_state: 42
+
+  - name: Deletion
+    params:
+      steps: 20
+      max_percentage_perturbed: 1.0
+      baseline_mode: mean
+      abs: false
+
+  - name: Insertion
+    params:
+      steps: 20
+      max_percentage_perturbed: 1.0
+      baseline_mode: mean
+      abs: false
+
+  - name: AverageDropMetric
+    params:
+      baseline_mode: mean
+      threshold: 0.0
+      abs: false
+
+  - name: AverageIncreaseMetric
+    params:
+      baseline_mode: mean
+      threshold: 0.0
+      abs: false
+
+  - name: AverageGainMetric
+    params:
+      baseline_mode: mean
+      threshold: 0.0
+      abs: false
+
+  - name: AverageStability
+    params:
+      n_perturbations: 20
+      noise_std: 0.05
+      abs: false
+      normalise: false
+      random_state: 42
+
   - name: Consistency
     params:
       abs: true
